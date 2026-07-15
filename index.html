@@ -90,19 +90,28 @@
   .tab:hover{background:var(--blue-soft);}
   .tab.active{border-color:var(--blue-line); background:#fff;}
   .stamp-badge{
+    position:relative;
     flex:0 0 auto; width:30px; height:30px; border-radius:50%;
     border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
     font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--ink-soft);
     transition: all .35s cubic-bezier(.2,.8,.2,1); background:#fff;
   }
-  .stamp-badge svg{width:15px; height:15px; opacity:0; transform:scale(.4); transition:all .35s;}
-  .stamp-badge .num{transition:opacity .25s;}
+  .stamp-badge svg{
+    position:absolute; top:50%; left:50%;
+    width:15px; height:15px; opacity:0;
+    transform:translate(-50%,-50%) scale(.4);
+    transition:opacity .35s, transform .35s;
+  }
+  .stamp-badge .num{
+    display:block; width:100%; text-align:center; line-height:1;
+    transition:opacity .25s;
+  }
+  .tab.done .stamp-badge .num{opacity:0;}
+  .tab.done .stamp-badge svg{opacity:1; transform:translate(-50%,-50%) scale(1);}
   .tab.done .stamp-badge{
     border-color:var(--blue); background:var(--blue); color:#fff;
     box-shadow:0 2px 6px rgba(15,95,166,.35);
   }
-  .tab.done .stamp-badge .num{opacity:0;}
-  .tab.done .stamp-badge svg{opacity:1; transform:scale(1);}
   .tab-label{font-size:13.5px; font-weight:600; line-height:1.25;}
   .tab-sub{font-size:11px; color:var(--ink-soft); font-weight:400;}
 
@@ -148,6 +157,13 @@
   input[type="text"]::placeholder, input[type="date"]::placeholder{color:#9CAAB8;}
   input:focus{border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(15,95,166,.16);}
   input:invalid:not(:placeholder-shown){border-color:#E2A2A2;}
+
+  select{
+    width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:7px;
+    background:#F9FBFD; font-family:'Inter',sans-serif; font-size:14px; color:var(--ink);
+    outline:none; transition: border-color .15s, box-shadow .15s, background .15s;
+  }
+  select:focus{border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(15,95,166,.16);}
 
   /* file upload */
   .file-drop{
@@ -209,224 +225,73 @@
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
   }
-/* =========================================================================
-   BLOK NAVIGASI SAMPING DESKTOP (DIJAMIN BEBAS ERROR & PASTI MUNCUL)
-   ========================================================================= */
 
-/* 1. Pengaturan Dasar Seluruh Kotak Tab */
-aside.rail a.tab {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  padding: 14px 16px !important;
-  margin-bottom: 10px !important;
-  border-radius: 8px !important;
-  background-color: #FFFFFF !important; /* Latar belakang dasar putih */
-  border-left: 4px solid #E5E7EB !important; /* Garis samping default abu-abu */
-  text-decoration: none !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease-in-out !important;
-}
+  /* ---------- Sidebar nav polish ---------- */
+  aside.rail a.tab {
+    padding:14px 16px;
+    border-left:4px solid transparent;
+  }
+  aside.rail a.tab.active{
+    background-color:#EFF6FF;
+    border-left-color:#2563EB;
+  }
+  aside.rail a.tab.active .tab-label{ color:#1D4ED8; }
+  aside.rail a.tab.active .tab-sub{ color:#1E40AF; }
+  aside.rail a.tab.active .stamp-badge{ background-color:#2563EB; border-color:#2563EB; }
 
-/* 2. WARNA UTAMA: KETIKA TAB SEDANG AKTIF (MENYALA BIRU PEMERINTAHAN) */
-aside.rail a.tab.active,
-#desktopRail a.tab.active {
-  background-color: #EFF6FF !important; /* Latar belakang biru muda lembut */
-  border-left: 4px solid #2563EB !important; /* Garis samping biru tegas */
-}
+  aside.rail a.tab.done{
+    background-color:#F0FDF4;
+    border-left-color:#16A34A;
+  }
+  aside.rail a.tab.done .tab-label{ color:#15803D; }
+  aside.rail a.tab.done .tab-sub{ color:#166534; }
+  aside.rail a.tab.done .stamp-badge{ background-color:#16A34A; border-color:#16A34A; }
 
-/* Mengubah warna teks judul menjadi biru tua tajam saat aktif */
-aside.rail a.tab.active span .tab-label,
-#desktopRail a.tab.active span .tab-label {
-  color: #1D4ED8 !important;
-  font-weight: 700 !important;
-}
-
-/* Mengubah warna sub-teks di bawahnya menjadi biru navy saat aktif */
-aside.rail a.tab.active span .tab-sub,
-#desktopRail a.tab.active span .tab-sub {
-  color: #1E40AF !important;
-}
-
-/* Mengubah warna lingkaran nomor menjadi biru penuh pada tab aktif */
-aside.rail a.tab.active .stamp-badge,
-#desktopRail a.tab.active .stamp-badge {
-  background-color: #2563EB !important;
-  color: #FFFFFF !important;
-}
-
-
-/* 3. WARNA UTAMA: KETIKA TAB SELESAI DIISI (OTOMATIS BERUBAH HIJAU SUKSES) */
-aside.rail a.tab.done,
-#desktopRail a.tab.done {
-  background-color: #F0FDF4 !important; /* Latar belakang hijau muda */
-  border-left: 4px solid #16A34A !important; /* Garis samping hijau */
-}
-
-aside.rail a.tab.done span .tab-label,
-#desktopRail a.tab.done span .tab-label {
-  color: #15803D !important;
-}
-
-aside.rail a.tab.done span .tab-sub,
-#desktopRail a.tab.done span .tab-sub {
-  color: #166534 !important;
-}
-
-aside.rail a.tab.done .stamp-badge,
-#desktopRail a.tab.done .stamp-badge {
-  background-color: #16A34A !important;
-  color: #FFFFFF !important;
-}
-
-
-/* =========================================================================
-   PENGUNCI MUTLAK: MEMAKSA ANGKA 1-4 TETAP SIMETRIS DI TENGAH LINGKARAN
-   ========================================================================= */
-aside.rail .stamp-badge,
-#desktopRail .stamp-badge,
-.stamp-badge {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-  
-  /* Ukuran diameter lingkaran */
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  border-radius: 50% !important;
-  background-color: #F3F4F6 !important; /* Warna default lingkaran abu-abu */
-  color: #1F2937 !important; /* Warna default angka hitam */
-  
-  /* Bersihkan seluruh sisa jarak padding bawaan template */
-  padding: 0 !important;
-  margin: 0 14px 0 0 !important; /* Jarak luar hanya di sisi kanan */
-}
-
-/* Memaksa text-align center bekerja mutlak tepat di titik tengah diameter */
-aside.rail .stamp-badge .num,
-#desktopRail .stamp-badge .num,
-.stamp-badge .num {
-  display: block !important;
-  width: 100% !important;
-  text-align: center !important;
-  font-weight: 700 !important;
-  font-size: 14px !important;
-  line-height: 1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* Penyelarasan posisi ikon centang SVG saat status Selesai (Done) */
-aside.rail .stamp-badge svg,
-#desktopRail .stamp-badge svg,
-.stamp-badge svg {
-  width: 16px !important;
-  height: 16px !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
-  display: none; /* Disembunyikan secara default */
-}
-
-/* Logika menyembunyikan angka dan menampilkan centang di tengah lingkaran */
-aside.rail a.tab.done .stamp-badge .num {
-  display: none !important;
-}
-aside.rail a.tab.done .stamp-badge svg {
-  display: block !important;
-}
-<>
-.permanent-notification-wrapper {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  z-index: 9999;
-  width: 320px;
-  font-family: 'Arial', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-}
-
-.stamp-overlay {
-  transform: rotate(-8deg);
-}
-
-.stamp-graphic {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 4px double #d32f2f;
-  border-radius: 8px;
-  padding: 12px 20px;
-  background-color: #fff;
-  color: #d32f2f;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.stamp-graphic strong {
-  font-size: 22px;
-  letter-spacing: 2px;
-  font-weight: 900;
-}
-
-.stamp-graphic span {
-  font-size: 10px;
-  font-weight: bold;
-  margin-top: 5px;
-  border-top: 2px solid #d32f2f;
-  border-bottom: 2px solid #d32f2f;
-  padding: 2px 0;
-  text-align: center;
-}
-
-.stamp-graphic small {
-  font-size: 13px;
-  font-weight: bold;
-  margin-top: 6px;
-}
-
-.info-box {
-  background-color: #ffffff;
-  border-left: 5px solid #0288d1;
-  border-radius: 4px;
-  padding: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.instruction-text {
-  font-size: 13px;
-  color: #333;
-  line-height: 1.5;
-  margin: 0 0 12px 0;
-}
-
-.social-links {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.btn-link {
-  display: block;
-  text-align: center;
-  padding: 8px;
-  font-size: 12px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #fff;
-  border-radius: 4px;
-  transition: opacity 0.2s;
-}
-
-.btn-link:hover { opacity: 0.9; }
-.whatsapp { background-color: #25D366; }
-.instagram { background-color: #E1306C; }
-.facebook { background-color: #1877F2; }
+  /* ---------- Notifikasi sukses (pop-up kanan atas) ---------- */
+  .permanent-notification-wrapper{
+    position:fixed; top:30px; right:30px; z-index:9999; width:320px;
+    display:none; flex-direction:column; align-items:center; gap:15px;
+    background:#fff; padding:25px 15px 15px; border-radius:8px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2); box-sizing:border-box;
+  }
+  .permanent-notification-wrapper.show{ display:flex; }
+  .close-x-btn{
+    position:absolute; top:5px; right:10px; background:none; border:none;
+    font-size:24px; font-weight:700; color:#999; cursor:pointer; line-height:1; padding:0;
+    transition:color .2s;
+  }
+  .close-x-btn:hover{ color:#d32f2f; }
+  .btn-ok{
+    display:block; width:100%; padding:10px; margin-top:12px;
+    background-color:#0288d1; color:#fff; border:none; border-radius:4px;
+    font-weight:700; font-size:14px; cursor:pointer; text-align:center;
+    transition:background-color .2s;
+  }
+  .btn-ok:hover{ background-color:#01579b; }
+  .stamp-overlay .stamp-graphic{
+    border:4px double var(--red); color:var(--red); border-radius:8px; padding:12px 20px;
+    transform:rotate(-4deg);
+  }
+  .stamp-overlay .stamp-graphic strong{ font-size:22px; letter-spacing:2px; }
+  .stamp-overlay .stamp-graphic span{
+    font-size:10px; font-weight:700; border-top:2px solid var(--red); border-bottom:2px solid var(--red);
+    padding:2px 0;
+  }
+  .stamp-overlay .stamp-graphic small{ font-size:13px; font-weight:700; }
+  .info-box{ width:100%; box-sizing:border-box; }
+  .notif-success-head{ text-align:center; margin-bottom:14px; }
+  .notif-success-icon{ font-size:28px; display:block; margin-bottom:4px; }
+  .notif-success-title{ margin:0; font-size:15px; font-weight:800; color:var(--ok); }
+  .notif-success-sub{ margin:4px 0 0; font-size:12px; color:#5B6672; }
+  .instruction-text{ font-size:13px; color:#333; line-height:1.5; margin:0 0 12px; }
+  .social-links{ display:flex; flex-direction:column; gap:8px; }
+  .btn-link{
+    display:block; text-align:center; padding:8px; font-size:12px; font-weight:700;
+    text-decoration:none; color:#fff; border-radius:4px;
+  }
+  .whatsapp{ background-color:#25D366; }
+  .instagram{ background-color:#E1306C; }
+  .facebook{ background-color:#1877F2; }
 </style>
 </head>
 <body>
@@ -435,16 +300,13 @@ aside.rail a.tab.done .stamp-badge svg {
 
 <div class="letterhead-block">
   <div class="letterhead">
-    <!-- MEMANGGIL FILE LOGO OFFLINE SECARA SEJAJAR -->
-    <img class="logo" src="logo-wakatobi.png" alt="Logo Pemerintah Kabupaten Wakatobi" style="width: 55px; height: auto; max-height: 65px; object-fit: contain; display: block; margin-right: 12px;">
+    <img class="logo" src="logo-wakatobi.png" alt="Logo Pemerintah Kabupaten Wakatobi">
     <div class="agency-text">
-      <p class="agency-line1" style="font-weight: 700; font-size: 26px; margin: 0; color: #1e3a8a; font-family: sans-serif;">Pemerintah Kabupaten Wakatobi</p>
-      <p class="agency-line2" style="font-weight: 600; font-size: 22px; margin: 2px 0 0 0; color: #374151; font-family: sans-serif;">Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja</p>
+      <p class="agency-line1">Pemerintah Kabupaten Wakatobi</p>
+      <p class="agency-line2">Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja</p>
     </div>
   </div>
-</div>
-
-<hr class="letterhead-rule">
+  <hr class="letterhead-rule">
   <hr class="letterhead-rule thick">
 </div>
 
@@ -468,26 +330,22 @@ aside.rail a.tab.done .stamp-badge svg {
     <!-- DESKTOP RAIL -->
     <aside class="rail" id="desktopRail">
       <p class="rail-title">Status Berkas</p>
-      
-      <!-- Bagian 1: Registrasi -->
+
       <a class="tab" data-target="sec-reg">
         <span class="stamp-badge"><span class="num">1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
         <span><span class="tab-label">Informasi Registrasi</span><br><span class="tab-sub">Data Awal Pengkodean</span></span>
       </a>
-      
-      <!-- Bagian 2: Data Diri -->
+
       <a class="tab" data-target="sec-diri">
         <span class="stamp-badge"><span class="num">2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
         <span><span class="tab-label">Identitas Pelamar</span><br><span class="tab-sub">Berkas KTP & Akta Lahir</span></span>
       </a>
-      
-      <!-- Bagian 3: Pendidikan -->
+
       <a class="tab" data-target="sec-pendidikan">
         <span class="stamp-badge"><span class="num">3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
         <span><span class="tab-label">Riwayat Pendidikan</span><br><span class="tab-sub">Lampiran Dokumen Ijazah</span></span>
       </a>
-      
-      <!-- Bagian 4: Kontak -->
+
       <a class="tab" data-target="sec-kontak">
         <span class="stamp-badge"><span class="num">4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></span>
         <span><span class="tab-label">Kontak & Pas Foto</span><br><span class="tab-sub">Nomor HP & Foto Merah</span></span>
@@ -509,7 +367,7 @@ aside.rail a.tab.done .stamp-badge svg {
       <div class="grid2">
           <div class="field">
               <label>Nomor Registrasi</label>
-              <input type="text" id="no_reg" value="Memuat nomor otomatis..." readonly style="background-color: #E5E7EB; color: #4B5563; cursor: not-allowed;">
+              <input type="text" id="no_reg" value="Memuat nomor otomatis..." readonly style="background-color:#E5E7EB; color:#4B5563; cursor:not-allowed;">
           </div>
           <div class="field">
               <label>Hari dan Tanggal Registrasi <span class="req">*</span></label>
@@ -534,7 +392,7 @@ aside.rail a.tab.done .stamp-badge svg {
                 <input type="text" id="nik" placeholder="16 Digit Angka NIK" required>
             </div>
             <div class="field">
-              <label>Upload KTP <span class="req">*</span> <span class="text-xs text-red-500 font-normal">(Maks 1MB)</span></label>
+              <label>Upload KTP <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
               <div class="file-drop" id="drop_ktp">
                   <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
                   <input type="file" id="file_ktp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_ktp')" required>
@@ -555,17 +413,57 @@ aside.rail a.tab.done .stamp-badge svg {
               <input type="date" id="tanggal_lahir" required>
           </div>
       </div>
+      <div class="grid2 divider-row">
+          <div class="field">
+              <label>Jenis Kelamin <span class="req">*</span></label>
+              <select id="jenis_kelamin" required>
+                  <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
+                  <option value="Laki-Laki">Laki-Laki</option>
+                  <option value="Perempuan">Perempuan</option>
+              </select>
+          </div>
+          <div class="field">
+              <label>Status <span class="req">*</span></label>
+              <select id="status_hubungan" required>
+                  <option value="" disabled selected>-- Pilih Status --</option>
+                  <option value="Belum Menikah">Belum Menikah</option>
+                  <option value="Menikah">Menikah</option>
+                  <option value="Cerai/Janda/Duda">Cerai/Janda/Duda</option>
+              </select>
+          </div>
+      </div>
+      <div class="grid2 divider-row">
+          <div class="field">
+              <label>Agama <span class="req">*</span></label>
+              <select id="agama" required>
+                  <option value="" disabled selected>-- Pilih Agama --</option>
+                  <option value="ISLAM">ISLAM</option>
+                  <option value="KHATOLIK">KHATOLIK</option>
+                  <option value="PROTESTAN">PROTESTAN</option>
+                  <option value="HINDU">HINDU</option>
+                  <option value="BUDHA">BUDHA</option>
+                  <option value="KONGHUCHU">KONGHUCHU</option>
+              </select>
+          </div>
+      </div>
       <div class="field divider-row">
-          <label>Upload Akta Lahir <span class="req">*</span> <span class="text-xs text-red-500 font-normal">(Maks 1MB)</span></label>
+          <label>Upload Akta Lahir <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
           <div class="file-drop" id="drop_akta">
               <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
               <input type="file" id="file_akta" accept="image/*,application/pdf" onchange="handleFile(this,'drop_akta')" required>
           </div>
       </div>
+      <div class="field divider-row">
+          <label>Upload Kartu Keluarga <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
+          <div class="file-drop" id="drop_kk">
+              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+              <input type="file" id="file_kk" accept="image/*,application/pdf" onchange="handleFile(this,'drop_kk')" required>
+          </div>
+      </div>
       <div class="grid2">
           <div class="field">
               <label>Domisili (Kecamatan) <span class="req">*</span></label>
-              <select id="domisili" required style="width: 100%; padding: 10px; border: 1px solid #D1D5DB; border-radius: 6px; outline: none; background-color: white; color: #374151; font-size: 14px;">
+              <select id="domisili" required>
                   <option value="" disabled selected>-- Pilih Kecamatan Domisili --</option>
                   <option value="Kecamatan Wangi-Wangi">Kecamatan Wangi-Wangi</option>
                   <option value="Kecamatan Wangi-Wangi Selatan">Kecamatan Wangi-Wangi Selatan</option>
@@ -585,7 +483,7 @@ aside.rail a.tab.done .stamp-badge svg {
       </div>
     </div>
 
-      <!-- III. PENDIDIKAN (STRUKTUR SERAGAM SEPERTI PERGURUAN TINGGI) -->
+      <!-- III. PENDIDIKAN -->
       <div class="form-section" id="sec-pendidikan" data-section="pendidikan">
         <div class="sec-head">
             <span class="sec-num">III</span>
@@ -595,23 +493,23 @@ aside.rail a.tab.done .stamp-badge svg {
             </div>
         </div>
 
-        <!-- TINGKAT SD (MUNCUL SEJAK AWAL) -->
+        <!-- TINGKAT SD (OPSIONAL, MUNCUL SEJAK AWAL) -->
         <div class="grid3 divider-row" id="row-sd">
-          <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD" required></div>
-          <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_lulus" placeholder="Contoh: 2010" inputmode="numeric" required></div>
+          <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
+          <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
           <div class="field">
             <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <div class="file-drop" id="drop_sd">
               <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-              <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')" required>
+              <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')">
             </div>
           </div>
         </div>
 
         <!-- TINGKAT SMP (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3 divider-row" id="row-smp" style="display: none;">
+        <div class="grid3 divider-row" id="row-smp" style="display:none;">
           <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
-          <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_lulus" placeholder="Contoh: 2013" inputmode="numeric"></div>
+          <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
           <div class="field">
             <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <div class="file-drop" id="drop_smp">
@@ -622,9 +520,9 @@ aside.rail a.tab.done .stamp-badge svg {
         </div>
 
         <!-- TINGKAT SMA (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3 divider-row" id="row-sma" style="display: none;">
+        <div class="grid3 divider-row" id="row-sma" style="display:none;">
           <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
-          <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_lulus" placeholder="Contoh: 2016" inputmode="numeric"></div>
+          <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
           <div class="field">
             <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <div class="file-drop" id="drop_sma">
@@ -635,9 +533,9 @@ aside.rail a.tab.done .stamp-badge svg {
         </div>
 
         <!-- TINGKAT PERGURUAN TINGGI (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3" id="row-pt" style="display: none;">
+        <div class="grid3" id="row-pt" style="display:none;">
           <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
-          <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_lulus" placeholder="Contoh: 2020" inputmode="numeric"></div>
+          <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
           <div class="field">
             <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <div class="file-drop" id="drop_pt">
@@ -648,15 +546,15 @@ aside.rail a.tab.done .stamp-badge svg {
         </div>
 
         <!-- TOMBOL DINAMIS -->
-        <div style="margin-top: 20px; text-align: left;">
-            <button type="button" id="btnTambahPendidikan" onclick="tambahJenjangPendidikan()" style="padding: 10px 20px; background-color: #059669; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <div style="margin-top:20px; text-align:left;">
+            <button type="button" id="btnTambahPendidikan" onclick="tambahJenjangPendidikan()" style="padding:10px 20px; background-color:#059669; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,.05);">
                 <svg style="width:18px; height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                 Tambah Pendidikan Berikutnya
             </button>
         </div>
       </div>
 
-            <!-- IV. KONTAK & FOTO (SUSUNAN VERTIKAL KE BAWAH) -->
+      <!-- IV. KONTAK & FOTO -->
       <div class="form-section" id="sec-kontak" data-section="kontak">
         <div class="sec-head">
           <span class="sec-num">IV</span>
@@ -667,19 +565,16 @@ aside.rail a.tab.done .stamp-badge svg {
         </div>
 
         <div class="space-y-4">
-          <!-- Kontak WhatsApp -->
           <div class="field">
             <label>Kontak Aktif (WhatsApp) <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <input type="text" id="kontak" placeholder="08xxxxxxxxxx" inputmode="tel">
           </div>
 
-          <!-- Email -->
           <div class="field">
             <label>Email Aktif <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
             <input type="email" id="email" placeholder="nama@email.com">
           </div>
 
-          <!-- Unggah Pas Foto -->
           <div class="field">
             <label>Unggah Pas Foto Berlatar Merah <span class="req">*</span> <span style="color:var(--red); font-weight:400; font-size:11px;">(maks 1MB)</span></label>
             <div class="file-drop" id="drop_foto">
@@ -691,7 +586,6 @@ aside.rail a.tab.done .stamp-badge svg {
             </div>
           </div>
 
-          <!-- Checkbox Konfirmasi Fisik -->
           <div class="field checkbox-row" style="padding-top:10px;">
             <input type="checkbox" id="konfirmasi_fisik" value="Sanggup Membawa" required style="width:auto; margin-right:8px;">
             <span>Saya bersedia menyediakan <b>2 lembar</b> pas foto berlatar merah saat verifikasi. <span class="req">*</span></span>
@@ -713,73 +607,89 @@ aside.rail a.tab.done .stamp-badge svg {
   </div>
 </div>
 
-<div class="permanent-notification-wrapper">
-  
-  <div class="stamp-overlay" id="stampOverlay">
-    <div class="stamp-graphic">
-      <strong>BERKAS DITERIMA</strong>
-      <span>AK.1 — DINAS KOPERASI, UKM & TENAGA KERJA</span>
-      <small id="stampDate"></small>
-    </div>
-  </div>
+<!-- NOTIFIKASI SUKSES (tampil setelah submit berhasil) -->
+<div class="permanent-notification-wrapper" id="permanentNotification">
+  <button type="button" class="close-x-btn" onclick="tutupNotifikasi()" aria-label="Tutup notifikasi">&times;</button>
 
   <div class="info-box">
+    <div class="notif-success-head">
+      <span class="notif-success-icon">✅</span>
+      <p class="notif-success-title">Data Berhasil Terkirim!</p>
+      <p class="notif-success-sub">Registrasi AK.1 Anda telah kami terima.</p>
+    </div>
+
     <p class="instruction-text">
       📸 <strong>Silakan screenshot halaman ini</strong> sebagai bukti telah registrasi dan kirimkan ke kontak admin kami di bawah ini:
     </p>
-    
+
     <div class="social-links">
-      <a href="https://wa.me/6282197462749?text=Halo%20Admin,%20saya%20ingin%20mengirimkan%20bukti%20registrasi%20AK.1" target="_blank" class="btn-link whatsapp">
+      <a href="https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20ingin%20mengirimkan%20bukti%20registrasi%20AK.1" target="_blank" class="btn-link whatsapp">
         🟢 WhatsApp Admin
       </a>
-      <a href="https://instagram.com/dinkop_ukm_naker_wakatobi?igsh=cXloZmZ4YjltcHlp&utm_source=qr" target="_blank" class="btn-link instagram">
+      <a href="https://instagram.com/username_kantor" target="_blank" class="btn-link instagram">
         📸 Instagram
       </a>
-      <a href="https://facebook.com/share/19CRYqovn4/?mibextid=wwXlfr" target="_blank" class="btn-link facebook">
+      <a href="https://facebook.com/nama_halaman_kantor" target="_blank" class="btn-link facebook">
         🔵 Facebook
       </a>
     </div>
+    <button type="button" class="btn-ok" onclick="tutupNotifikasi()">Selesai</button>
   </div>
-
 </div>
 
+<!-- OVERLAY STEMPEL "BERKAS DITERIMA" (muncul sekilas saat submit berhasil) -->
+<div class="stamp-overlay" id="stampOverlay">
+  <div class="stamp-graphic">
+    <strong>BERKAS DITERIMA</strong>
+    <span>AK.1 — DINAS KOPERASI, UKM & TENAGA KERJA</span>
+    <small id="stampDate"></small>
+  </div>
 </div>
 
 <script>
-  // Mengisi tanggal otomatis (DD/MM/YYYY)
-  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-  document.getElementById('stampDate').innerText = new Date().toLocaleDateString('id-ID', options);
-</script>
-
-<script>
-  // URL Google Apps Script milik Anda
+  // Ganti dengan URL Google Apps Script Anda sendiri
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXmh0laoRlJx1GkeyWUGp6HF4pQTqIggUzSQ6u-ye2WletvIsFLQFLukH_5VBBiR0C/exec";
 
-  // Fungsi otomatis memanggil nomor registrasi terbaru saat halaman web dibuka
+  // Ambil nomor registrasi otomatis saat halaman dibuka
   window.addEventListener("DOMContentLoaded", function() {
-      fetch(WEB_APP_URL)
+    fetch(WEB_APP_URL)
       .then(res => res.json())
       .then(data => {
-          if(data.status === "success") {
-              document.getElementById('no_reg').value = data.next_reg;
-          } else {
-              document.getElementById('no_reg').value = "Gagal memuat nomor";
-          }
+        if (data.status === "success") {
+          document.getElementById('no_reg').value = data.next_reg;
+        } else {
+          document.getElementById('no_reg').value = "Gagal memuat nomor";
+        }
       })
       .catch(err => {
-          document.getElementById('no_reg').value = "Error koneksi";
-          console.error(err);
+        document.getElementById('no_reg').value = "Error koneksi";
+        console.error(err);
       });
   });
 
-  const MAX_SIZE = 3 * 1024 * 1024;
+  const MAX_SIZE = 1 * 1024 * 1024; // 1MB, disesuaikan dengan keterangan di form
 
-  function handleFile(input, dropId){
+  // Mengisi otomatis pilihan tahun pada dropdown Tahun Lulus (SD/SMP/SMA/PT)
+  function isiPilihanTahun() {
+    const tahunSekarang = new Date().getFullYear();
+    const tahunTertua = 1960;
+    document.querySelectorAll('select.year-select').forEach(sel => {
+      for (let y = tahunSekarang; y >= tahunTertua; y--) {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        sel.appendChild(opt);
+      }
+    });
+  }
+  isiPilihanTahun();
+
+  function handleFile(input, dropId) {
     const drop = document.getElementById(dropId);
     const nameEl = drop.querySelector('.file-name');
-    if(input.files && input.files[0]){
+    if (input.files && input.files[0]) {
       const f = input.files[0];
-      if(f.size > MAX_SIZE){
+      if (f.size > MAX_SIZE) {
         alert(`Maaf, ukuran file "${f.name}" terlalu besar. Maksimal ukuran file adalah 1MB.`);
         input.value = "";
         drop.classList.remove('filled');
@@ -795,60 +705,41 @@ aside.rail a.tab.done .stamp-badge svg {
     updateProgress();
   }
 
-  function validateFileSize(input){ }
-
-   // Variabel untuk memantau level pendidikan yang sedang aktif terbuka
-  let levelPendidikanSaatIni = 1; // 1 = SD, 2 = SMP, 3 = SMA, 4 = PT
+  // Level pendidikan yang sedang terbuka: 1 = SD, 2 = SMP, 3 = SMA, 4 = PT
+  let levelPendidikanSaatIni = 1;
 
   function tambahJenjangPendidikan() {
     levelPendidikanSaatIni++;
-    
+
     if (levelPendidikanSaatIni === 2) {
-      // Munculkan Baris SMP dan ubah kolomnya menjadi Wajib Isi (Required)
       document.getElementById('row-smp').style.display = 'grid';
-      document.getElementById('smp_nama').required = true;
-      document.getElementById('smp_lulus').required = true;
-      document.getElementById('file_ijazah_smp').required = true;
-    } 
-    else if (levelPendidikanSaatIni === 3) {
-      // Munculkan Baris SMA dan ubah kolomnya menjadi Wajib Isi (Required)
+    } else if (levelPendidikanSaatIni === 3) {
       document.getElementById('row-sma').style.display = 'grid';
-      document.getElementById('sma_nama').required = true;
-      document.getElementById('sma_lulus').required = true;
-      document.getElementById('file_ijazah_sma').required = true;
-    } 
-    else if (levelPendidikanSaatIni === 4) {
-      // Munculkan Baris Perguruan Tinggi (Tetap opsional / tidak wajib required)
+    } else if (levelPendidikanSaatIni === 4) {
       document.getElementById('row-pt').style.display = 'grid';
-      
-      // Sembunyikan tombol tambah karena semua tingkat pendidikan sudah terbuka maksimal
       document.getElementById('btnTambahPendidikan').style.display = 'none';
     }
-    
-    // Perbarui indikator lingkaran progress bar agar akurat
+
     updateProgress();
   }
 
-  // Fungsi otomatis mengembalikan tampilan pendidikan ke level SD (Tertutup kembali saat sukses submit)
+  // Mengembalikan tampilan pendidikan ke level SD saja (dipanggil setelah submit sukses)
   function resetSeksiPendidikanVisual() {
     levelPendidikanSaatIni = 1;
     document.getElementById('row-smp').style.display = 'none';
     document.getElementById('row-sma').style.display = 'none';
     document.getElementById('row-pt').style.display = 'none';
     document.getElementById('btnTambahPendidikan').style.display = 'inline-flex';
-    
-    // Matikan kembali status wajib isi (required) untuk tingkat menengah saat direset bersih
-    const fields = ['smp_nama','smp_lulus','file_ijazah_smp','sma_nama','sma_lulus','file_ijazah_sma'];
+
+    const fields = ['smp_nama', 'smp_lulus', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'file_ijazah_sma'];
     fields.forEach(id => {
-      var el = document.getElementById(id);
-      if(el) el.required = false;
+      const el = document.getElementById(id);
+      if (el) el.required = false;
     });
   }
 
-  // =========================================================================
-
   const toBase64 = file => new Promise((resolve, reject) => {
-    if(!file || file.length === 0) resolve(null);
+    if (!file || file.length === 0) { resolve(null); return; }
     const reader = new FileReader();
     reader.readAsDataURL(file[0]);
     reader.onload = () => resolve({ base64: reader.result.split(',')[1], type: file[0].type });
@@ -856,23 +747,23 @@ aside.rail a.tab.done .stamp-badge svg {
   });
 
   // ---------- PROGRESS TRACKER ----------
-  const sections = ['reg','diri','pendidikan','kontak'];
-  function sectionComplete(name){
+  const sections = ['reg', 'diri', 'pendidikan', 'kontak'];
+  function sectionComplete(name) {
     const el = document.querySelector(`[data-section="${name}"]`);
-    const required = el.querySelectorAll('input[required]');
-    for(const inp of required){
-      if(inp.type === 'checkbox' && !inp.checked) return false;
-      if(inp.type === 'file' && (!inp.files || inp.files.length === 0)) return false;
-      if(inp.type !== 'checkbox' && inp.type !== 'file' && !inp.value.trim()) return false;
+    const required = el.querySelectorAll('input[required], select[required]');
+    for (const inp of required) {
+      if (inp.type === 'checkbox' && !inp.checked) return false;
+      if (inp.type === 'file' && (!inp.files || inp.files.length === 0)) return false;
+      if (inp.type !== 'checkbox' && inp.type !== 'file' && !inp.value.trim()) return false;
     }
     return true;
   }
 
-  function updateProgress(){
+  function updateProgress() {
     let doneCount = 0;
     sections.forEach(name => {
       const complete = sectionComplete(name);
-      if(complete) doneCount++;
+      if (complete) doneCount++;
       document.querySelectorAll(`.tab[data-target="sec-${name}"], .m-tab[data-target="sec-${name}"]`).forEach(t => {
         t.classList.toggle('done', complete);
       });
@@ -887,7 +778,7 @@ aside.rail a.tab.done .stamp-badge svg {
     el.addEventListener('click', (e) => {
       e.preventDefault();
       const target = document.getElementById(el.dataset.target);
-      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
 
@@ -901,30 +792,36 @@ aside.rail a.tab.done .stamp-badge svg {
   }, { rootMargin: '-20% 0px -60% 0px' });
   document.querySelectorAll('.form-section').forEach(sec => observer.observe(sec));
 
-  async function handleSubmit(event){
+  function tutupNotifikasi() {
+    document.getElementById('permanentNotification').classList.remove('show');
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
     const submitBtn = document.getElementById('submitBtn');
     const loadingText = document.getElementById('loadingText');
     submitBtn.disabled = true;
     loadingText.classList.remove('hidden');
 
-    try{
-      // Proses konversi berkas fisik ke Base64 teks
+    try {
       const fileKtp   = document.getElementById('file_ktp').files.length ? await toBase64(document.getElementById('file_ktp').files) : null;
       const fileAkta  = document.getElementById('file_akta').files.length ? await toBase64(document.getElementById('file_akta').files) : null;
+      const fileKK    = document.getElementById('file_kk').files.length ? await toBase64(document.getElementById('file_kk').files) : null;
       const fileIdSD  = document.getElementById('file_ijazah_sd').files.length ? await toBase64(document.getElementById('file_ijazah_sd').files) : null;
       const fileIdSMP = document.getElementById('file_ijazah_smp').files.length ? await toBase64(document.getElementById('file_ijazah_smp').files) : null;
       const fileIdSMA = document.getElementById('file_ijazah_sma').files.length ? await toBase64(document.getElementById('file_ijazah_sma').files) : null;
       const fileIdPT  = document.getElementById('file_ijazah_pt').files.length ? await toBase64(document.getElementById('file_ijazah_pt').files) : null;
       const fileFoto  = document.getElementById('file_foto').files.length ? await toBase64(document.getElementById('file_foto').files) : null;
 
-      // Bangun paket data kiriman JSON
       const payload = {
         no_reg: document.getElementById('no_reg').value,
         tgl_reg: document.getElementById('tgl_reg').value,
         nik: document.getElementById('nik').value,
         nama: document.getElementById('nama').value,
-        ttl: document.getElementById('tempat_lahir').value + ", " + document.getElementById('tanggal_lahir').value, // Menggunakan kode pemisah gabungan baru
+        ttl: document.getElementById('tempat_lahir').value + ", " + document.getElementById('tanggal_lahir').value,
+        jenis_kelamin: document.getElementById('jenis_kelamin').value,
+        status: document.getElementById('status_hubungan').value,
+        agama: document.getElementById('agama').value,
         domisili: document.getElementById('domisili').value,
         tujuan_kerja: document.getElementById('tujuan_kerja').value,
         sd_nama: document.getElementById('sd_nama').value,
@@ -940,6 +837,7 @@ aside.rail a.tab.done .stamp-badge svg {
         konfirmasi_fisik: document.getElementById('konfirmasi_fisik').checked ? "Ya (Sanggup Membawa)" : "Tidak",
         file_ktp: fileKtp,
         file_akta: fileAkta,
+        file_kk: fileKK,
         file_ijazah_sd: fileIdSD,
         file_ijazah_smp: fileIdSMP,
         file_ijazah_sma: fileIdSMA,
@@ -950,28 +848,29 @@ aside.rail a.tab.done .stamp-badge svg {
       const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
       const result = await response.json();
 
-      if(result.status === "success"){
-        document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' });
+      if (result.status === "success") {
+        document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
         const overlay = document.getElementById('stampOverlay');
         overlay.classList.add('show');
         setTimeout(() => { overlay.classList.remove('show'); }, 2200);
-        
-        // --- PROSES RESET FORMULIR SETELAH SUKSES ---
-        document.getElementById('stampDate').innerText = new Date().toLocaleDateString('id-ID', options);
 
-        // DI SINI TEMPAT YANG BENAR UNTUK MENARUHNYA:
-        resetSeksiPendidikanVisual(); 
-        
+        document.getElementById('permanentNotification').classList.add('show');
+
+        resetSeksiPendidikanVisual();
+
         document.querySelectorAll('.file-drop').forEach(d => {
           d.classList.remove('filled');
           const n = d.querySelector('.file-name');
           n.textContent = n.dataset.default;
         });
+
+        document.getElementById('registrationForm').reset();
         updateProgress();
       } else {
         alert("Gagal menyimpan data: " + result.message);
       }
-    } catch(error){
+    } catch (error) {
       console.error("Error submitting form:", error);
       alert("Terjadi masalah jaringan atau internal server saat mengirim data berkas.");
     } finally {
@@ -979,30 +878,6 @@ aside.rail a.tab.done .stamp-badge svg {
       loadingText.classList.add('hidden');
     }
   }
-(function() {
-    // Fungsi ini akan mengecek ketersediaan elemen secara berkala 
-    // agar tidak bergantung penuh pada event DOMContentLoaded yang kadang terlewat
-    const checkExist = setInterval(function() {
-      const targetElement = document.getElementById('stampDate');
-      if (targetElement) {
-        const formatTanggal = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        targetElement.innerText = new Date().toLocaleDateString('id-ID', formatTanggal);
-        clearInterval(checkExist); // Hentikan pengecekan jika sudah berhasil diisi
-      }
-    }, 100); // Cek setiap 100ms
-  })();
-  // Menggunakan fungsi tertutup agar variabel tidak bentrok dengan script lain
-  (function() {
-    // Dipastikan berjalan setelah seluruh HTML selesai dibuat browser
-    window.addEventListener('DOMContentLoaded', function() {
-      const targetElement = document.getElementById('stampDate');
-      if (targetElement) {
-        const formatTanggal = { year: 'numeric', month: '2-digit', day: '2-digit' };
-        targetElement.innerText = new Date().toLocaleDateString('id-ID', formatTanggal);
-      }
-    });
-  })();
-
 </script>
 
 </body>
