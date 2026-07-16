@@ -197,6 +197,11 @@
   .checkbox-row input{width:18px; height:18px; margin-top:2px; accent-color:var(--blue); flex:0 0 auto;}
   .checkbox-row span{font-size:13.5px; color:var(--ink); line-height:1.4;}
 
+  .edu-subtitle{
+    font-weight:700; font-size:14px; color:var(--blue-deep); text-transform:uppercase;
+    letter-spacing:.03em; margin:0 0 4px;
+  }
+
   /* ---------- SUBMIT ---------- */
   .submit-wrap{text-align:center; margin-top:6px;}
   .stamp-btn{
@@ -501,68 +506,89 @@
             <span class="sec-num">III</span>
             <div>
                 <h2 class="sec-title">Riwayat Pendidikan & Ijazah</h2>
-                <p class="sec-hint">Klik tombol di bawah untuk menambah jenjang pendidikan yang lebih tinggi secara berurutan.</p>
+                <p class="sec-hint">Lengkapi riwayat pendidikan formal dan non formal (jika ada).</p>
             </div>
         </div>
 
-        <!-- TINGKAT SD (OPSIONAL, MUNCUL SEJAK AWAL) -->
-        <div class="grid3 divider-row" id="row-sd">
-          <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
-          <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-          <div class="field">
-            <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-            <div class="file-drop" id="drop_sd">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-              <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')">
+        <!-- A. PENDIDIKAN FORMAL -->
+        <div class="edu-subsection">
+          <h3 class="edu-subtitle">A. Pendidikan Formal</h3>
+          <p class="sec-hint" style="margin-bottom:14px;">Klik tombol di bawah untuk menambah jenjang pendidikan yang lebih tinggi secara berurutan.</p>
+
+          <!-- TINGKAT SD (OPSIONAL, MUNCUL SEJAK AWAL) -->
+          <div class="grid3 divider-row" id="row-sd">
+            <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
+            <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+            <div class="field">
+              <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <div class="file-drop" id="drop_sd">
+                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+                <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')">
+              </div>
             </div>
+          </div>
+
+          <!-- TINGKAT SMP (DISEMBUNYIKAN SEBELUM DIKLIK) -->
+          <div class="grid3 divider-row" id="row-smp" style="display:none;">
+            <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
+            <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+            <div class="field">
+              <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <div class="file-drop" id="drop_smp">
+                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+                <input type="file" id="file_ijazah_smp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_smp')">
+              </div>
+            </div>
+          </div>
+
+          <!-- TINGKAT SMA (DISEMBUNYIKAN SEBELUM DIKLIK) -->
+          <div class="grid3 divider-row" id="row-sma" style="display:none;">
+            <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
+            <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+            <div class="field">
+              <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <div class="file-drop" id="drop_sma">
+                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+                <input type="file" id="file_ijazah_sma" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sma')">
+              </div>
+            </div>
+          </div>
+
+          <!-- TINGKAT PERGURUAN TINGGI (DISEMBUNYIKAN SEBELUM DIKLIK) -->
+          <div class="grid3" id="row-pt" style="display:none;">
+            <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
+            <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+            <div class="field">
+              <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <div class="file-drop" id="drop_pt">
+                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+                <input type="file" id="file_ijazah_pt" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pt')">
+              </div>
+            </div>
+          </div>
+
+          <!-- TOMBOL DINAMIS -->
+          <div style="margin-top:20px; text-align:left;">
+              <button type="button" id="btnTambahPendidikan" onclick="tambahJenjangPendidikan()" style="padding:10px 20px; background-color:#059669; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,.05);">
+                  <svg style="width:18px; height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  Tambah Pendidikan Berikutnya
+              </button>
           </div>
         </div>
 
-        <!-- TINGKAT SMP (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3 divider-row" id="row-smp" style="display:none;">
-          <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
-          <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-          <div class="field">
-            <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-            <div class="file-drop" id="drop_smp">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-              <input type="file" id="file_ijazah_smp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_smp')">
-            </div>
-          </div>
-        </div>
+        <!-- B. PENDIDIKAN NON FORMAL -->
+        <div class="edu-subsection" style="margin-top:28px; padding-top:24px; border-top:1px solid var(--blue-line);">
+          <h3 class="edu-subtitle">B. Pendidikan Non Formal (Pelatihan/Kursus)</h3>
+          <p class="sec-hint" style="margin-bottom:14px;">Isi jika pernah mengikuti pelatihan atau kursus. Klik tombol di bawah untuk menambahkan lebih dari satu pelatihan.</p>
 
-        <!-- TINGKAT SMA (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3 divider-row" id="row-sma" style="display:none;">
-          <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
-          <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-          <div class="field">
-            <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-            <div class="file-drop" id="drop_sma">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-              <input type="file" id="file_ijazah_sma" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sma')">
-            </div>
-          </div>
-        </div>
+          <div id="nonformalList"></div>
 
-        <!-- TINGKAT PERGURUAN TINGGI (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-        <div class="grid3" id="row-pt" style="display:none;">
-          <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
-          <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-          <div class="field">
-            <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-            <div class="file-drop" id="drop_pt">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-              <input type="file" id="file_ijazah_pt" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pt')">
-            </div>
+          <div style="margin-top:16px; text-align:left;">
+              <button type="button" id="btnTambahPelatihan" onclick="tambahPelatihan()" style="padding:10px 20px; background-color:#059669; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,.05);">
+                  <svg style="width:18px; height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                  Tambah Pelatihan/Kursus
+              </button>
           </div>
-        </div>
-
-        <!-- TOMBOL DINAMIS -->
-        <div style="margin-top:20px; text-align:left;">
-            <button type="button" id="btnTambahPendidikan" onclick="tambahJenjangPendidikan()" style="padding:10px 20px; background-color:#059669; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px; font-size:14px; box-shadow:0 2px 4px rgba(0,0,0,.05);">
-                <svg style="width:18px; height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                Tambah Pendidikan Berikutnya
-            </button>
         </div>
       </div>
 
@@ -681,11 +707,11 @@
 
   const MAX_SIZE = 1 * 1024 * 1024; // 1MB, disesuaikan dengan keterangan di form
 
-  // Mengisi otomatis pilihan tahun pada dropdown Tahun Lulus (SD/SMP/SMA/PT)
-  function isiPilihanTahun() {
+  // Mengisi otomatis pilihan tahun pada dropdown Tahun Lulus (SD/SMP/SMA/PT/Pelatihan)
+  function isiPilihanTahunPada(selects) {
     const tahunSekarang = new Date().getFullYear();
     const tahunTertua = 1960;
-    document.querySelectorAll('select.year-select').forEach(sel => {
+    selects.forEach(sel => {
       for (let y = tahunSekarang; y >= tahunTertua; y--) {
         const opt = document.createElement('option');
         opt.value = y;
@@ -693,6 +719,9 @@
         sel.appendChild(opt);
       }
     });
+  }
+  function isiPilihanTahun() {
+    isiPilihanTahunPada(document.querySelectorAll('select.year-select'));
   }
   isiPilihanTahun();
 
@@ -735,6 +764,58 @@
     updateProgress();
   }
 
+  // ---------- PENDIDIKAN NON FORMAL (PELATIHAN/KURSUS) ----------
+  let pelatihanCount = 0;
+
+  function buatBarisPelatihan(index) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'nonformal-entry divider-row';
+    wrapper.dataset.index = index;
+    wrapper.innerHTML = `
+      <div class="grid3">
+        <div class="field">
+          <label>Nama Instansi/Lembaga Pelatihan <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+          <input type="text" class="nf_instansi" placeholder="Nama lembaga/instansi pelatihan">
+        </div>
+        <div class="field">
+          <label>Tahun Lulus <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+          <select class="year-select nf_tahun"><option value="" selected>-- Pilih Tahun --</option></select>
+        </div>
+        <div class="field">
+          <label>Upload Sertifikat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+          <div class="file-drop nf_drop" id="drop_pelatihan_${index}">
+            <div class="file-drop-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+              <span class="file-name" data-default="Maks 1MB">Maks 1MB</span>
+            </div>
+            <input type="file" class="nf_file" id="file_pelatihan_${index}" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pelatihan_${index}')">
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label>Jurusan/Bidang Pelatihan <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+        <input type="text" class="nf_jurusan" placeholder="Nama jurusan/bidang pelatihan">
+      </div>
+      ${index > 1 ? `<div style="text-align:right; margin-top:10px;"><button type="button" class="btn-hapus-pelatihan" onclick="hapusPelatihan(this)" style="background:none;border:1px solid var(--red);color:var(--red);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Hapus Pelatihan Ini</button></div>` : ''}
+    `;
+    return wrapper;
+  }
+
+  function tambahPelatihan() {
+    pelatihanCount++;
+    const container = document.getElementById('nonformalList');
+    const row = buatBarisPelatihan(pelatihanCount);
+    container.appendChild(row);
+    isiPilihanTahunPada(row.querySelectorAll('select.year-select'));
+    updateProgress();
+  }
+
+  function hapusPelatihan(btn) {
+    const entry = btn.closest('.nonformal-entry');
+    if (entry) entry.remove();
+    updateProgress();
+  }
+
   // Mengembalikan tampilan pendidikan ke level SD saja (dipanggil setelah submit sukses)
   function resetSeksiPendidikanVisual() {
     levelPendidikanSaatIni = 1;
@@ -748,6 +829,9 @@
       const el = document.getElementById(id);
       if (el) el.required = false;
     });
+
+    document.getElementById('nonformalList').innerHTML = '';
+    pelatihanCount = 0;
   }
 
   const toBase64 = file => new Promise((resolve, reject) => {
@@ -825,6 +909,20 @@
       const fileIdPT  = document.getElementById('file_ijazah_pt').files.length ? await toBase64(document.getElementById('file_ijazah_pt').files) : null;
       const fileFoto  = document.getElementById('file_foto').files.length ? await toBase64(document.getElementById('file_foto').files) : null;
 
+      // Kumpulkan seluruh entri pendidikan non formal (pelatihan/kursus)
+      const pendidikanNonFormal = await Promise.all(
+        Array.from(document.querySelectorAll('#nonformalList .nonformal-entry')).map(async (entry) => {
+          const fileInput = entry.querySelector('.nf_file');
+          const sertifikat = fileInput.files.length ? await toBase64(fileInput.files) : null;
+          return {
+            instansi: entry.querySelector('.nf_instansi').value,
+            jurusan: entry.querySelector('.nf_jurusan').value,
+            tahun_lulus: entry.querySelector('.nf_tahun').value,
+            sertifikat: sertifikat
+          };
+        })
+      );
+
       const payload = {
         no_reg: document.getElementById('no_reg').value,
         tgl_reg: document.getElementById('tgl_reg').value,
@@ -844,6 +942,7 @@
         sma_lulus: document.getElementById('sma_lulus').value,
         pt_nama: document.getElementById('pt_nama').value || "-",
         pt_lulus: document.getElementById('pt_lulus').value || "-",
+        pendidikan_non_formal: pendidikanNonFormal,
         kontak: document.getElementById('kontak').value,
         email: document.getElementById('email').value,
         konfirmasi_fisik: document.getElementById('konfirmasi_fisik').checked ? "Ya (Sanggup Membawa)" : "Tidak",
