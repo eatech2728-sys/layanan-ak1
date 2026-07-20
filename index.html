@@ -383,8 +383,9 @@
       </div>
       <div class="grid2">
           <div class="field">
-              <label>Nomor Registrasi</label>
+              <label>Nomor Registrasi <span style="color:var(--ink-soft); font-weight:400;">(perkiraan)</span></label>
               <input type="text" id="no_reg" value="Memuat nomor otomatis..." readonly style="background-color:#E5E7EB; color:#4B5563; cursor:not-allowed;">
+              <p class="sec-hint" style="margin-top:6px;">Nomor ini masih perkiraan. Nomor registrasi resmi baru ditentukan setelah data berhasil dikirim, dan akan ditampilkan pada notifikasi sukses.</p>
           </div>
           <div class="field">
               <label>Hari dan Tanggal Registrasi <span class="req">*</span></label>
@@ -409,9 +410,9 @@
                 <input type="text" id="nik" placeholder="16 Digit Angka NIK" required>
             </div>
             <div class="field">
-              <label>Upload KTP <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
+              <label>Upload KTP <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 2MB)</span></label>
               <div class="file-drop" id="drop_ktp">
-                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
                   <input type="file" id="file_ktp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_ktp')" required>
               </div>
           </div>
@@ -464,16 +465,16 @@
           </div>
       </div>
       <div class="field divider-row">
-          <label>Upload Akta Lahir <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
+          <label>Upload Akta Lahir <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 2MB)</span></label>
           <div class="file-drop" id="drop_akta">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
               <input type="file" id="file_akta" accept="image/*,application/pdf" onchange="handleFile(this,'drop_akta')" required>
           </div>
       </div>
       <div class="field divider-row">
-          <label>Upload Kartu Keluarga <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 1MB)</span></label>
+          <label>Upload Kartu Keluarga <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 2MB)</span></label>
           <div class="file-drop" id="drop_kk">
-              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
+              <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
               <input type="file" id="file_kk" accept="image/*,application/pdf" onchange="handleFile(this,'drop_kk')" required>
           </div>
       </div>
@@ -516,54 +517,78 @@
           <p class="sec-hint" style="margin-bottom:14px;">Klik tombol di bawah untuk menambah jenjang pendidikan yang lebih tinggi secara berurutan.</p>
 
           <!-- TINGKAT SD (OPSIONAL, MUNCUL SEJAK AWAL) -->
-          <div class="grid3 divider-row" id="row-sd">
-            <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
-            <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-            <div class="field">
-              <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-              <div class="file-drop" id="drop_sd">
-                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-                <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')">
+          <div class="divider-row" id="row-sd">
+            <div class="grid3">
+              <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
+              <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field">
+                <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+                <div class="file-drop" id="drop_sd">
+                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
+                  <input type="file" id="file_ijazah_sd" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sd')">
+                </div>
               </div>
+            </div>
+            <div class="field" style="margin-top:14px;">
+              <label>Jurusan SD <span style="color:var(--ink-soft); font-weight:400;">(opsional, biasanya dikosongkan untuk SD)</span></label>
+              <input type="text" id="sd_jurusan" placeholder="Isi jika ada (mis. sekolah berbasis kejuruan)">
             </div>
           </div>
 
           <!-- TINGKAT SMP (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-          <div class="grid3 divider-row" id="row-smp" style="display:none;">
-            <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
-            <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-            <div class="field">
-              <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-              <div class="file-drop" id="drop_smp">
-                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-                <input type="file" id="file_ijazah_smp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_smp')">
+          <div class="divider-row" id="row-smp" style="display:none;">
+            <div class="grid3">
+              <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
+              <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field">
+                <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+                <div class="file-drop" id="drop_smp">
+                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
+                  <input type="file" id="file_ijazah_smp" accept="image/*,application/pdf" onchange="handleFile(this,'drop_smp')">
+                </div>
               </div>
+            </div>
+            <div class="field" style="margin-top:14px;">
+              <label>Jurusan SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional, biasanya dikosongkan untuk SMP)</span></label>
+              <input type="text" id="smp_jurusan" placeholder="Isi jika ada (mis. sekolah berbasis kejuruan)">
             </div>
           </div>
 
           <!-- TINGKAT SMA (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-          <div class="grid3 divider-row" id="row-sma" style="display:none;">
-            <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
-            <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-            <div class="field">
-              <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-              <div class="file-drop" id="drop_sma">
-                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-                <input type="file" id="file_ijazah_sma" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sma')">
+          <div class="divider-row" id="row-sma" style="display:none;">
+            <div class="grid3">
+              <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
+              <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field">
+                <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+                <div class="file-drop" id="drop_sma">
+                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
+                  <input type="file" id="file_ijazah_sma" accept="image/*,application/pdf" onchange="handleFile(this,'drop_sma')">
+                </div>
               </div>
+            </div>
+            <div class="field" style="margin-top:14px;">
+              <label>Jurusan SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional, mis. IPA / IPS / Bahasa / Jurusan SMK)</span></label>
+              <input type="text" id="sma_jurusan" placeholder="Contoh: IPA, IPS, atau jurusan SMK">
             </div>
           </div>
 
           <!-- TINGKAT PERGURUAN TINGGI (DISEMBUNYIKAN SEBELUM DIKLIK) -->
-          <div class="grid3" id="row-pt" style="display:none;">
-            <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
-            <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
-            <div class="field">
-              <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
-              <div class="file-drop" id="drop_pt">
-                <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 1MB">Maks 1MB</span></div>
-                <input type="file" id="file_ijazah_pt" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pt')">
+          <div id="row-pt" style="display:none;">
+            <div class="grid3">
+              <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
+              <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field">
+                <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+                <div class="file-drop" id="drop_pt">
+                  <div class="file-drop-inner"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg><span class="file-name" data-default="Maks 2MB">Maks 2MB</span></div>
+                  <input type="file" id="file_ijazah_pt" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pt')">
+                </div>
               </div>
+            </div>
+            <div class="field" style="margin-top:14px;">
+              <label>Jurusan/Program Studi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <input type="text" id="pt_jurusan" placeholder="Contoh: Manajemen, Teknik Informatika, dsb.">
             </div>
           </div>
 
@@ -579,7 +604,7 @@
         <!-- B. PENDIDIKAN NON FORMAL -->
         <div class="edu-subsection" style="margin-top:28px; padding-top:24px; border-top:1px solid var(--blue-line);">
           <h3 class="edu-subtitle">B. Pendidikan Non Formal (Pelatihan/Kursus)</h3>
-          <p class="sec-hint" style="margin-bottom:14px;">Isi jika pernah mengikuti pelatihan atau kursus. Klik tombol di bawah untuk menambahkan lebih dari satu pelatihan.</p>
+          <p class="sec-hint" style="margin-bottom:14px;">Isi jika pernah mengikuti pelatihan atau kursus. Maksimal <b>3 pelatihan</b> yang dapat dicatat pada sistem ini.</p>
 
           <div id="nonformalList"></div>
 
@@ -588,6 +613,7 @@
                   <svg style="width:18px; height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                   Tambah Pelatihan/Kursus
               </button>
+              <p class="sec-hint" id="pelatihanLimitNote" style="margin-top:8px;"></p>
           </div>
         </div>
       </div>
@@ -614,7 +640,7 @@
           </div>
 
           <div class="field">
-            <label>Unggah Pas Foto Berlatar Merah <span class="req">*</span> <span style="color:var(--red); font-weight:400; font-size:11px;">(maks 1MB)</span></label>
+            <label>Unggah Pas Foto Berlatar Merah <span class="req">*</span> <span style="color:var(--red); font-weight:400; font-size:11px;">(maks 2MB)</span></label>
             <div class="file-drop" id="drop_foto">
               <div class="file-drop-inner">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
@@ -654,6 +680,7 @@
       <span class="notif-success-icon">✅</span>
       <p class="notif-success-title">Data Berhasil Terkirim!</p>
       <p class="notif-success-sub">Registrasi AK.1 Anda telah kami terima.</p>
+      <p class="notif-success-sub" style="margin-top:8px; font-weight:800; color:var(--blue-deep); font-size:14px;">Nomor Registrasi Resmi: <span id="finalNoReg">-</span></p>
     </div>
 
     <p class="instruction-text">
@@ -688,6 +715,11 @@
   // Ganti dengan URL Google Apps Script Anda sendiri
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXmh0laoRlJx1GkeyWUGp6HF4pQTqIggUzSQ6u-ye2WletvIsFLQFLukH_5VBBiR0C/exec";
 
+  // Batas maksimal pelatihan/kursus yang dapat dicatat — HARUS SAMA
+  // dengan MAKS_PELATIHAN di Code.gs, kalau tidak entri kelebihan akan
+  // terkirim tapi diabaikan oleh server.
+  const MAKS_PELATIHAN = 3;
+
   // Ambil nomor registrasi otomatis saat halaman dibuka
   window.addEventListener("DOMContentLoaded", function() {
     fetch(WEB_APP_URL)
@@ -703,9 +735,10 @@
         document.getElementById('no_reg').value = "Error koneksi";
         console.error(err);
       });
+    updatePelatihanLimitNote();
   });
 
-  const MAX_SIZE = 1 * 1024 * 1024; // 1MB, disesuaikan dengan keterangan di form
+  const MAX_SIZE = 2 * 1024 * 1024; // 2MB, disesuaikan dengan keterangan di form
 
   // Mengisi otomatis pilihan tahun pada dropdown Tahun Lulus (SD/SMP/SMA/PT/Pelatihan)
   function isiPilihanTahunPada(selects) {
@@ -731,7 +764,7 @@
     if (input.files && input.files[0]) {
       const f = input.files[0];
       if (f.size > MAX_SIZE) {
-        alert(`Maaf, ukuran file "${f.name}" terlalu besar. Maksimal ukuran file adalah 1MB.`);
+        alert(`Maaf, ukuran file "${f.name}" terlalu besar. Maksimal ukuran file adalah 2MB.`);
         input.value = "";
         drop.classList.remove('filled');
         nameEl.textContent = nameEl.dataset.default;
@@ -753,11 +786,11 @@
     levelPendidikanSaatIni++;
 
     if (levelPendidikanSaatIni === 2) {
-      document.getElementById('row-smp').style.display = 'grid';
+      document.getElementById('row-smp').style.display = 'block';
     } else if (levelPendidikanSaatIni === 3) {
-      document.getElementById('row-sma').style.display = 'grid';
+      document.getElementById('row-sma').style.display = 'block';
     } else if (levelPendidikanSaatIni === 4) {
-      document.getElementById('row-pt').style.display = 'grid';
+      document.getElementById('row-pt').style.display = 'block';
       document.getElementById('btnTambahPendidikan').style.display = 'none';
     }
 
@@ -786,7 +819,7 @@
           <div class="file-drop nf_drop" id="drop_pelatihan_${index}">
             <div class="file-drop-inner">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
-              <span class="file-name" data-default="Maks 1MB">Maks 1MB</span>
+              <span class="file-name" data-default="Maks 2MB">Maks 2MB</span>
             </div>
             <input type="file" class="nf_file" id="file_pelatihan_${index}" accept="image/*,application/pdf" onchange="handleFile(this,'drop_pelatihan_${index}')">
           </div>
@@ -796,23 +829,46 @@
         <label>Jurusan/Bidang Pelatihan <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
         <input type="text" class="nf_jurusan" placeholder="Nama jurusan/bidang pelatihan">
       </div>
-      ${index > 1 ? `<div style="text-align:right; margin-top:10px;"><button type="button" class="btn-hapus-pelatihan" onclick="hapusPelatihan(this)" style="background:none;border:1px solid var(--red);color:var(--red);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Hapus Pelatihan Ini</button></div>` : ''}
+      <div style="text-align:right; margin-top:10px;"><button type="button" class="btn-hapus-pelatihan" onclick="hapusPelatihan(this)" style="background:none;border:1px solid var(--red);color:var(--red);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Hapus Pelatihan Ini</button></div>
     `;
     return wrapper;
   }
 
+  function updatePelatihanLimitNote() {
+    const note = document.getElementById('pelatihanLimitNote');
+    const btn = document.getElementById('btnTambahPelatihan');
+    if (pelatihanCount >= MAKS_PELATIHAN) {
+      note.textContent = `Sudah mencapai batas maksimal ${MAKS_PELATIHAN} pelatihan yang dapat dicatat.`;
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.style.cursor = 'not-allowed';
+    } else {
+      note.textContent = `${pelatihanCount} dari maksimal ${MAKS_PELATIHAN} pelatihan ditambahkan.`;
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.style.cursor = 'pointer';
+    }
+  }
+
   function tambahPelatihan() {
+    if (pelatihanCount >= MAKS_PELATIHAN) {
+      alert(`Maaf, sistem hanya dapat mencatat maksimal ${MAKS_PELATIHAN} pelatihan/kursus.`);
+      return;
+    }
     pelatihanCount++;
     const container = document.getElementById('nonformalList');
     const row = buatBarisPelatihan(pelatihanCount);
     container.appendChild(row);
     isiPilihanTahunPada(row.querySelectorAll('select.year-select'));
+    updatePelatihanLimitNote();
     updateProgress();
   }
 
   function hapusPelatihan(btn) {
     const entry = btn.closest('.nonformal-entry');
     if (entry) entry.remove();
+    pelatihanCount = document.querySelectorAll('#nonformalList .nonformal-entry').length;
+    updatePelatihanLimitNote();
     updateProgress();
   }
 
@@ -824,7 +880,7 @@
     document.getElementById('row-pt').style.display = 'none';
     document.getElementById('btnTambahPendidikan').style.display = 'inline-flex';
 
-    const fields = ['smp_nama', 'smp_lulus', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'file_ijazah_sma'];
+    const fields = ['smp_nama', 'smp_lulus', 'smp_jurusan', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'sma_jurusan', 'file_ijazah_sma'];
     fields.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.required = false;
@@ -832,6 +888,7 @@
 
     document.getElementById('nonformalList').innerHTML = '';
     pelatihanCount = 0;
+    updatePelatihanLimitNote();
   }
 
   const toBase64 = file => new Promise((resolve, reject) => {
@@ -909,9 +966,11 @@
       const fileIdPT  = document.getElementById('file_ijazah_pt').files.length ? await toBase64(document.getElementById('file_ijazah_pt').files) : null;
       const fileFoto  = document.getElementById('file_foto').files.length ? await toBase64(document.getElementById('file_foto').files) : null;
 
-      // Kumpulkan seluruh entri pendidikan non formal (pelatihan/kursus)
+      // Kumpulkan seluruh entri pendidikan non formal (pelatihan/kursus),
+      // dibatasi maksimal MAKS_PELATIHAN entri agar sinkron dengan Code.gs
+      const entriPelatihan = Array.from(document.querySelectorAll('#nonformalList .nonformal-entry')).slice(0, MAKS_PELATIHAN);
       const pendidikanNonFormal = await Promise.all(
-        Array.from(document.querySelectorAll('#nonformalList .nonformal-entry')).map(async (entry) => {
+        entriPelatihan.map(async (entry) => {
           const fileInput = entry.querySelector('.nf_file');
           const sertifikat = fileInput.files.length ? await toBase64(fileInput.files) : null;
           return {
@@ -935,12 +994,16 @@
         domisili: document.getElementById('domisili').value,
         tujuan_kerja: document.getElementById('tujuan_kerja').value,
         sd_nama: document.getElementById('sd_nama').value,
+        sd_jurusan: document.getElementById('sd_jurusan').value,
         sd_lulus: document.getElementById('sd_lulus').value,
         smp_nama: document.getElementById('smp_nama').value,
+        smp_jurusan: document.getElementById('smp_jurusan').value,
         smp_lulus: document.getElementById('smp_lulus').value,
         sma_nama: document.getElementById('sma_nama').value,
+        sma_jurusan: document.getElementById('sma_jurusan').value,
         sma_lulus: document.getElementById('sma_lulus').value,
         pt_nama: document.getElementById('pt_nama').value || "-",
+        pt_jurusan: document.getElementById('pt_jurusan').value || "-",
         pt_lulus: document.getElementById('pt_lulus').value || "-",
         pendidikan_non_formal: pendidikanNonFormal,
         kontak: document.getElementById('kontak').value,
@@ -961,6 +1024,7 @@
 
       if (result.status === "success") {
         document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        document.getElementById('finalNoReg').textContent = result.no_reg || '-';
 
         const overlay = document.getElementById('stampOverlay');
         overlay.classList.add('show');
