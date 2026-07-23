@@ -27,12 +27,28 @@
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    background:
-      linear-gradient(180deg, var(--blue-soft) 0%, #F6FAFE 260px, #F6FAFE 100%);
+    position:relative;
+    background-image:
+      linear-gradient(180deg, rgba(234,243,252,.7) 0%, rgba(246,250,254,.7) 260px, rgba(246,250,254,.7) 100%);
+    background-repeat:no-repeat;
+    background-position:top center;
+    background-size:100% auto;
     color:var(--ink);
     font-family:'Inter',system-ui,sans-serif;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:url('background1.png');
+    background-size:cover;
+    background-position:top center;
+    background-repeat:no-repeat;
+    filter:blur(6px);
+    transform:scale(1.05); /* mencegah tepi blur terlihat putih */
+    z-index:-1;
   }
 
   .wrap{max-width:1180px; margin:0 auto; padding: 0 18px 80px; position:relative; z-index:1;}
@@ -49,7 +65,7 @@
   .letterhead-block{
     position:relative; max-width:1180px; margin:22px auto 0; padding:26px 24px;
     background-image:
-      linear-gradient(135deg, rgba(11,61,116,.88) 0%, rgba(15,95,166,.80) 100%),
+      linear-gradient(135deg, rgba(11,61,116,.50) 0%, rgba(15,95,166,.42) 100%),
       url('sampul_dinkop.jpg');
     background-size:cover; background-position:center;
     border-radius:12px; box-shadow:var(--shadow); overflow:hidden;
@@ -68,12 +84,12 @@
   .agency-line1{
     font-weight:800; font-size:clamp(15px,2.4vw,19px); color:#fff;
     letter-spacing:.02em; text-transform:uppercase; margin:0 0 2px;
-    text-shadow:0 1px 3px rgba(0,0,0,.35);
+    text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
   }
   .agency-line2{
     font-weight:700; font-size:clamp(13px,2vw,16px); color:#EAF3FC;
     text-transform:uppercase; margin:0; letter-spacing:.01em;
-    text-shadow:0 1px 3px rgba(0,0,0,.35);
+    text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
   }
   .letterhead-rule{border:none; height:1px; background:var(--blue-line); margin:0;}
   .letterhead-rule.thick{height:4px; background:var(--blue-deep); margin-top:2px;}
@@ -309,6 +325,38 @@
   .whatsapp{ background-color:#25D366; }
   .instagram{ background-color:#E1306C; }
   .facebook{ background-color:#1877F2; }
+
+  /* ---------- FOOTER ---------- */
+  .site-footer{
+    position:relative; z-index:1; margin-top:40px;
+    background:var(--blue-deep); color:#EAF3FC;
+  }
+  .site-footer .footer-inner{
+    max-width:1180px; margin:0 auto; padding:36px 24px 22px;
+    display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:28px;
+  }
+  @media (max-width:720px){ .site-footer .footer-inner{grid-template-columns:1fr; gap:26px;} }
+  .footer-col h4{
+    margin:0 0 12px; font-size:13px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.06em; color:#fff; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.18);
+  }
+  .footer-col p{margin:0 0 6px; font-size:13px; line-height:1.6; color:#CFE0F2;}
+  .footer-col a{color:#CFE0F2; text-decoration:none;}
+  .footer-col a:hover{color:#fff; text-decoration:underline;}
+  .footer-contact-item{display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; font-size:13px; color:#CFE0F2;}
+  .footer-contact-item svg{flex:0 0 auto; width:16px; height:16px; margin-top:1px; color:#8FB8E0;}
+  .footer-social{display:flex; flex-direction:column; gap:8px;}
+  .footer-social a{
+    display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600;
+    padding:7px 10px; border-radius:6px; background:rgba(255,255,255,.06);
+    transition:background .15s;
+  }
+  .footer-social a:hover{background:rgba(255,255,255,.14); text-decoration:none;}
+  .footer-bottom{
+    border-top:4px solid #082C55; background:#082C55;
+    text-align:center; padding:12px 18px; font-size:11.5px; color:#9FBBDA; letter-spacing:.02em;
+  }
+  .footer-bottom strong{color:#fff;}
 </style>
 </head>
 <body>
@@ -652,7 +700,7 @@
 
           <div class="field checkbox-row" style="padding-top:10px;">
             <input type="checkbox" id="konfirmasi_fisik" value="Sanggup Membawa" required style="width:auto; margin-right:8px;">
-            <span>Saya bersedia menyediakan <b>2 lembar</b> pas foto berlatar merah saat verifikasi. <span class="req">*</span></span>
+            <span>Saya bersedia menyediakan <b>2 lembar</b> pas foto berlatar belakang merah dan membawa berkas lengkap sesuai dengan yang diupload pada saat melakukan verifikasi sebelum cetak kartu AK-1. <span class="req">*</span></span>
           </div>
         </div>
       </div>
@@ -670,6 +718,45 @@
     </form>
   </div>
 </div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h4>Tentang Instansi</h4>
+      <p><strong>Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja</strong><br>Pemerintah Kabupaten Wakatobi</p>
+      <p>Jl. Poros Liya, Desa Liya One Melangka, Kecamatan Wangi-Wangi Selatan, Kabupaten Wakatobi, Sulawesi Tenggara</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Kontak Layanan</h4>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>0821-9746-2749 (WhatsApp Admin)</span>
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" stroke="none"/><path d="M22 6l-10 7L2 6" /><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        <span>dinkopukmnaker@wakatobikab.go.id</span>
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span>Senin–Jumat, 08.00–16.00 WITA</span>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ikuti Kami</h4>
+      <div class="footer-social">
+        <a href="https://wa.me/6282197462749" target="_blank">🟢 WhatsApp Admin</a>
+        <a href="https://instagram.com/dinkop_ukm_naker_wakatobi" target="_blank">📸 Instagram</a>
+        <a href="https://facebook.com/share/19CRYqovn4/?mibextid=wwXXlfr" target="_blank">🔵 Facebook</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    &copy; <span id="footerYear"></span> <strong>Dinas Koperasi, UKM dan Tenaga Kerja Kabupaten Wakatobi</strong>. Seluruh hak cipta dilindungi.
+  </div>
+</footer>
 
 <!-- NOTIFIKASI SUKSES (tampil setelah submit berhasil) -->
 <div class="permanent-notification-wrapper" id="permanentNotification">
@@ -712,6 +799,11 @@
 </div>
 
 <script>
+  window.addEventListener("DOMContentLoaded", function() {
+    const yearEl = document.getElementById('footerYear');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  });
+
   // Ganti dengan URL Google Apps Script Anda sendiri
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXmh0laoRlJx1GkeyWUGp6HF4pQTqIggUzSQ6u-ye2WletvIsFLQFLukH_5VBBiR0C/exec";
 
