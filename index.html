@@ -205,6 +205,8 @@
   .file-drop.filled{border-style:solid; border-color:var(--ok); background:#F1F9F4;}
   .file-drop.filled .file-drop-inner{color:var(--ok); font-weight:600;}
   .file-name{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .file-drop.compressing{border-color:var(--blue); background:#EAF3FC;}
+  .file-compress-note{display:block; font-size:10.5px; color:var(--blue); margin-top:4px; font-weight:600;}
 
   .divider-row{border-bottom:1px solid var(--blue-line); padding-bottom:18px; margin-bottom:18px;}
   .divider-row:last-child{border-bottom:none; padding-bottom:0; margin-bottom:0;}
@@ -380,6 +382,7 @@
   <div class="page-title">
     <h1>Formulir Pendaftaran AK-1</h1>
     <p>Lengkapi Seluruh Data dan Upload Dokumen Persyaratan Sesuai Petunjuk.</p>
+    <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#EAF3FC;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
   </div>
 
   <!-- MOBILE PROGRESS -->
@@ -830,7 +833,91 @@
     updatePelatihanLimitNote();
   });
 
-  const MAX_SIZE = 2 * 1024 * 1024; // 3MB, disesuaikan dengan keterangan di form
+  const MAX_SIZE = 3 * 1024 * 1024;       // 3MB — batas akhir file yang boleh dikirim
+  const TARGET_SIZE = 1.5 * 1024 * 1024;  // target hasil kompresi (beri margin aman di bawah MAX_SIZE)
+  const MAX_DIMENSION = 1920;             // sisi terpanjang foto hasil kompresi (px)
+
+  // Menyimpan hasil kompresi per elemen <input type="file">, supaya saat submit
+  // kita mengirim versi yang sudah dikecilkan, bukan file asli dari HP.
+  // key   = id elemen input file
+  // value = { base64, type, name, size }
+  const compressedFileStore = {};
+
+  // Mengompres 1 file gambar menjadi JPEG memakai <canvas>, dengan menurunkan
+  // kualitas & dimensi secara bertahap sampai ukurannya di bawah targetBytes.
+  // File selain gambar (mis. PDF) dikembalikan apa adanya (tidak bisa dikompres di browser).
+  function compressImage(file, targetBytes = TARGET_SIZE, maxDim = MAX_DIMENSION) {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith('image/')) {
+        resolve(null); // bukan gambar → tidak dikompres di sini
+        return;
+      }
+      const imgUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(imgUrl);
+
+        let { width, height } = img;
+        if (width > maxDim || height > maxDim) {
+          if (width >= height) {
+            height = Math.round(height * (maxDim / width));
+            width = maxDim;
+          } else {
+            width = Math.round(width * (maxDim / height));
+            height = maxDim;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff'; // latar putih agar transparansi PNG tidak jadi hitam saat jadi JPEG
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const cobaKompres = (quality, dim) => {
+          canvas.toBlob((blob) => {
+            if (!blob) { reject(new Error('Gagal mengompres gambar')); return; }
+
+            if (blob.size <= targetBytes || (quality <= 0.35 && dim <= 700)) {
+              const reader = new FileReader();
+              reader.onload = () => resolve({
+                blob,
+                base64: reader.result.split(',')[1],
+                type: 'image/jpeg'
+              });
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+              return;
+            }
+
+            // Masih terlalu besar: turunkan kualitas dulu, lalu perkecil dimensi jika perlu
+            if (quality > 0.35) {
+              cobaKompres(quality - 0.12, dim);
+            } else {
+              const dimBaru = Math.round(dim * 0.85);
+              canvas.width = Math.round(width * (dimBaru / (width > height ? width : height)));
+              canvas.height = Math.round(height * (dimBaru / (width > height ? width : height)));
+              ctx.fillStyle = '#fff';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              cobaKompres(0.7, dimBaru);
+            }
+          }, 'image/jpeg', quality);
+        };
+
+        cobaKompres(0.85, Math.max(width, height));
+      };
+      img.onerror = () => { URL.revokeObjectURL(imgUrl); reject(new Error('Gagal memuat gambar')); };
+      img.src = imgUrl;
+    });
+  }
+
+  function formatUkuran(bytes) {
+    if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  }
 
   // Mengisi otomatis pilihan tahun pada dropdown Tahun Lulus (SD/SMP/SMA/PT/Pelatihan)
   function isiPilihanTahunPada(selects) {
@@ -850,21 +937,102 @@
   }
   isiPilihanTahun();
 
-  function handleFile(input, dropId) {
+  function getOrBuatCatatanKompresi(drop) {
+    let note = drop.querySelector('.file-compress-note');
+    if (!note) {
+      note = document.createElement('span');
+      note.className = 'file-compress-note';
+      drop.querySelector('.file-drop-inner').appendChild(note);
+    }
+    return note;
+  }
+
+  async function handleFile(input, dropId) {
     const drop = document.getElementById(dropId);
     const nameEl = drop.querySelector('.file-name');
-    if (input.files && input.files[0]) {
-      const f = input.files[0];
+    const note = getOrBuatCatatanKompresi(drop);
+
+    // Bersihkan hasil kompresi lama untuk input ini setiap kali file diganti
+    delete compressedFileStore[input.id];
+    note.textContent = '';
+
+    if (!(input.files && input.files[0])) {
+      drop.classList.remove('filled', 'compressing');
+      nameEl.textContent = nameEl.dataset.default;
+      updateProgress();
+      return;
+    }
+
+    const f = input.files[0];
+    const isGambar = f.type.startsWith('image/');
+
+    // File PDF (atau tipe lain) tidak bisa dikompres di browser — tetap berlaku batas 3MB.
+    if (!isGambar) {
       if (f.size > MAX_SIZE) {
-        alert(`Maaf, ukuran file "${f.name}" terlalu besar. Maksimal ukuran file adalah 3MB.`);
+        alert(`Maaf, ukuran file "${f.name}" terlalu besar (${formatUkuran(f.size)}). Untuk file PDF, maksimal ukuran adalah 3MB. Silakan pindai ulang dengan resolusi lebih rendah, atau upload dalam bentuk foto (JPG/PNG) agar bisa dikompres otomatis oleh sistem.`);
         input.value = "";
         drop.classList.remove('filled');
         nameEl.textContent = nameEl.dataset.default;
-      } else {
+        updateProgress();
+        return;
+      }
+      drop.classList.add('filled');
+      nameEl.textContent = f.name;
+      updateProgress();
+      return;
+    }
+
+    // File gambar dalam batas aman → langsung dipakai, tidak perlu dikompres
+    if (f.size <= TARGET_SIZE) {
+      drop.classList.add('filled');
+      nameEl.textContent = f.name;
+      updateProgress();
+      return;
+    }
+
+    // File gambar melebihi target → kompres otomatis di browser (tanpa menolak upload)
+    drop.classList.add('compressing');
+    nameEl.textContent = `Mengompres "${f.name}"…`;
+    note.textContent = '';
+    try {
+      const hasil = await compressImage(f);
+      drop.classList.remove('compressing');
+
+      if (!hasil) {
+        // Seharusnya tidak terjadi untuk file gambar, tapi jaga-jaga
         drop.classList.add('filled');
         nameEl.textContent = f.name;
+        updateProgress();
+        return;
       }
-    } else {
+
+      if (hasil.blob.size > MAX_SIZE) {
+        // Kompresi maksimal masih di atas batas — sangat jarang terjadi, minta foto lain
+        alert(`Maaf, foto "${f.name}" masih terlalu besar setelah dikompres otomatis. Coba gunakan foto lain atau kurangi resolusi kamera pada pengaturan HP Anda.`);
+        input.value = "";
+        delete compressedFileStore[input.id];
+        drop.classList.remove('filled');
+        nameEl.textContent = nameEl.dataset.default;
+        note.textContent = '';
+        updateProgress();
+        return;
+      }
+
+      compressedFileStore[input.id] = {
+        base64: hasil.base64,
+        type: hasil.type,
+        name: f.name.replace(/\.[^.]+$/, '') + '.jpg',
+        size: hasil.blob.size
+      };
+
+      drop.classList.add('filled');
+      nameEl.textContent = f.name;
+      note.textContent = `Dikompres otomatis: ${formatUkuran(f.size)} → ${formatUkuran(hasil.blob.size)}`;
+    } catch (err) {
+      console.error('Gagal mengompres gambar:', err);
+      drop.classList.remove('compressing');
+      alert(`Terjadi kendala saat mengompres foto "${f.name}" secara otomatis. Silakan coba foto lain atau perkecil ukurannya terlebih dahulu.`);
+      input.value = "";
       drop.classList.remove('filled');
       nameEl.textContent = nameEl.dataset.default;
     }
@@ -991,6 +1159,16 @@
     reader.onerror = error => reject(error);
   });
 
+  // Mengambil payload file untuk dikirim: pakai versi hasil kompresi otomatis
+  // jika tersedia (foto besar dari HP), kalau tidak baca file aslinya (mis. PDF).
+  async function ambilFilePayload(inputId) {
+    const input = document.getElementById(inputId);
+    if (!input || !input.files || input.files.length === 0) return null;
+    const cached = compressedFileStore[inputId];
+    if (cached) return { base64: cached.base64, type: cached.type };
+    return toBase64(input.files);
+  }
+
   // ---------- PROGRESS TRACKER ----------
   const sections = ['reg', 'diri', 'pendidikan', 'kontak'];
   function sectionComplete(name) {
@@ -1049,14 +1227,14 @@
     loadingText.classList.remove('hidden');
 
     try {
-      const fileKtp   = document.getElementById('file_ktp').files.length ? await toBase64(document.getElementById('file_ktp').files) : null;
-      const fileAkta  = document.getElementById('file_akta').files.length ? await toBase64(document.getElementById('file_akta').files) : null;
-      const fileKK    = document.getElementById('file_kk').files.length ? await toBase64(document.getElementById('file_kk').files) : null;
-      const fileIdSD  = document.getElementById('file_ijazah_sd').files.length ? await toBase64(document.getElementById('file_ijazah_sd').files) : null;
-      const fileIdSMP = document.getElementById('file_ijazah_smp').files.length ? await toBase64(document.getElementById('file_ijazah_smp').files) : null;
-      const fileIdSMA = document.getElementById('file_ijazah_sma').files.length ? await toBase64(document.getElementById('file_ijazah_sma').files) : null;
-      const fileIdPT  = document.getElementById('file_ijazah_pt').files.length ? await toBase64(document.getElementById('file_ijazah_pt').files) : null;
-      const fileFoto  = document.getElementById('file_foto').files.length ? await toBase64(document.getElementById('file_foto').files) : null;
+      const fileKtp   = await ambilFilePayload('file_ktp');
+      const fileAkta  = await ambilFilePayload('file_akta');
+      const fileKK    = await ambilFilePayload('file_kk');
+      const fileIdSD  = await ambilFilePayload('file_ijazah_sd');
+      const fileIdSMP = await ambilFilePayload('file_ijazah_smp');
+      const fileIdSMA = await ambilFilePayload('file_ijazah_sma');
+      const fileIdPT  = await ambilFilePayload('file_ijazah_pt');
+      const fileFoto  = await ambilFilePayload('file_foto');
 
       // Kumpulkan seluruh entri pendidikan non formal (pelatihan/kursus),
       // dibatasi maksimal MAKS_PELATIHAN entri agar sinkron dengan Code.gs
@@ -1064,7 +1242,7 @@
       const pendidikanNonFormal = await Promise.all(
         entriPelatihan.map(async (entry) => {
           const fileInput = entry.querySelector('.nf_file');
-          const sertifikat = fileInput.files.length ? await toBase64(fileInput.files) : null;
+          const sertifikat = fileInput.id ? await ambilFilePayload(fileInput.id) : null;
           return {
             instansi: entry.querySelector('.nf_instansi').value,
             jurusan: entry.querySelector('.nf_jurusan').value,
@@ -1127,10 +1305,13 @@
         resetSeksiPendidikanVisual();
 
         document.querySelectorAll('.file-drop').forEach(d => {
-          d.classList.remove('filled');
+          d.classList.remove('filled', 'compressing');
           const n = d.querySelector('.file-name');
           n.textContent = n.dataset.default;
+          const note = d.querySelector('.file-compress-note');
+          if (note) note.textContent = '';
         });
+        Object.keys(compressedFileStore).forEach(k => delete compressedFileStore[k]);
 
         document.getElementById('registrationForm').reset();
         updateProgress();
