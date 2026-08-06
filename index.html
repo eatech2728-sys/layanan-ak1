@@ -220,6 +220,21 @@
     letter-spacing:.03em; margin:0 0 4px;
   }
 
+  /* ---------- PAS FOTO: pilihan kamera / galeri ---------- */
+  .photo-source-buttons{display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap;}
+  .photo-source-btn{
+    flex:1; min-width:140px; display:flex; align-items:center; justify-content:center; gap:8px;
+    padding:11px 14px; border-radius:7px; border:1.5px solid var(--blue-line); background:#F9FBFD;
+    color:var(--blue-deep); font-family:'Inter',sans-serif; font-weight:600; font-size:13px;
+    cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .photo-source-btn:hover{border-color:var(--blue); background:var(--blue-soft);}
+  .photo-source-btn svg{width:17px; height:17px; flex:0 0 auto;}
+  .visually-hidden-file{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
+    clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+
   /* ---------- SUBMIT ---------- */
   .submit-wrap{text-align:center; margin-top:6px;}
   .stamp-btn{
@@ -692,12 +707,24 @@
 
           <div class="field">
             <label>Unggah Pas Foto Berlatar Merah <span class="req">*</span> <span style="color:var(--red); font-weight:400; font-size:11px;">(maks 3MB)</span></label>
-            <div class="file-drop" id="drop_foto">
+
+            <div class="photo-source-buttons">
+              <button type="button" class="photo-source-btn" onclick="triggerFotoPicker('camera')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Ambil Foto (Kamera)
+              </button>
+              <button type="button" class="photo-source-btn" onclick="triggerFotoPicker('gallery')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                Pilih dari Galeri
+              </button>
+            </div>
+
+            <div class="file-drop" id="drop_foto" onclick="event.preventDefault();">
               <div class="file-drop-inner">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
-                <span class="file-name" data-default="Pilih foto (JPG/PNG)">Pilih foto (JPG/PNG)</span>
+                <span class="file-name" data-default="Belum ada foto dipilih">Belum ada foto dipilih</span>
               </div>
-              <input type="file" id="file_foto" accept="image/*" onchange="handleFile(this,'drop_foto')" required>
+              <input type="file" id="file_foto" accept="image/*" class="visually-hidden-file" required>
             </div>
           </div>
 
@@ -1037,6 +1064,35 @@
       nameEl.textContent = nameEl.dataset.default;
     }
     updateProgress();
+  }
+
+  // ---------- PAS FOTO: pilih via Kamera atau Galeri ----------
+  // Membuat <input type="file"> sementara khusus kamera (capture="user") atau
+  // galeri biasa, lalu menyalin file terpilih ke input asli #file_foto supaya
+  // seluruh logika lain (handleFile, kompresi, validasi, submit) tetap berjalan
+  // tanpa perubahan.
+  function triggerFotoPicker(mode) {
+    const temp = document.createElement('input');
+    temp.type = 'file';
+    temp.accept = 'image/*';
+    if (mode === 'camera') {
+      temp.setAttribute('capture', 'user'); // buka kamera depan HP langsung
+    }
+    temp.style.display = 'none';
+    document.body.appendChild(temp);
+
+    temp.addEventListener('change', function() {
+      if (temp.files && temp.files[0]) {
+        const dt = new DataTransfer();
+        dt.items.add(temp.files[0]);
+        const fotoInput = document.getElementById('file_foto');
+        fotoInput.files = dt.files;
+        handleFile(fotoInput, 'drop_foto');
+      }
+      document.body.removeChild(temp);
+    });
+
+    temp.click();
   }
 
   // Level pendidikan yang sedang terbuka: 1 = SD, 2 = SMP, 3 = SMA, 4 = PT
