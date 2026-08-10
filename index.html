@@ -585,8 +585,8 @@
           <!-- TINGKAT SD (OPSIONAL, MUNCUL SEJAK AWAL) -->
           <div class="divider-row" id="row-sd">
             <div class="grid3">
-              <div class="field"><label>Sekolah Dasar Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD"></div>
-              <div class="field"><label>Tahun Lulus SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sd_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field"><label>Sekolah Dasar Sederajat <span class="req">*</span></label><input type="text" id="sd_nama" placeholder="Nama sekolah SD" required></div>
+              <div class="field"><label>Tahun Lulus SD <span class="req">*</span></label><select class="year-select" id="sd_lulus" required><option value="" selected>-- Pilih Tahun --</option></select></div>
               <div class="field">
                 <label>Ijazah SD <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
                 <div class="file-drop" id="drop_sd">
@@ -604,8 +604,8 @@
           <!-- TINGKAT SMP (DISEMBUNYIKAN SEBELUM DIKLIK) -->
           <div class="divider-row" id="row-smp" style="display:none;">
             <div class="grid3">
-              <div class="field"><label>SMP Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
-              <div class="field"><label>Tahun Lulus SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field"><label>SMP Sederajat <span class="req">*</span></label><input type="text" id="smp_nama" placeholder="Nama sekolah SMP"></div>
+              <div class="field"><label>Tahun Lulus SMP <span class="req">*</span></label><select class="year-select" id="smp_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
               <div class="field">
                 <label>Ijazah SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
                 <div class="file-drop" id="drop_smp">
@@ -623,8 +623,8 @@
           <!-- TINGKAT SMA (DISEMBUNYIKAN SEBELUM DIKLIK) -->
           <div class="divider-row" id="row-sma" style="display:none;">
             <div class="grid3">
-              <div class="field"><label>SMA Sederajat <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
-              <div class="field"><label>Tahun Lulus SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field"><label>SMA Sederajat <span class="req">*</span></label><input type="text" id="sma_nama" placeholder="Nama sekolah SMA"></div>
+              <div class="field"><label>Tahun Lulus SMA <span class="req">*</span></label><select class="year-select" id="sma_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
               <div class="field">
                 <label>Ijazah SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
                 <div class="file-drop" id="drop_sma">
@@ -634,7 +634,7 @@
               </div>
             </div>
             <div class="field" style="margin-top:14px;">
-              <label>Jurusan SMA <span style="color:var(--ink-soft); font-weight:400;">(opsional, mis. IPA / IPS / Bahasa / Jurusan SMK)</span></label>
+              <label>Jurusan SMA <span class="req">*</span></label>
               <input type="text" id="sma_jurusan" placeholder="Contoh: IPA, IPS, atau jurusan SMK">
             </div>
           </div>
@@ -642,8 +642,8 @@
           <!-- TINGKAT PERGURUAN TINGGI (DISEMBUNYIKAN SEBELUM DIKLIK) -->
           <div id="row-pt" style="display:none;">
             <div class="grid3">
-              <div class="field"><label>Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
-              <div class="field"><label>Tahun Lulus Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
+              <div class="field"><label>Perguruan Tinggi <span class="req">*</span></label><input type="text" id="pt_nama" placeholder="Nama universitas"></div>
+              <div class="field"><label>Tahun Lulus Perguruan Tinggi <span class="req">*</span></label><select class="year-select" id="pt_lulus"><option value="" selected>-- Pilih Tahun --</option></select></div>
               <div class="field">
                 <label>Ijazah Perguruan Tinggi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
                 <div class="file-drop" id="drop_pt">
@@ -653,7 +653,7 @@
               </div>
             </div>
             <div class="field" style="margin-top:14px;">
-              <label>Jurusan/Program Studi <span style="color:var(--ink-soft); font-weight:400;">(opsional)</span></label>
+              <label>Jurusan/Program Studi <span class="req">*</span></label>
               <input type="text" id="pt_jurusan" placeholder="Contoh: Manajemen, Teknik Informatika, dsb.">
             </div>
           </div>
@@ -1103,10 +1103,18 @@
 
     if (levelPendidikanSaatIni === 2) {
       document.getElementById('row-smp').style.display = 'block';
+      document.getElementById('smp_nama').required = true;
+      document.getElementById('smp_lulus').required = true;
     } else if (levelPendidikanSaatIni === 3) {
       document.getElementById('row-sma').style.display = 'block';
+      document.getElementById('sma_nama').required = true;
+      document.getElementById('sma_lulus').required = true;
+      document.getElementById('sma_jurusan').required = true;
     } else if (levelPendidikanSaatIni === 4) {
       document.getElementById('row-pt').style.display = 'block';
+      document.getElementById('pt_nama').required = true;
+      document.getElementById('pt_lulus').required = true;
+      document.getElementById('pt_jurusan').required = true;
       document.getElementById('btnTambahPendidikan').style.display = 'none';
     }
 
@@ -1196,7 +1204,7 @@
     document.getElementById('row-pt').style.display = 'none';
     document.getElementById('btnTambahPendidikan').style.display = 'inline-flex';
 
-    const fields = ['smp_nama', 'smp_lulus', 'smp_jurusan', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'sma_jurusan', 'file_ijazah_sma'];
+    const fields = ['smp_nama', 'smp_lulus', 'smp_jurusan', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'sma_jurusan', 'file_ijazah_sma', 'pt_nama', 'pt_lulus', 'pt_jurusan', 'file_ijazah_pt'];
     fields.forEach(id => {
       const el = document.getElementById(id);
       if (el) el.required = false;
