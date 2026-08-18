@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
     --blue-deep:#0B3D74;
@@ -374,9 +376,270 @@
     text-align:center; padding:12px 18px; font-size:11.5px; color:#9FBBDA; letter-spacing:.02em;
   }
   .footer-bottom strong{color:#fff;}
+
+  /* ================================================================
+     FITUR TAMBAHAN
+     ================================================================ */
+
+  /* ---------- Field error inline ---------- */
+  .field-error{
+    display:none; align-items:center; gap:5px; font-size:11.5px; color:var(--red);
+    font-weight:600; margin-top:6px;
+  }
+  .field-error.show{display:flex;}
+  .field-error svg{width:13px; height:13px; flex:0 0 auto;}
+  .field.has-error input, .field.has-error select{border-color:var(--red) !important; background:#FDF2F2 !important;}
+  .field.has-error label{color:var(--red);}
+
+  /* ---------- Progress bar visual ---------- */
+  .progress-track{
+    width:100%; max-width:420px; margin:0 auto; height:9px; border-radius:999px;
+    background:#E4EDF6; overflow:hidden; box-shadow:inset 0 1px 2px rgba(11,61,116,.12);
+  }
+  .progress-fill{
+    height:100%; width:0%; border-radius:999px;
+    background:linear-gradient(90deg, var(--blue) 0%, #21A66B 100%);
+    transition:width .45s cubic-bezier(.3,.8,.3,1);
+  }
+  .progress-pct{
+    font-family:'Space Mono',monospace; font-weight:700; font-size:12px;
+    color:var(--blue-deep); margin-top:8px;
+  }
+
+  /* ---------- Draft autosave badge ---------- */
+  .draft-badge{
+    position:fixed; left:18px; bottom:18px; z-index:40;
+    display:flex; align-items:center; gap:7px; background:#fff; color:var(--ink-soft);
+    font-size:11.5px; font-weight:600; padding:8px 13px; border-radius:999px;
+    box-shadow:var(--shadow); border:1px solid var(--line); opacity:0; transform:translateY(8px);
+    transition:opacity .3s, transform .3s; pointer-events:none;
+  }
+  .draft-badge.show{opacity:1; transform:translateY(0);}
+  .draft-badge svg{width:13px; height:13px; color:var(--ok); flex:0 0 auto;}
+  @media (max-width:860px){ .draft-badge{left:12px; bottom:78px; font-size:10.5px; padding:7px 11px;} }
+
+  /* ---------- Toast notifications ---------- */
+  .toast-stack{
+    position:fixed; top:18px; left:50%; transform:translateX(-50%); z-index:9998;
+    display:flex; flex-direction:column; gap:10px; width:min(92vw, 400px); pointer-events:none;
+  }
+  .toast{
+    pointer-events:auto; display:flex; align-items:flex-start; gap:10px;
+    background:#fff; border-radius:9px; padding:13px 14px; box-shadow:0 10px 28px -8px rgba(11,61,116,.35), 0 2px 6px rgba(0,0,0,.06);
+    border-left:4px solid var(--blue); opacity:0; transform:translateY(-14px) scale(.98);
+    transition:opacity .28s ease, transform .28s ease;
+  }
+  .toast.show{opacity:1; transform:translateY(0) scale(1);}
+  .toast.leaving{opacity:0; transform:translateY(-10px) scale(.98);}
+  .toast.success{border-left-color:var(--ok);}
+  .toast.error{border-left-color:var(--red);}
+  .toast.info{border-left-color:var(--blue);}
+  .toast .toast-icon{flex:0 0 auto; width:20px; height:20px; margin-top:1px;}
+  .toast.success .toast-icon{color:var(--ok);}
+  .toast.error .toast-icon{color:var(--red);}
+  .toast.info .toast-icon{color:var(--blue);}
+  .toast .toast-body{flex:1; min-width:0;}
+  .toast .toast-title{font-weight:700; font-size:13px; color:var(--ink); margin:0 0 2px;}
+  .toast .toast-msg{font-size:12px; color:var(--ink-soft); margin:0; line-height:1.4;}
+  .toast .toast-close{flex:0 0 auto; background:none; border:none; cursor:pointer; color:#B7C1CC; font-size:16px; line-height:1; padding:2px;}
+  .toast .toast-close:hover{color:var(--ink-soft);}
+
+  /* ---------- Offline banner ---------- */
+  .offline-banner{
+    position:fixed; top:0; left:0; right:0; z-index:9997; background:#7A1F1F; color:#fff;
+    text-align:center; font-size:12.5px; font-weight:600; padding:9px 14px;
+    transform:translateY(-100%); transition:transform .3s ease;
+  }
+  .offline-banner.show{transform:translateY(0);}
+
+  /* ---------- Thumbnail preview di file-drop ---------- */
+  .file-drop{display:flex; align-items:center; gap:10px;}
+  .file-thumb{
+    flex:0 0 auto; width:34px; height:34px; border-radius:6px; object-fit:cover;
+    border:1px solid var(--line); background:#fff; display:none;
+  }
+  .file-drop.filled .file-thumb{display:block;}
+  .file-thumb-pdf{
+    flex:0 0 auto; width:34px; height:34px; border-radius:6px; background:#FCE8E8; color:var(--red);
+    display:none; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-weight:700; font-size:9px;
+  }
+  .file-drop.filled.is-pdf .file-thumb-pdf{display:flex;}
+  .file-drop-textwrap{flex:1; min-width:0;}
+  .btn-lihat-file{
+    flex:0 0 auto; background:none; border:1px solid var(--blue-line); color:var(--blue);
+    font-size:10.5px; font-weight:700; padding:5px 9px; border-radius:6px; cursor:pointer;
+    display:none; z-index:2; position:relative;
+  }
+  .file-drop.filled .btn-lihat-file{display:inline-block;}
+  .btn-lihat-file:hover{background:var(--blue-soft);}
+
+  /* ---------- Modal umum (preview file & ringkasan) ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(11,25,43,.55); z-index:9990;
+    display:none; align-items:center; justify-content:center; padding:18px;
+    backdrop-filter:blur(2px);
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#fff; border-radius:12px; max-width:560px; width:100%;
+    max-height:88vh; overflow-y:auto; box-shadow:0 20px 60px -12px rgba(0,0,0,.4);
+    animation:popIn .28s cubic-bezier(.2,.9,.25,1.1) both;
+  }
+  .modal-head{
+    position:sticky; top:0; background:#fff; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px; border-bottom:1px solid var(--line); z-index:1;
+  }
+  .modal-head h3{margin:0; font-size:15.5px; color:var(--blue-deep); font-weight:800;}
+  .modal-close{background:none; border:none; font-size:22px; color:var(--ink-soft); cursor:pointer; line-height:1; padding:2px;}
+  .modal-close:hover{color:var(--red);}
+  .modal-body{padding:18px 20px 22px;}
+  .modal-body img{max-width:100%; border-radius:8px; display:block; margin:0 auto;}
+  .modal-body .pdf-note{
+    text-align:center; color:var(--ink-soft); font-size:13px; padding:30px 10px;
+    background:#F9FBFD; border-radius:8px; border:1px dashed var(--line);
+  }
+
+  /* ---------- Ringkasan sebelum kirim ---------- */
+  .review-group{margin-bottom:16px;}
+  .review-group h4{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--blue-deep);
+    font-weight:800; margin:0 0 8px; padding-bottom:6px; border-bottom:1px solid var(--blue-line);
+  }
+  .review-row{display:flex; justify-content:space-between; gap:14px; font-size:13px; padding:5px 0; border-bottom:1px dashed #EEF2F7;}
+  .review-row:last-child{border-bottom:none;}
+  .review-row .rk{color:var(--ink-soft); flex:0 0 44%;}
+  .review-row .rv{color:var(--ink); font-weight:600; text-align:right; flex:1; word-break:break-word;}
+  .review-actions{display:flex; gap:10px; margin-top:18px;}
+  .review-actions button{flex:1; padding:12px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; border:none;}
+  .btn-edit-review{background:#F1F5F9; color:var(--ink);}
+  .btn-edit-review:hover{background:#E4EAF0;}
+  .btn-confirm-review{background:var(--blue-deep); color:#fff;}
+  .btn-confirm-review:hover{filter:brightness(1.08);}
+
+  /* ---------- FAQ accordion ---------- */
+  .faq-section{margin-bottom:22px;}
+  .faq-item{
+    background:#fff; border:1px solid var(--line); border-radius:9px; margin-bottom:8px;
+    overflow:hidden; box-shadow:var(--shadow);
+  }
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-weight:700; font-size:13.5px; color:var(--blue-deep);
+  }
+  .faq-q svg{flex:0 0 auto; width:16px; height:16px; transition:transform .25s;}
+  .faq-item.open .faq-q svg{transform:rotate(180deg);}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .faq-a p{margin:0; padding:0 16px 15px; font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+  .faq-item.open .faq-a{max-height:220px;}
+
+  /* ---------- Floating WhatsApp button ---------- */
+  .fab-wa{
+    position:fixed; right:18px; bottom:18px; z-index:60;
+    width:54px; height:54px; border-radius:50%; background:#25D366; color:#fff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(37,211,102,.55);
+    text-decoration:none; transition:transform .18s ease;
+  }
+  .fab-wa:hover{transform:scale(1.07);}
+  .fab-wa svg{width:26px; height:26px;}
+  @media (max-width:860px){ .fab-wa{right:14px; bottom:14px; width:48px; height:48px;} .fab-wa svg{width:23px; height:23px;} }
+
+  /* ---------- Gerbang Hari Kerja (blokir hari libur) ---------- */
+  .day-gate{
+    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(11,61,116,.94));
+    z-index:99999; display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .day-gate.show{display:flex;}
+  .day-gate-card{
+    background:#fff; border-radius:16px; max-width:440px; width:100%; padding:34px 28px 30px;
+    text-align:center; box-shadow:0 30px 80px -20px rgba(0,0,0,.5); animation:popIn .4s cubic-bezier(.2,.9,.25,1.1) both;
+  }
+  .day-gate-icon{
+    width:64px; height:64px; border-radius:50%; background:#FCE8E8; color:var(--red);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 16px;
+  }
+  .day-gate-icon svg{width:32px; height:32px;}
+  .day-gate-card h2{margin:0 0 10px; color:var(--blue-deep); font-size:19px; font-weight:800;}
+  .day-gate-card p{margin:0 0 6px; color:var(--ink-soft); font-size:13.5px; line-height:1.6;}
+  .day-gate-date{
+    display:inline-block; margin:14px 0; padding:9px 18px; border-radius:999px;
+    background:var(--blue-soft); color:var(--blue-deep); font-weight:700; font-size:13px;
+    font-family:'Space Mono',monospace;
+  }
+  .day-gate-hours{
+    margin-top:18px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--ink-soft);
+  }
+  .day-gate-wa{
+    display:inline-flex; align-items:center; gap:8px; margin-top:16px; background:#25D366; color:#fff;
+    text-decoration:none; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px;
+  }
+  .day-gate-wa svg{width:16px; height:16px;}
+
+  /* ---------- Banner status hari kerja (di dalam halaman, non-blocking untuk info) ---------- */
+  .workday-banner{
+    max-width:640px; margin:0 auto 4px; padding:9px 16px; border-radius:8px;
+    background:rgba(255,255,255,.14); color:#fff; font-size:11.5px; font-weight:600;
+    text-align:center; display:flex; align-items:center; justify-content:center; gap:7px;
+    border:1px solid rgba(255,255,255,.25);
+  }
+  .workday-banner svg{width:14px; height:14px; flex:0 0 auto;}
+
+  /* ---------- Kartu bukti (untuk diunduh) ---------- */
+  .bukti-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center;}
+  .btn-bukti{
+    display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:7px;
+    font-size:12px; font-weight:700; cursor:pointer; border:1px solid var(--blue-line);
+    background:#F9FBFD; color:var(--blue-deep);
+  }
+  .btn-bukti:hover{background:var(--blue-soft);}
+  .btn-bukti svg{width:14px; height:14px;}
+  #buktiCard{
+    background:#fff; border-radius:10px; padding:18px; border:1px solid var(--line);
+  }
+  #buktiCard .bukti-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  #buktiCard .bukti-head strong{font-size:13px; color:var(--blue-deep); display:block;}
+  #buktiCard .bukti-head span{font-size:10px; color:var(--ink-soft);}
+  #buktiQr{display:flex; justify-content:center; margin:12px 0;}
+
+  @media (prefers-reduced-motion: reduce){
+    .faq-a, .progress-fill, .toast, .modal-box, .day-gate-card{transition:none !important; animation:none !important;}
+  }
 </style>
 </head>
 <body>
+
+<!-- OFFLINE BANNER -->
+<div class="offline-banner" id="offlineBanner">⚠️ Koneksi internet terputus. Data yang sudah diisi tetap tersimpan otomatis di perangkat ini.</div>
+
+<!-- TOAST NOTIFICATIONS -->
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<!-- DRAFT AUTOSAVE BADGE -->
+<div class="draft-badge" id="draftBadge">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg>
+  <span id="draftBadgeText">Draf tersimpan otomatis</span>
+</div>
+
+<!-- GERBANG HARI KERJA (muncul & mengunci form jika hari ini bukan hari kerja) -->
+<div class="day-gate" id="dayGate" role="alertdialog" aria-modal="true" aria-labelledby="dayGateTitle">
+  <div class="day-gate-card">
+    <div class="day-gate-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9.5 15.5l1.8 1.8 3.2-3.6" stroke="none"/><path d="M8 15l2 2 4-4" /></svg>
+    </div>
+    <h2 id="dayGateTitle">Pendaftaran Ditutup Hari Ini</h2>
+    <p>Layanan registrasi AK.1 daring hanya dibuka pada <strong>hari kerja</strong> (Senin–Jumat) dan tutup pada akhir pekan serta hari libur nasional/cuti bersama.</p>
+    <div class="day-gate-date" id="dayGateDate">-</div>
+    <p id="dayGateReason" style="font-weight:600; color:var(--red);"></p>
+    <div class="day-gate-hours">
+      Jam layanan: Senin–Jumat, 08.00–16.00 WITA. Silakan kembali pada hari kerja berikutnya untuk mengisi formulir ini.
+    </div>
+    <a class="day-gate-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20jadwal%20pendaftaran%20AK.1" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
+      Tanya Admin via WhatsApp
+    </a>
+  </div>
+</div>
 
 <div class="topbar"><strong>PEMERINTAH KABUPATEN WAKATOBI</strong> — Layanan Ketenagakerjaan Daring</div>
 
@@ -395,6 +658,10 @@
 <div class="wrap">
 
   <div class="page-title">
+    <div class="workday-banner" id="workdayBanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span id="workdayBannerText">Memeriksa status hari layanan…</span>
+    </div>
     <h1>Formulir Pendaftaran AK-1</h1>
     <p>Lengkapi Seluruh Data dan Upload Dokumen Persyaratan Sesuai Petunjuk.</p>
     <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#EAF3FC;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
@@ -436,7 +703,7 @@
     </aside>
 
     <!-- FORM -->
-    <form id="registrationForm" onsubmit="handleSubmit(event)">
+    <form id="registrationForm" onsubmit="handleFormSubmitClick(event)" novalidate>
 
     <!-- I. INFORMASI REGISTRASI -->
     <div class="form-section" id="sec-reg" data-section="reg">
@@ -735,14 +1002,58 @@
         </div>
       </div>
 
+      <!-- FAQ -->
+      <div class="form-section faq-section">
+        <div class="sec-head">
+          <span class="sec-num">?</span>
+          <div>
+            <h2 class="sec-title">Pertanyaan yang Sering Diajukan</h2>
+            <p class="sec-hint">Klik pertanyaan untuk melihat jawabannya.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Kenapa pas foto harus berlatar merah?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Pas foto berlatar merah adalah ketentuan standar untuk kartu AK-1 sesuai format yang berlaku di Dinas Koperasi, UKM dan Tenaga Kerja. Latar warna lain berpotensi ditolak saat verifikasi berkas fisik.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Berapa lama proses verifikasi setelah mengisi formulir ini?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Setelah data terkirim, Anda akan mendapat nomor registrasi resmi. Verifikasi berkas fisik dan pencetakan kartu AK-1 dilakukan langsung di kantor Dinas pada hari kerja, dengan membawa dokumen asli yang sesuai dengan yang diunggah.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Kenapa pendaftaran tidak bisa dilakukan di akhir pekan atau hari libur?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Registrasi AK.1 hanya diproses pada hari kerja (Senin–Jumat, di luar hari libur nasional/cuti bersama) agar nomor registrasi dan penjadwalan verifikasi selaras dengan jam operasional kantor.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Apakah data yang saya isi tersimpan jika saya keluar dari halaman?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Ya. Isian formulir disimpan otomatis di perangkat Anda selama proses pengisian, sehingga jika halaman tertutup tidak sengaja, data dapat dipulihkan saat Anda membuka kembali formulir ini di perangkat dan peramban yang sama.</p></div>
+        </div>
+      </div>
+
       <!-- SUBMIT -->
       <div class="submit-wrap">
-        <button type="submit" id="submitBtn" class="stamp-btn">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="progress-pct" id="progressPct">0% lengkap · 0 dari 4 bagian</p>
+        <button type="submit" id="submitBtn" class="stamp-btn" style="margin-top:16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
-          Kirim Seluruh Data & Berkas
+          Periksa & Kirim Data
         </button>
         <p id="loadingText" class="loading-text hidden">Sedang memproses & mengunggah berkas ke server, mohon tidak menutup halaman…</p>
-        <p class="progress-note" id="progressNote">0 dari 4 bagian lengkap.</p>
       </div>
 
     </form>
@@ -800,8 +1111,27 @@
       <p class="notif-success-sub" style="margin-top:8px; font-weight:800; color:var(--blue-deep); font-size:14px;">Nomor Registrasi Resmi: <span id="finalNoReg">-</span></p>
     </div>
 
-    <p class="instruction-text">
-      📸 <strong>Silakan screenshot halaman ini</strong> sebagai bukti telah registrasi dan kirimkan ke kontak admin kami di bawah ini:
+    <!-- KARTU BUKTI (dapat diunduh sebagai gambar) -->
+    <div id="buktiCard">
+      <div class="bukti-head">
+        <div>
+          <strong>Bukti Registrasi AK.1</strong>
+          <span id="buktiNamaTampil">Dinas Koperasi, UKM & Tenaga Kerja Wakatobi</span>
+        </div>
+      </div>
+      <div id="buktiQr"></div>
+      <p style="text-align:center; font-size:11px; color:var(--ink-soft); margin:0;">Tunjukkan QR ini atau nomor registrasi saat verifikasi berkas.</p>
+    </div>
+
+    <div class="bukti-actions">
+      <button type="button" class="btn-bukti" onclick="unduhBuktiSebagaiGambar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+        Unduh Bukti (Gambar)
+      </button>
+    </div>
+
+    <p class="instruction-text" style="margin-top:14px;">
+      📸 Anda juga bisa <strong>screenshot halaman ini</strong> dan mengirimkannya ke kontak admin kami di bawah ini:
     </p>
 
     <div class="social-links">
@@ -828,10 +1158,60 @@
   </div>
 </div>
 
+<!-- MODAL: PREVIEW FILE YANG SUDAH DIUPLOAD -->
+<div class="modal-overlay" id="filePreviewModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="filePreviewTitle">Pratinjau Berkas</h3>
+      <button type="button" class="modal-close" onclick="closeFilePreview()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-body" id="filePreviewBody"></div>
+  </div>
+</div>
+
+<!-- MODAL: RINGKASAN DATA SEBELUM KIRIM -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Periksa Kembali Data Anda</h3>
+      <button type="button" class="modal-close" onclick="closeReviewModal()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-body" id="reviewBody"></div>
+  </div>
+</div>
+
+<!-- FLOATING BUTTON WHATSAPP ADMIN -->
+<a class="fab-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20AK.1" target="_blank" aria-label="Hubungi Admin via WhatsApp" title="Hubungi Admin via WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
+</a>
+
 <script>
   window.addEventListener("DOMContentLoaded", function() {
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    // NIK hanya boleh angka, maksimal 16 digit
+    const nikInput = document.getElementById('nik');
+    if (nikInput) {
+      nikInput.setAttribute('inputmode', 'numeric');
+      nikInput.setAttribute('maxlength', '16');
+      nikInput.addEventListener('input', () => {
+        nikInput.value = nikInput.value.replace(/[^0-9]/g, '').slice(0, 16);
+      });
+    }
+    // Nomor WhatsApp hanya angka/spasi/plus/strip
+    const kontakInput = document.getElementById('kontak');
+    if (kontakInput) {
+      kontakInput.addEventListener('input', () => {
+        kontakInput.value = kontakInput.value.replace(/[^0-9+\-\s]/g, '');
+      });
+    }
+
+    checkWorkday();
+    setupFileDropExtras();
+    restoreDraft();
+    setupAutosaveListeners();
+    setupOfflineListener();
   });
 
   // Ganti dengan URL Google Apps Script Anda sendiri
@@ -1184,6 +1564,7 @@
     const row = buatBarisPelatihan(pelatihanCount);
     container.appendChild(row);
     isiPilihanTahunPada(row.querySelectorAll('select.year-select'));
+    setupFileDropExtras();
     updatePelatihanLimitNote();
     updateProgress();
   }
@@ -1255,7 +1636,11 @@
         t.classList.toggle('done', complete);
       });
     });
-    document.getElementById('progressNote').textContent = `${doneCount} dari 4 bagian lengkap.`;
+    const pct = Math.round((doneCount / sections.length) * 100);
+    const fill = document.getElementById('progressFill');
+    const pctText = document.getElementById('progressPct');
+    if (fill) fill.style.width = pct + '%';
+    if (pctText) pctText.textContent = `${pct}% lengkap · ${doneCount} dari ${sections.length} bagian`;
   }
 
   document.getElementById('registrationForm').addEventListener('input', updateProgress);
@@ -1283,8 +1668,24 @@
     document.getElementById('permanentNotification').classList.remove('show');
   }
 
-  async function handleSubmit(event) {
+  // Dipanggil saat tombol "Periksa & Kirim Data" ditekan: validasi dulu,
+  // cek hari kerja, lalu tampilkan ringkasan sebelum benar-benar terkirim.
+  function handleFormSubmitClick(event) {
     event.preventDefault();
+
+    const gate = document.getElementById('dayGate');
+    if (gate && gate.classList.contains('show')) {
+      toast('error', 'Pendaftaran ditutup hari ini', 'Layanan hanya menerima pendaftaran pada hari kerja (Senin–Jumat, di luar hari libur nasional).', 6000);
+      gate.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    if (!validasiSemuaField()) return;
+
+    openReviewModal();
+  }
+
+  async function prosesKirimForm() {
     const submitBtn = document.getElementById('submitBtn');
     const loadingText = document.getElementById('loadingText');
     submitBtn.disabled = true;
@@ -1357,38 +1758,503 @@
       const result = await response.json();
 
       if (result.status === "success") {
+        const noRegFinal = result.no_reg || '-';
         document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
-        document.getElementById('finalNoReg').textContent = result.no_reg || '-';
+        document.getElementById('finalNoReg').textContent = noRegFinal;
 
         const overlay = document.getElementById('stampOverlay');
         overlay.classList.add('show');
         setTimeout(() => { overlay.classList.remove('show'); }, 2200);
 
         document.getElementById('permanentNotification').classList.add('show');
+        buatQrBukti(noRegFinal);
+        toast('success', 'Registrasi berhasil dikirim!', `Nomor registrasi Anda: ${noRegFinal}`, 6000);
 
         resetSeksiPendidikanVisual();
 
         document.querySelectorAll('.file-drop').forEach(d => {
-          d.classList.remove('filled', 'compressing');
+          d.classList.remove('filled', 'compressing', 'is-pdf');
           const n = d.querySelector('.file-name');
           n.textContent = n.dataset.default;
           const note = d.querySelector('.file-compress-note');
           if (note) note.textContent = '';
+          const thumb = d.querySelector('.file-thumb');
+          if (thumb) thumb.removeAttribute('src');
         });
         Object.keys(compressedFileStore).forEach(k => delete compressedFileStore[k]);
 
         document.getElementById('registrationForm').reset();
+        document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+        document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
+        clearDraft();
         updateProgress();
       } else {
-        alert("Gagal menyimpan data: " + result.message);
+        toast('error', 'Gagal menyimpan data', result.message || 'Silakan coba kirim kembali beberapa saat lagi.', 7000);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Terjadi masalah jaringan atau internal server saat mengirim data berkas.");
+      toast('error', 'Masalah jaringan', 'Terjadi kendala koneksi atau server saat mengirim data berkas. Data isian Anda tetap tersimpan otomatis di perangkat ini — silakan coba lagi.', 7000);
     } finally {
       submitBtn.disabled = false;
       loadingText.classList.add('hidden');
     }
+  }
+
+  /* =====================================================================
+     TOAST NOTIFICATIONS (pengganti alert() bawaan browser)
+     ===================================================================== */
+  function toast(type, title, msg, durasi = 4800) {
+    const stack = document.getElementById('toastStack');
+    if (!stack) { alert(title + (msg ? ': ' + msg : '')); return; }
+
+    const icons = {
+      success: '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12l5 5L20 6"/></svg>',
+      error:   '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
+      info:    '<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v5h1"/></svg>'
+    };
+
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.innerHTML = `
+      ${icons[type] || icons.info}
+      <div class="toast-body">
+        <p class="toast-title">${title}</p>
+        ${msg ? `<p class="toast-msg">${msg}</p>` : ''}
+      </div>
+      <button type="button" class="toast-close" aria-label="Tutup">&times;</button>
+    `;
+    stack.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+
+    const remove = () => {
+      el.classList.add('leaving');
+      el.classList.remove('show');
+      setTimeout(() => el.remove(), 260);
+    };
+    el.querySelector('.toast-close').addEventListener('click', remove);
+    if (durasi > 0) setTimeout(remove, durasi);
+  }
+
+  /* =====================================================================
+     GERBANG HARI KERJA — Senin s/d Jumat, dicek juga terhadap kalender
+     hari libur nasional Indonesia (jika API tersedia). Sabtu & Minggu
+     selalu wajib libur terlepas dari hasil API.
+     ===================================================================== */
+  const HOLIDAY_API = 'https://api-harilibur.vercel.app/api';
+
+  async function checkWorkday() {
+    const banner = document.getElementById('workdayBanner');
+    const bannerText = document.getElementById('workdayBannerText');
+    const gate = document.getElementById('dayGate');
+    const gateDate = document.getElementById('dayGateDate');
+    const gateReason = document.getElementById('dayGateReason');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const now = new Date();
+    const hari = now.getDay(); // 0=Minggu ... 6=Sabtu
+    const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][hari];
+    const tglTampil = now.toLocaleDateString('id-ID', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+    let terkunci = false;
+    let alasanList = [];
+
+    if (hari === 0 || hari === 6) {
+      terkunci = true;
+      alasanList.push(`Hari ini ${namaHari}, termasuk akhir pekan yang wajib libur.`);
+    }
+
+    // Cek kalender hari libur nasional Indonesia
+    let namaLibur = null;
+    try {
+      const tahun = now.getFullYear();
+      const res = await fetch(`${HOLIDAY_API}?year=${tahun}`);
+      if (res.ok) {
+        const data = await res.json();
+        const pad = n => String(n).padStart(2, '0');
+        const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+        const match = Array.isArray(data) ? data.find(h => h.holiday_date === todayStr && h.is_national_holiday) : null;
+        if (match) namaLibur = match.holiday_name;
+      }
+    } catch (err) {
+      console.warn('Gagal memeriksa kalender hari libur nasional (memakai pengecekan hari kerja biasa):', err);
+    }
+
+    if (namaLibur) {
+      terkunci = true;
+      alasanList.push(`Hari ini ditetapkan sebagai hari libur nasional: "${namaLibur}".`);
+    }
+
+    if (terkunci) {
+      gateDate.textContent = tglTampil;
+      gateReason.textContent = alasanList.join(' ');
+      gate.classList.add('show');
+      document.documentElement.style.overflow = 'hidden';
+      if (submitBtn) submitBtn.disabled = true;
+      if (banner) banner.style.background = 'rgba(193,39,45,.28)';
+      if (bannerText) bannerText.textContent = '🔒 Pendaftaran ditutup hari ini — layanan hanya buka Senin–Jumat (di luar hari libur nasional).';
+      toast('error', 'Pendaftaran ditutup hari ini', 'Silakan kembali pada hari kerja berikutnya.', 6000);
+    } else {
+      if (bannerText) bannerText.textContent = `✅ Layanan dibuka hari ini (${namaHari}). Anda dapat melengkapi & mengirim formulir.`;
+    }
+  }
+
+  /* =====================================================================
+     VALIDASI FIELD INLINE + SCROLL KE FIELD BERMASALAH
+     ===================================================================== */
+  function getOrBuatFieldError(fieldEl) {
+    let err = fieldEl.querySelector('.field-error');
+    if (!err) {
+      err = document.createElement('div');
+      err.className = 'field-error';
+      err.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span>`;
+      fieldEl.appendChild(err);
+    }
+    return err;
+  }
+
+  function showFieldError(inputEl, pesan) {
+    const fieldEl = inputEl.closest('.field') || inputEl.parentElement;
+    if (!fieldEl) return;
+    fieldEl.classList.add('has-error');
+    const err = getOrBuatFieldError(fieldEl);
+    err.querySelector('span').textContent = pesan;
+    err.classList.add('show');
+  }
+
+  function clearFieldError(inputEl) {
+    const fieldEl = inputEl.closest('.field') || inputEl.parentElement;
+    if (!fieldEl) return;
+    fieldEl.classList.remove('has-error');
+    const err = fieldEl.querySelector('.field-error');
+    if (err) err.classList.remove('show');
+  }
+
+  // Bersihkan error saat pengguna mulai memperbaiki isian
+  document.addEventListener('input', (e) => {
+    if (e.target.matches('input, select')) clearFieldError(e.target);
+  });
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('input, select')) clearFieldError(e.target);
+  });
+
+  function validasiSemuaField() {
+    const form = document.getElementById('registrationForm');
+    const required = Array.from(form.querySelectorAll('input[required], select[required]'));
+    let fieldPertamaError = null;
+    let jumlahError = 0;
+
+    required.forEach(inp => {
+      // lewati field yang sedang tersembunyi (mis. jenjang pendidikan yang belum dibuka)
+      if (inp.offsetParent === null) return;
+
+      let valid = true;
+      if (inp.type === 'checkbox') valid = inp.checked;
+      else if (inp.type === 'file') valid = !!(inp.files && inp.files.length);
+      else valid = !!inp.value.trim();
+
+      if (inp.id === 'nik' && valid && inp.value.trim().length !== 16) valid = false;
+      if (inp.type === 'email' && valid && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value.trim())) valid = false;
+
+      if (!valid) {
+        jumlahError++;
+        let pesan = 'Wajib diisi.';
+        if (inp.type === 'file') pesan = 'Berkas wajib diunggah.';
+        else if (inp.id === 'nik') pesan = 'NIK harus tepat 16 digit angka.';
+        else if (inp.type === 'email') pesan = 'Format email tidak valid.';
+        else if (inp.type === 'checkbox') pesan = 'Persetujuan wajib dicentang.';
+        showFieldError(inp, pesan);
+        if (!fieldPertamaError) fieldPertamaError = inp;
+      } else {
+        clearFieldError(inp);
+      }
+    });
+
+    if (fieldPertamaError) {
+      const sec = fieldPertamaError.closest('.form-section');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => fieldPertamaError.focus({ preventScroll: true }), 350);
+      toast('error', 'Formulir belum lengkap', `${jumlahError} bagian perlu diperiksa kembali sebelum dikirim.`);
+      return false;
+    }
+    return true;
+  }
+
+  /* =====================================================================
+     PREVIEW THUMBNAIL & MODAL LIHAT BERKAS
+     ===================================================================== */
+  function setupFileDropExtras() {
+    document.querySelectorAll('.file-drop').forEach(drop => {
+      const input = drop.querySelector('input[type=file]');
+      const inner = drop.querySelector('.file-drop-inner');
+      if (!input || !inner || drop.dataset.extrasReady) return;
+      drop.dataset.extrasReady = '1';
+
+      const thumbImg = document.createElement('img');
+      thumbImg.className = 'file-thumb';
+      thumbImg.alt = '';
+      const thumbPdf = document.createElement('div');
+      thumbPdf.className = 'file-thumb-pdf';
+      thumbPdf.textContent = 'PDF';
+      inner.insertBefore(thumbPdf, inner.firstChild);
+      inner.insertBefore(thumbImg, inner.firstChild);
+
+      const nameEl = inner.querySelector('.file-name');
+      if (nameEl) nameEl.parentElement.classList.add('file-drop-textwrap');
+
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      viewBtn.className = 'btn-lihat-file';
+      viewBtn.textContent = 'Lihat';
+      viewBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openFilePreview(input, nameEl ? nameEl.textContent : 'Berkas');
+      });
+      drop.appendChild(viewBtn);
+
+      input.addEventListener('change', () => {
+        const f = input.files && input.files[0];
+        if (!f) { drop.classList.remove('is-pdf'); thumbImg.removeAttribute('src'); return; }
+        if (f.type.startsWith('image/')) {
+          drop.classList.remove('is-pdf');
+          thumbImg.src = URL.createObjectURL(f);
+        } else {
+          drop.classList.add('is-pdf');
+          thumbImg.removeAttribute('src');
+        }
+      });
+    });
+  }
+
+  function openFilePreview(input, judul) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    document.getElementById('filePreviewTitle').textContent = judul || 'Pratinjau Berkas';
+    const body = document.getElementById('filePreviewBody');
+    if (f.type.startsWith('image/')) {
+      body.innerHTML = `<img src="${URL.createObjectURL(f)}" alt="Pratinjau berkas">`;
+    } else {
+      body.innerHTML = `<div class="pdf-note">📄 <strong>${f.name}</strong><br>Berkas PDF tidak dapat ditampilkan langsung di sini, namun sudah terlampir dan siap dikirim.</div>`;
+    }
+    document.getElementById('filePreviewModal').classList.add('show');
+  }
+  function closeFilePreview() {
+    document.getElementById('filePreviewModal').classList.remove('show');
+  }
+
+  /* =====================================================================
+     AUTOSAVE DRAF KE localStorage (khusus field teks/pilihan, bukan berkas)
+     ===================================================================== */
+  const DRAFT_KEY = 'ak1_draft_v1';
+  const DRAFT_FIELD_IDS = [
+    'tgl_reg','nik','nama','tempat_lahir','tanggal_lahir','jenis_kelamin','status_hubungan','agama',
+    'domisili','tujuan_kerja','sd_nama','sd_jurusan','sd_lulus','smp_nama','smp_jurusan','smp_lulus',
+    'sma_nama','sma_jurusan','sma_lulus','pt_nama','pt_jurusan','pt_lulus','kontak','email'
+  ];
+  let draftSaveTimer = null;
+
+  function setupAutosaveListeners() {
+    const form = document.getElementById('registrationForm');
+    form.addEventListener('input', () => {
+      clearTimeout(draftSaveTimer);
+      draftSaveTimer = setTimeout(saveDraft, 700);
+    });
+    form.addEventListener('change', () => {
+      clearTimeout(draftSaveTimer);
+      draftSaveTimer = setTimeout(saveDraft, 300);
+    });
+  }
+
+  function saveDraft() {
+    try {
+      const data = {};
+      DRAFT_FIELD_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ savedAt: Date.now(), data }));
+      showDraftBadge();
+    } catch (err) {
+      console.warn('Gagal menyimpan draf otomatis:', err);
+    }
+  }
+
+  function showDraftBadge() {
+    const badge = document.getElementById('draftBadge');
+    if (!badge) return;
+    document.getElementById('draftBadgeText').textContent = 'Draf tersimpan otomatis';
+    badge.classList.add('show');
+    clearTimeout(showDraftBadge._t);
+    showDraftBadge._t = setTimeout(() => badge.classList.remove('show'), 2200);
+  }
+
+  function restoreDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.data) return;
+
+      let adaIsi = false;
+      Object.keys(parsed.data).forEach(id => {
+        const el = document.getElementById(id);
+        const val = parsed.data[id];
+        if (el && val) {
+          el.value = val;
+          adaIsi = true;
+        }
+      });
+
+      if (adaIsi) {
+        updateProgress();
+        toast('info', 'Draf sebelumnya dipulihkan', 'Data yang pernah Anda isi di perangkat ini telah dimuat kembali.', 6000);
+      }
+    } catch (err) {
+      console.warn('Gagal memulihkan draf:', err);
+    }
+  }
+
+  function clearDraft() {
+    try { localStorage.removeItem(DRAFT_KEY); } catch (err) { /* abaikan */ }
+  }
+
+  /* =====================================================================
+     BANNER OFFLINE
+     ===================================================================== */
+  function setupOfflineListener() {
+    const banner = document.getElementById('offlineBanner');
+    const update = () => {
+      if (!navigator.onLine) {
+        banner.classList.add('show');
+        toast('error', 'Koneksi terputus', 'Periksa jaringan internet Anda. Isian tetap tersimpan otomatis.', 5000);
+      } else {
+        banner.classList.remove('show');
+      }
+    };
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+    update();
+  }
+
+  /* =====================================================================
+     FAQ ACCORDION
+     ===================================================================== */
+  function toggleFaq(btn) {
+    const item = btn.closest('.faq-item');
+    const sedangTerbuka = item.classList.contains('open');
+    item.parentElement.querySelectorAll('.faq-item.open').forEach(el => { if (el !== item) el.classList.remove('open'); });
+    item.classList.toggle('open', !sedangTerbuka);
+  }
+
+  /* =====================================================================
+     RINGKASAN DATA SEBELUM KIRIM (REVIEW MODAL)
+     ===================================================================== */
+  function labelTerpilih(selectEl) {
+    if (!selectEl) return '-';
+    const opt = selectEl.options[selectEl.selectedIndex];
+    return opt ? opt.textContent : '-';
+  }
+  function nilaiAtauStrip(id) {
+    const el = document.getElementById(id);
+    return (el && el.value.trim()) ? el.value.trim() : '-';
+  }
+  function namaBerkas(id) {
+    const el = document.getElementById(id);
+    return (el && el.files && el.files[0]) ? el.files[0].name : 'Belum diunggah';
+  }
+
+  function buildReviewSection(judul, baris) {
+    const rows = baris.map(([k, v]) => `<div class="review-row"><span class="rk">${k}</span><span class="rv">${v}</span></div>`).join('');
+    return `<div class="review-group"><h4>${judul}</h4>${rows}</div>`;
+  }
+
+  function openReviewModal() {
+    const body = document.getElementById('reviewBody');
+    let html = '';
+
+    html += buildReviewSection('I. Informasi Registrasi', [
+      ['Tanggal Registrasi', nilaiAtauStrip('tgl_reg')]
+    ]);
+
+    html += buildReviewSection('II. Data Diri', [
+      ['NIK', nilaiAtauStrip('nik')],
+      ['Nama Lengkap', nilaiAtauStrip('nama')],
+      ['Tempat, Tanggal Lahir', `${nilaiAtauStrip('tempat_lahir')}, ${nilaiAtauStrip('tanggal_lahir')}`],
+      ['Jenis Kelamin', labelTerpilih(document.getElementById('jenis_kelamin'))],
+      ['Status', labelTerpilih(document.getElementById('status_hubungan'))],
+      ['Agama', labelTerpilih(document.getElementById('agama'))],
+      ['Domisili', labelTerpilih(document.getElementById('domisili'))],
+      ['Tujuan Tempat Kerja', nilaiAtauStrip('tujuan_kerja')],
+      ['Berkas KTP', namaBerkas('file_ktp')],
+      ['Berkas Akta Lahir', namaBerkas('file_akta')],
+      ['Berkas Kartu Keluarga', namaBerkas('file_kk')]
+    ]);
+
+    const pendidikanRows = [['SD/Sederajat', `${nilaiAtauStrip('sd_nama')} (${nilaiAtauStrip('sd_lulus')})`]];
+    if (document.getElementById('smp_nama').value.trim()) pendidikanRows.push(['SMP/Sederajat', `${nilaiAtauStrip('smp_nama')} (${nilaiAtauStrip('smp_lulus')})`]);
+    if (document.getElementById('sma_nama').value.trim()) pendidikanRows.push(['SMA/Sederajat', `${nilaiAtauStrip('sma_nama')} — ${nilaiAtauStrip('sma_jurusan')} (${nilaiAtauStrip('sma_lulus')})`]);
+    if (document.getElementById('pt_nama').value.trim()) pendidikanRows.push(['Perguruan Tinggi', `${nilaiAtauStrip('pt_nama')} — ${nilaiAtauStrip('pt_jurusan')} (${nilaiAtauStrip('pt_lulus')})`]);
+    const jumlahPelatihan = document.querySelectorAll('#nonformalList .nonformal-entry').length;
+    pendidikanRows.push(['Pelatihan/Kursus Non Formal', jumlahPelatihan > 0 ? `${jumlahPelatihan} entri dilampirkan` : 'Tidak ada']);
+    html += buildReviewSection('III. Riwayat Pendidikan', pendidikanRows);
+
+    html += buildReviewSection('IV. Kontak & Pas Foto', [
+      ['Kontak WhatsApp', nilaiAtauStrip('kontak')],
+      ['Email', nilaiAtauStrip('email')],
+      ['Pas Foto', namaBerkas('file_foto')],
+      ['Kesanggupan Bawa Fisik', document.getElementById('konfirmasi_fisik').checked ? 'Ya' : 'Belum dicentang']
+    ]);
+
+    html += `
+      <div class="review-actions">
+        <button type="button" class="btn-edit-review" onclick="closeReviewModal()">Periksa Lagi</button>
+        <button type="button" class="btn-confirm-review" onclick="konfirmasiKirim()">Ya, Kirim Sekarang</button>
+      </div>
+    `;
+
+    body.innerHTML = html;
+    document.getElementById('reviewModal').classList.add('show');
+  }
+  function closeReviewModal() {
+    document.getElementById('reviewModal').classList.remove('show');
+  }
+  function konfirmasiKirim() {
+    closeReviewModal();
+    prosesKirimForm();
+  }
+
+  /* =====================================================================
+     KARTU BUKTI: QR CODE + UNDUH SEBAGAI GAMBAR
+     ===================================================================== */
+  function buatQrBukti(noReg) {
+    const wrap = document.getElementById('buktiQr');
+    if (!wrap || typeof QRCode === 'undefined') return;
+    wrap.innerHTML = '';
+    new QRCode(wrap, {
+      text: `AK1-REG:${noReg}`,
+      width: 120,
+      height: 120,
+      colorDark: '#0B3D74',
+      colorLight: '#ffffff'
+    });
+  }
+
+  function unduhBuktiSebagaiGambar() {
+    const target = document.getElementById('permanentNotification');
+    if (typeof html2canvas === 'undefined' || !target) {
+      toast('error', 'Tidak dapat mengunduh', 'Fitur unduh gambar sedang tidak tersedia, silakan screenshot manual.');
+      return;
+    }
+    toast('info', 'Menyiapkan gambar…', 'Mohon tunggu sebentar.', 2000);
+    html2canvas(target, { backgroundColor: '#ffffff', scale: 2 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `bukti-registrasi-ak1-${document.getElementById('finalNoReg').textContent}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(err => {
+      console.error(err);
+      toast('error', 'Gagal membuat gambar', 'Silakan gunakan screenshot manual sebagai alternatif.');
+    });
   }
 </script>
 
