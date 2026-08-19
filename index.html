@@ -1832,8 +1832,22 @@
       const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
       const result = await response.json();
 
-      if (result.status === "success") {
-        const noRegFinal = result.no_reg || '-';
+      if (result.status === "success" && !result.no_reg) {
+        // ---- KASUS TIDAK NORMAL: server bilang "berhasil" tapi nomor
+        // registrasi tidak ikut terkirim balik ke browser (kemungkinan
+        // besar koneksi terputus sesaat SETELAH data tersimpan di server,
+        // BUKAN data yang hilang). Jangan pernah menampilkan garis datar
+        // "-" seolah semua normal — itu membingungkan & terkesan gagal
+        // padahal data mereka kemungkinan besar SUDAH tersimpan.
+        console.error('Server melaporkan sukses tapi no_reg kosong. Respons lengkap:', result);
+        toast(
+          'info',
+          'Data terkirim, tapi nomor belum bisa ditampilkan',
+          'Kemungkinan besar data Anda SUDAH tersimpan di server, hanya nomor registrasinya gagal tampil di layar karena koneksi terputus sesaat. Coba klik "Periksa & Kirim Data" sekali lagi dengan NIK yang sama — jika sudah tersimpan, sistem akan langsung menunjukkan nomor registrasi Anda tanpa mengirim data dua kali. Jika masih bermasalah, hubungi admin dengan menyebutkan NIK dan waktu pengiriman.',
+          12000
+        );
+      } else if (result.status === "success") {
+        const noRegFinal = result.no_reg;
         document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
         document.getElementById('finalNoReg').textContent = noRegFinal;
 
