@@ -605,6 +605,32 @@
   @media (prefers-reduced-motion: reduce){
     .faq-a, .progress-fill, .toast, .modal-box, .day-gate-card{transition:none !important; animation:none !important;}
   }
+
+  /* ---------- Indikator status pengecekan NIK (real-time) ---------- */
+  .nik-status{
+    display:none; align-items:center; gap:6px; font-size:11.5px; font-weight:600;
+    margin-top:6px; padding:7px 10px; border-radius:6px;
+  }
+  .nik-status.show{display:flex;}
+  .nik-status svg{width:14px; height:14px; flex:0 0 auto;}
+  .nik-status.checking{background:#F0F5FA; color:var(--blue);}
+  .nik-status.checking svg{animation:spin 1s linear infinite;}
+  .nik-status.warn{background:#FFF4E5; color:#9A5B00;}
+  .nik-status.ok{background:#F0FDF4; color:var(--ok);}
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  /* ---------- Modal khusus: NIK sudah terdaftar ---------- */
+  .dup-icon{
+    width:56px; height:56px; border-radius:50%; background:#FFF4E5; color:#9A5B00;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
+  }
+  .dup-icon svg{width:28px; height:28px;}
+  .dup-box{text-align:center;}
+  .dup-box .dup-noreg{
+    display:inline-block; margin:12px 0; padding:8px 16px; border-radius:999px;
+    background:var(--blue-soft); color:var(--blue-deep); font-weight:700; font-size:13px;
+    font-family:'Space Mono',monospace;
+  }
 </style>
 </head>
 <body>
@@ -741,6 +767,7 @@
             <div class="field">
                 <label>NIK (Nomor Induk Kependudukan) <span class="req">*</span></label>
                 <input type="text" id="nik" placeholder="16 Digit Angka NIK" required>
+                <div class="nik-status" id="nikStatus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/></svg><span id="nikStatusText"></span></div>
             </div>
             <div class="field">
               <label>Upload KTP <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 3MB)</span></label>
@@ -1180,6 +1207,28 @@
   </div>
 </div>
 
+<!-- MODAL: NIK SUDAH TERDAFTAR (dobel) -->
+<div class="modal-overlay" id="dupModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>NIK Sudah Terdaftar</h3>
+      <button type="button" class="modal-close" onclick="closeDupModal()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-body dup-box">
+      <div class="dup-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+      </div>
+      <p id="dupMessage" style="color:var(--ink); font-size:13.5px; line-height:1.6;"></p>
+      <div class="dup-noreg" id="dupNoReg">-</div>
+      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin dinas.</p>
+      <a class="day-gate-wa" style="margin-top:10px;" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20soal%20status%20pendaftaran%20AK.1%20saya%20yang%20terdeteksi%20sudah%20terdaftar" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
+        Hubungi Admin via WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- FLOATING BUTTON WHATSAPP ADMIN -->
 <a class="fab-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20AK.1" target="_blank" aria-label="Hubungi Admin via WhatsApp" title="Hubungi Admin via WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
@@ -1197,7 +1246,9 @@
       nikInput.setAttribute('maxlength', '16');
       nikInput.addEventListener('input', () => {
         nikInput.value = nikInput.value.replace(/[^0-9]/g, '').slice(0, 16);
+        sembunyikanStatusNik();
       });
+      nikInput.addEventListener('blur', () => cekNikRealtime(nikInput.value));
     }
     // Nomor WhatsApp hanya angka/spasi/plus/strip
     const kontakInput = document.getElementById('kontak');
@@ -1682,10 +1733,22 @@
 
     if (!validasiSemuaField()) return;
 
+    if (nikSedangTerdaftar) {
+      openDupModal(
+        `NIK ini terdeteksi sudah terdaftar tahun ini atas nama "${nikSedangTerdaftar.nama}". Data tidak dapat dikirim ulang untuk mencegah duplikasi.`,
+        nikSedangTerdaftar.noReg
+      );
+      return;
+    }
+
     openReviewModal();
   }
 
+  let sedangKirim = false;
+
   async function prosesKirimForm() {
+    if (sedangKirim) return; // cegah klik ganda memicu dua request bersamaan
+    sedangKirim = true;
     const submitBtn = document.getElementById('submitBtn');
     const loadingText = document.getElementById('loadingText');
     submitBtn.disabled = true;
@@ -1788,6 +1851,9 @@
         document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
         clearDraft();
         updateProgress();
+      } else if (result.status === "duplicate") {
+        openDupModal(result.message, result.no_reg);
+        toast('error', 'NIK sudah terdaftar', `Nomor registrasi sebelumnya: ${result.no_reg}`, 6500);
       } else {
         toast('error', 'Gagal menyimpan data', result.message || 'Silakan coba kirim kembali beberapa saat lagi.', 7000);
       }
@@ -1797,6 +1863,7 @@
     } finally {
       submitBtn.disabled = false;
       loadingText.classList.add('hidden');
+      sedangKirim = false;
     }
   }
 
@@ -2147,8 +2214,66 @@
   }
 
   /* =====================================================================
-     RINGKASAN DATA SEBELUM KIRIM (REVIEW MODAL)
+     PENGECEKAN NIK REAL-TIME (peringatan dini sebelum submit sungguhan)
+     Memanggil doGet?cekNik=... di Code.gs — hanya untuk kenyamanan
+     tampilan, TIDAK mengunci apa pun. Pengecekan yang benar-benar
+     mengikat & aman dari race condition tetap dilakukan di doPost()
+     (di dalam LockService), lihat penanganan status "duplicate" pada
+     prosesKirimForm().
      ===================================================================== */
+  let nikSedangTerdaftar = null; // simpan hasil terakhir { noReg, nama } kalau NIK terdeteksi dobel
+
+  function tampilkanStatusNik(jenis, teks) {
+    const wrap = document.getElementById('nikStatus');
+    const txt = document.getElementById('nikStatusText');
+    if (!wrap || !txt) return;
+    wrap.className = 'nik-status show ' + jenis;
+    txt.textContent = teks;
+  }
+  function sembunyikanStatusNik() {
+    const wrap = document.getElementById('nikStatus');
+    if (wrap) wrap.classList.remove('show');
+    nikSedangTerdaftar = null;
+  }
+
+  async function cekNikRealtime(nik) {
+    const bersih = String(nik || '').trim();
+    if (bersih.length !== 16) { sembunyikanStatusNik(); return; }
+
+    tampilkanStatusNik('checking', 'Memeriksa status NIK…');
+    try {
+      const res = await fetch(`${WEB_APP_URL}?cekNik=${encodeURIComponent(bersih)}`);
+      const data = await res.json();
+      if (data.status === 'success' && data.terdaftar) {
+        nikSedangTerdaftar = { noReg: data.no_reg, nama: data.nama };
+        tampilkanStatusNik('warn', `⚠️ NIK ini sudah terdaftar tahun ini atas nama "${data.nama}" (No. Reg ${data.no_reg}).`);
+      } else if (data.status === 'success') {
+        nikSedangTerdaftar = null;
+        tampilkanStatusNik('ok', '✓ NIK belum terdaftar tahun ini, aman untuk dilanjutkan.');
+        setTimeout(sembunyikanStatusNik, 3500);
+      } else {
+        sembunyikanStatusNik();
+      }
+    } catch (err) {
+      console.warn('Gagal memeriksa status NIK:', err);
+      sembunyikanStatusNik();
+    }
+  }
+
+  /* =====================================================================
+     MODAL: NIK SUDAH TERDAFTAR (ditampilkan saat doPost() menolak
+     karena status "duplicate")
+     ===================================================================== */
+  function openDupModal(message, noReg) {
+    document.getElementById('dupMessage').textContent = message || 'NIK ini sudah terdaftar tahun ini.';
+    document.getElementById('dupNoReg').textContent = noReg || '-';
+    document.getElementById('dupModal').classList.add('show');
+  }
+  function closeDupModal() {
+    document.getElementById('dupModal').classList.remove('show');
+  }
+
+
   function labelTerpilih(selectEl) {
     if (!selectEl) return '-';
     const opt = selectEl.options[selectEl.selectedIndex];
