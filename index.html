@@ -653,8 +653,8 @@
     <div class="day-gate-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9.5 15.5l1.8 1.8 3.2-3.6" stroke="none"/><path d="M8 15l2 2 4-4" /></svg>
     </div>
-    <h2 id="dayGateTitle">Pendaftaran Ditutup Hari Ini</h2>
-    <p>Layanan registrasi AK.1 daring hanya dibuka pada <strong>hari kerja</strong> (Senin–Jumat) dan tutup pada akhir pekan serta hari libur nasional/cuti bersama.</p>
+    <h2 id="dayGateTitle">Pendaftaran Sedang Ditutup</h2>
+    <p>Layanan registrasi AK.1 daring hanya dibuka pada <strong>hari kerja (Senin–Jumat)</strong>, pukul <strong>08.00–16.00 WITA</strong>, di luar hari libur nasional/cuti bersama.</p>
     <div class="day-gate-date" id="dayGateDate">-</div>
     <p id="dayGateReason" style="font-weight:600; color:var(--red);"></p>
     <div class="day-gate-hours">
@@ -1065,6 +1065,14 @@
 
         <div class="faq-item">
           <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Jam berapa saja formulir ini bisa diisi dan dikirim?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Formulir hanya dapat dikirim pada pukul <b>08.00–16.00 WITA</b>, hari Senin–Jumat. Di luar jam tersebut, halaman akan otomatis terkunci meskipun harinya adalah hari kerja. Pengecekan jam memakai jam server (WITA), bukan jam di perangkat Anda, agar tetap akurat di mana pun Anda berada.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
             Apakah data yang saya isi tersimpan jika saya keluar dari halaman?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
@@ -1259,6 +1267,10 @@
     }
 
     checkWorkday();
+    // Cek ulang tiap 30 detik — supaya kalau halaman dibiarkan terbuka
+    // dan melewati batas jam 08.00/16.00 WITA (atau pergantian hari),
+    // gerbang otomatis terbuka/tertutup tanpa perlu reload halaman.
+    setInterval(checkWorkday, 30000);
     setupFileDropExtras();
     restoreDraft();
     setupAutosaveListeners();
@@ -1854,6 +1866,9 @@
       } else if (result.status === "duplicate") {
         openDupModal(result.message, result.no_reg);
         toast('error', 'NIK sudah terdaftar', `Nomor registrasi sebelumnya: ${result.no_reg}`, 6500);
+      } else if (result.status === "closed") {
+        toast('error', 'Pendaftaran ditolak server', result.message || 'Saat ini di luar jam layanan.', 7000);
+        checkWorkday(); // segarkan gerbang di tampilan supaya sinkron dengan keputusan server
       } else {
         toast('error', 'Gagal menyimpan data', result.message || 'Silakan coba kirim kembali beberapa saat lagi.', 7000);
       }
@@ -1903,11 +1918,71 @@
   }
 
   /* =====================================================================
-     GERBANG HARI KERJA — Senin s/d Jumat, dicek juga terhadap kalender
-     hari libur nasional Indonesia (jika API tersedia). Sabtu & Minggu
-     selalu wajib libur terlepas dari hasil API.
+     GERBANG HARI & JAM KERJA
+     - Hari kerja: Senin–Jumat (Sabtu & Minggu wajib libur), dicek juga
+       terhadap kalender hari libur nasional Indonesia (kalau API bisa
+       diakses).
+     - Jam kerja: 08.00–16.00 WITA. Di luar jam ini, form ikut terkunci
+       meskipun harinya hari kerja biasa.
+     - SEMUA pengecekan waktu memakai zona waktu WITA (Asia/Makassar)
+       yang dihitung ulang dari waktu server, BUKAN jam di perangkat
+       pengunjung — supaya pengunjung dari luar Wakatobi/zona waktu
+       lain (atau yang jam HP-nya salah setel) tetap dinilai memakai
+       jam WITA yang sebenarnya.
      ===================================================================== */
   const HOLIDAY_API = 'https://api-harilibur.vercel.app/api';
+  const JAM_BUKA_LAYANAN  = 8;  // 08:00 WITA
+  const JAM_TUTUP_LAYANAN = 16; // 16:00 WITA (layanan tutup TEPAT pukul ini)
+
+  // Cache hasil cek hari libur nasional per tanggal, supaya pengecekan
+  // ulang berkala (setInterval) tidak memanggil API setiap kali —
+  // cukup sekali per tanggal, sisanya cuma hitung jam/menit lokal.
+  let cacheLiburNasional = { tanggal: null, nama: null };
+
+  /** Ambil komponen tanggal & jam SAAT INI dalam zona waktu WITA (Asia/Makassar). */
+  function getWaktuWITA() {
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Makassar',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', hourCycle: 'h23', weekday: 'short'
+    });
+    const bagian = {};
+    fmt.formatToParts(now).forEach(p => { bagian[p.type] = p.value; });
+
+    const petaHari = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    const jam = parseInt(bagian.hour, 10) % 24; // jaga-jaga kalau ada locale yg kasih "24"
+
+    return {
+      tahun: parseInt(bagian.year, 10),
+      bulan: parseInt(bagian.month, 10),
+      tanggal: parseInt(bagian.day, 10),
+      jam: jam,
+      menit: parseInt(bagian.minute, 10),
+      hari: petaHari[bagian.weekday],
+      tanggalStr: `${bagian.year}-${bagian.month}-${bagian.day}` // format YYYY-MM-DD utk dibandingkan dgn API libur
+    };
+  }
+
+  /** Ambil nama libur nasional untuk tanggal tertentu, memakai cache per tanggal. */
+  async function ambilNamaLiburNasional(tanggalStr, tahun) {
+    if (cacheLiburNasional.tanggal === tanggalStr) return cacheLiburNasional.nama;
+    let nama = null;
+    try {
+      const res = await fetch(`${HOLIDAY_API}?year=${tahun}`);
+      if (res.ok) {
+        const data = await res.json();
+        const match = Array.isArray(data) ? data.find(h => h.holiday_date === tanggalStr && h.is_national_holiday) : null;
+        if (match) nama = match.holiday_name;
+      }
+    } catch (err) {
+      console.warn('Gagal memeriksa kalender hari libur nasional (memakai pengecekan hari/jam kerja biasa):', err);
+    }
+    cacheLiburNasional = { tanggal: tanggalStr, nama };
+    return nama;
+  }
+
+  let gateSudahDitampilkanSekali = false;
 
   async function checkWorkday() {
     const banner = document.getElementById('workdayBanner');
@@ -1917,51 +1992,58 @@
     const gateReason = document.getElementById('dayGateReason');
     const submitBtn = document.getElementById('submitBtn');
 
-    const now = new Date();
-    const hari = now.getDay(); // 0=Minggu ... 6=Sabtu
-    const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][hari];
-    const tglTampil = now.toLocaleDateString('id-ID', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+    const w = getWaktuWITA();
+    const namaHari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'][w.hari];
+    const jamTampil = String(w.jam).padStart(2, '0') + '.' + String(w.menit).padStart(2, '0');
+    const tglObj = new Date(w.tahun, w.bulan - 1, w.tanggal);
+    const tglTampil = tglObj.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
     let terkunci = false;
     let alasanList = [];
 
-    if (hari === 0 || hari === 6) {
+    // ---- Cek akhir pekan ----
+    if (w.hari === 0 || w.hari === 6) {
       terkunci = true;
       alasanList.push(`Hari ini ${namaHari}, termasuk akhir pekan yang wajib libur.`);
     }
 
-    // Cek kalender hari libur nasional Indonesia
-    let namaLibur = null;
-    try {
-      const tahun = now.getFullYear();
-      const res = await fetch(`${HOLIDAY_API}?year=${tahun}`);
-      if (res.ok) {
-        const data = await res.json();
-        const pad = n => String(n).padStart(2, '0');
-        const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-        const match = Array.isArray(data) ? data.find(h => h.holiday_date === todayStr && h.is_national_holiday) : null;
-        if (match) namaLibur = match.holiday_name;
+    // ---- Cek jam kerja (08.00–16.00 WITA) ----
+    const dalamJamKerja = w.jam >= JAM_BUKA_LAYANAN && w.jam < JAM_TUTUP_LAYANAN;
+    if (!dalamJamKerja) {
+      terkunci = true;
+      if (w.jam < JAM_BUKA_LAYANAN) {
+        alasanList.push(`Saat ini pukul ${jamTampil} WITA — layanan baru buka pukul 08.00 WITA.`);
+      } else {
+        alasanList.push(`Saat ini pukul ${jamTampil} WITA — layanan sudah tutup sejak pukul 16.00 WITA.`);
       }
-    } catch (err) {
-      console.warn('Gagal memeriksa kalender hari libur nasional (memakai pengecekan hari kerja biasa):', err);
     }
 
+    // ---- Cek kalender hari libur nasional Indonesia ----
+    const namaLibur = await ambilNamaLiburNasional(w.tanggalStr, w.tahun);
     if (namaLibur) {
       terkunci = true;
       alasanList.push(`Hari ini ditetapkan sebagai hari libur nasional: "${namaLibur}".`);
     }
 
     if (terkunci) {
-      gateDate.textContent = tglTampil;
+      gateDate.textContent = `${tglTampil}, pukul ${jamTampil} WITA`;
       gateReason.textContent = alasanList.join(' ');
       gate.classList.add('show');
       document.documentElement.style.overflow = 'hidden';
       if (submitBtn) submitBtn.disabled = true;
       if (banner) banner.style.background = 'rgba(193,39,45,.28)';
-      if (bannerText) bannerText.textContent = '🔒 Pendaftaran ditutup hari ini — layanan hanya buka Senin–Jumat (di luar hari libur nasional).';
-      toast('error', 'Pendaftaran ditutup hari ini', 'Silakan kembali pada hari kerja berikutnya.', 6000);
+      if (bannerText) bannerText.textContent = `🔒 Pendaftaran ditutup saat ini (${namaHari}, ${jamTampil} WITA) — layanan hanya buka Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional.`;
+      if (!gateSudahDitampilkanSekali) {
+        toast('error', 'Pendaftaran ditutup saat ini', 'Silakan kembali pada jam & hari layanan berikutnya.', 6000);
+        gateSudahDitampilkanSekali = true;
+      }
     } else {
-      if (bannerText) bannerText.textContent = `✅ Layanan dibuka hari ini (${namaHari}). Anda dapat melengkapi & mengirim formulir.`;
+      gate.classList.remove('show');
+      document.documentElement.style.overflow = '';
+      if (submitBtn) submitBtn.disabled = false;
+      if (banner) banner.style.background = 'rgba(255,255,255,.14)';
+      if (bannerText) bannerText.textContent = `✅ Layanan dibuka sekarang (${namaHari}, ${jamTampil} WITA). Jam layanan: 08.00–16.00 WITA, Senin–Jumat.`;
+      gateSudahDitampilkanSekali = false;
     }
   }
 
