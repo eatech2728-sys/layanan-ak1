@@ -576,6 +576,18 @@
   }
   .day-gate-wa svg{width:16px; height:16px;}
 
+  .day-gate-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center;}
+  .day-gate-actions .day-gate-wa{margin-top:0;}
+  .day-gate-close-btn{
+    appearance:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    background:#F1F5F9; color:var(--ink); border:1.5px solid var(--line);
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px;
+    transition:background .15s, border-color .15s;
+  }
+  .day-gate-close-btn:hover{background:#E4EAF0; border-color:#C7D2DC;}
+  .day-gate-close-btn svg{width:15px; height:15px; flex:0 0 auto;}
+  .day-gate-close-note{font-size:11px; color:var(--ink-soft); margin-top:10px;}
+
   /* ---------- Banner status hari kerja (di dalam halaman, non-blocking untuk info) ---------- */
   .workday-banner{
     max-width:640px; margin:0 auto 4px; padding:9px 16px; border-radius:8px;
@@ -660,10 +672,17 @@
     <div class="day-gate-hours">
       Jam layanan: Senin–Jumat, 08.00–16.00 WITA. Silakan kembali pada hari kerja berikutnya untuk mengisi formulir ini.
     </div>
-    <a class="day-gate-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20jadwal%20pendaftaran%20AK.1" target="_blank">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
-      Tanya Admin via WhatsApp
-    </a>
+    <div class="day-gate-actions">
+      <button type="button" class="day-gate-close-btn" onclick="tutupGateManual()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Tutup, Lihat Persyaratan
+      </button>
+      <a class="day-gate-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20jadwal%20pendaftaran%20AK.1" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
+        Tanya Admin via WhatsApp
+      </a>
+    </div>
+    <p class="day-gate-close-note">Anda tetap bisa melihat-lihat formulir & persyaratan yang dibutuhkan, namun data baru dapat dikirim saat jam layanan.</p>
   </div>
 </div>
 
@@ -1736,10 +1755,19 @@
   function handleFormSubmitClick(event) {
     event.preventDefault();
 
-    const gate = document.getElementById('dayGate');
-    if (gate && gate.classList.contains('show')) {
-      toast('error', 'Pendaftaran ditutup hari ini', 'Layanan hanya menerima pendaftaran pada hari kerja (Senin–Jumat, di luar hari libur nasional).', 6000);
+    // Pakai status OTORITATIF (layananTerkunci), BUKAN sekadar apakah
+    // gerbang sedang terlihat — karena pengguna bisa saja sudah menutup
+    // gerbang secara manual (tombol "Tutup, Lihat Persyaratan") padahal
+    // layanan tetap tutup. Kalau masih terkunci, paksa gerbang tampil
+    // lagi (mengabaikan status "ditutup manual" sebelumnya) supaya jelas
+    // kenapa pengiriman ditolak.
+    if (layananTerkunci) {
+      gateDitutupManual = false;
+      const gate = document.getElementById('dayGate');
+      gate.classList.add('show');
+      document.documentElement.style.overflow = 'hidden';
       gate.scrollIntoView({ behavior: 'smooth' });
+      toast('error', 'Pendaftaran ditutup saat ini', 'Layanan hanya menerima pendaftaran pada hari & jam kerja (Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional).', 6000);
       return;
     }
 
@@ -1996,7 +2024,22 @@
     return nama;
   }
 
-  let gateSudahDitampilkanSekali = false;
+  // Status OTORITATIF: dipakai handleFormSubmitClick untuk memblokir
+  // pengiriman, terlepas dari apakah gerbangnya sedang terlihat atau
+  // sudah ditutup manual oleh pengguna.
+  let layananTerkunci = false;
+  // Apakah pengguna sudah menutup gerbang secara manual (tombol
+  // "Tutup, Lihat Persyaratan") SELAGI layanan masih tertutup — kalau
+  // true, gerbang tidak dipaksa muncul lagi oleh pengecekan berkala,
+  // HANYA oleh percobaan submit (lihat handleFormSubmitClick) atau
+  // saat status baru saja berubah dari buka -> tutup.
+  let gateDitutupManual = false;
+  // Status terkunci pada pengecekan SEBELUMNYA, dipakai untuk mendeteksi
+  // transisi "baru saja tertutup" (mis. baru lewat jam 16.00 sementara
+  // halaman dibiarkan terbuka) supaya notifikasi & gerbang tetap muncul
+  // fresh di momen itu meskipun sebelumnya pernah ditutup manual saat
+  // kondisi masih terbuka.
+  let statusTerkunciSebelumnya = null;
 
   async function checkWorkday() {
     const banner = document.getElementById('workdayBanner');
@@ -2039,26 +2082,62 @@
       alasanList.push(`Hari ini ditetapkan sebagai hari libur nasional: "${namaLibur}".`);
     }
 
+    layananTerkunci = terkunci; // status otoritatif, dipakai di luar fungsi ini juga
+
+    // Isi teks gerbang selalu disegarkan, supaya kapan pun gerbang
+    // ditampilkan (baik otomatis maupun dipaksa oleh percobaan submit),
+    // informasinya akurat.
+    gateDate.textContent = `${tglTampil}, pukul ${jamTampil} WITA`;
+    gateReason.textContent = alasanList.join(' ');
+
+    // Baru saja masuk kondisi tertutup? (halaman baru dibuka dalam
+    // keadaan tutup, ATAU baru saja lewat jam 16.00/masuk hari libur
+    // sementara halaman dibiarkan terbuka.) Reset status "ditutup
+    // manual" supaya notifikasi ini dianggap kejadian baru.
+    const baruSajaTertutup = terkunci && (statusTerkunciSebelumnya === false || statusTerkunciSebelumnya === null);
+    if (baruSajaTertutup) gateDitutupManual = false;
+
     if (terkunci) {
-      gateDate.textContent = `${tglTampil}, pukul ${jamTampil} WITA`;
-      gateReason.textContent = alasanList.join(' ');
-      gate.classList.add('show');
-      document.documentElement.style.overflow = 'hidden';
       if (submitBtn) submitBtn.disabled = true;
       if (banner) banner.style.background = 'rgba(193,39,45,.28)';
       if (bannerText) bannerText.textContent = `🔒 Pendaftaran ditutup saat ini (${namaHari}, ${jamTampil} WITA) — layanan hanya buka Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional.`;
-      if (!gateSudahDitampilkanSekali) {
-        toast('error', 'Pendaftaran ditutup saat ini', 'Silakan kembali pada jam & hari layanan berikutnya.', 6000);
-        gateSudahDitampilkanSekali = true;
+
+      if (!gateDitutupManual) {
+        gate.classList.add('show');
+        document.documentElement.style.overflow = 'hidden';
+        if (baruSajaTertutup) {
+          toast('error', 'Pendaftaran ditutup saat ini', 'Silakan kembali pada jam & hari layanan berikutnya.', 6000);
+        }
       }
+      // Kalau gateDitutupManual true, gerbang SENGAJA dibiarkan
+      // tersembunyi (lihat tutupGateManual()) supaya pengguna bisa
+      // melihat-lihat formulir & persyaratan; tombol kirim tetap
+      // dinonaktifkan di atas, dan gerbang akan dipaksa muncul lagi
+      // kalau mereka benar-benar mencoba mengirim (handleFormSubmitClick).
     } else {
       gate.classList.remove('show');
       document.documentElement.style.overflow = '';
       if (submitBtn) submitBtn.disabled = false;
       if (banner) banner.style.background = 'rgba(255,255,255,.14)';
       if (bannerText) bannerText.textContent = `✅ Layanan dibuka sekarang (${namaHari}, ${jamTampil} WITA). Jam layanan: 08.00–16.00 WITA, Senin–Jumat.`;
-      gateSudahDitampilkanSekali = false;
+      gateDitutupManual = false;
     }
+
+    statusTerkunciSebelumnya = terkunci;
+  }
+
+  /** Dipanggil oleh tombol "Tutup, Lihat Persyaratan" pada gerbang hari/jam kerja. */
+  function tutupGateManual() {
+    gateDitutupManual = true;
+    const gate = document.getElementById('dayGate');
+    gate.classList.remove('show');
+    document.documentElement.style.overflow = '';
+    toast(
+      'info',
+      'Anda bisa melihat-lihat persyaratan',
+      'Formulir tetap tidak dapat dikirim di luar jam layanan. Notifikasi ini akan muncul lagi jika Anda mencoba mengirim data.',
+      5500
+    );
   }
 
   /* =====================================================================
