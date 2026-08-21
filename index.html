@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registrasi AK.1 — Dinas Koperasi, UKM dan Tenaga Kerja Kab. Wakatobi</title>
+<title>Registrasi AK.1 — Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kab. Wakatobi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -544,6 +544,19 @@
   .fab-wa svg{width:26px; height:26px;}
   @media (max-width:860px){ .fab-wa{right:14px; bottom:14px; width:48px; height:48px;} .fab-wa svg{width:23px; height:23px;} }
 
+  /* ---------- Floating "Lihat Panduan" button — bertumpuk di atas tombol WhatsApp ---------- */
+  .fab-panduan{
+    position:fixed; right:18px; bottom:84px; z-index:60;
+    width:54px; height:54px; border-radius:50%; background:var(--blue-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(11,61,116,.5);
+    border:none; cursor:pointer; transition:transform .18s ease;
+  }
+  .fab-panduan:hover{transform:scale(1.07);}
+  .fab-panduan svg{width:24px; height:24px;}
+  @media (max-width:860px){
+    .fab-panduan{right:14px; bottom:72px; width:48px; height:48px;}
+    .fab-panduan svg{width:21px; height:21px;}
+  }
   /* ---------- Gerbang Hari Kerja (blokir hari libur) ---------- */
   .day-gate{
     position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(11,61,116,.94));
@@ -618,81 +631,42 @@
     .faq-a, .progress-fill, .toast, .modal-box, .day-gate-card{transition:none !important; animation:none !important;}
   }
 
-  /* ---------- Panduan Alur Pendaftaran ---------- */
-  .flow-section{
-    position:relative; background:linear-gradient(180deg, #F5FAFF 0%, #ffffff 140px);
-    border:1.5px solid var(--blue-line); border-radius:14px;
-    padding:30px 22px 30px; box-shadow:0 2px 4px rgba(11,61,116,.06), 0 14px 32px -16px rgba(11,61,116,.28);
-    margin:18px 0 26px; overflow:hidden;
-  }
-  .flow-section::before{
-    content:""; position:absolute; top:0; left:0; right:0; height:5px;
-    background:linear-gradient(90deg, var(--blue-deep), var(--blue), #21A66B);
-  }
+  /* ---------- Panduan Alur Pendaftaran (isi modal) ---------- */
+  .flow-modal-box{max-width:600px;}
+  .flow-modal-intro{margin:0 0 18px; font-size:13px; color:var(--ink-soft); line-height:1.6;}
+  .flow-modal-intro b{color:var(--ink);}
 
-  .flow-head{text-align:center; margin-bottom:28px;}
-  .flow-head .flow-kicker{
-    display:inline-flex; align-items:center; gap:7px; font-family:'Inter',sans-serif;
-    font-size:14px; letter-spacing:.03em; text-transform:uppercase; color:#fff; font-weight:800;
-    margin-bottom:12px; padding:6px 16px; border-radius:999px;
-    background:linear-gradient(90deg, var(--blue-deep), var(--blue));
-    box-shadow:0 4px 12px -3px rgba(15,95,166,.45);
-  }
-  @media (prefers-reduced-motion: no-preference){
-    .flow-head .flow-kicker{ animation:flowKickerPulse 2.6s ease-in-out infinite; }
-  }
-  @keyframes flowKickerPulse{
-    0%, 100%{ box-shadow:0 4px 12px -3px rgba(15,95,166,.45); transform:scale(1); }
-    50%{ box-shadow:0 6px 18px -3px rgba(15,95,166,.6); transform:scale(1.035); }
-  }
-  .flow-head .flow-kicker svg{width:16px; height:16px; flex:0 0 auto;}
-  .flow-head h2{margin:0 0 8px; font-size:clamp(20px,3vw,24px); font-weight:800; color:var(--blue-deep); letter-spacing:-.01em;}
-  .flow-head p{margin:0 auto; font-size:13.5px; color:var(--ink-soft); max-width:58ch; line-height:1.6;}
-  .flow-head p b{color:var(--ink);}
-
-  .flow-steps{display:grid; grid-template-columns:repeat(5, 1fr); gap:8px;}
-  @media (max-width:900px){ .flow-steps{grid-template-columns:1fr; gap:0;} }
+  .flow-steps{display:flex; flex-direction:column;}
 
   .flow-step{
-    position:relative; display:flex; flex-direction:column; align-items:center; text-align:center;
-    padding:14px 10px; border-radius:12px; transition:background .2s ease, transform .2s ease;
+    position:relative; display:flex; flex-direction:row; text-align:left; align-items:flex-start;
+    gap:14px; padding:8px 4px 24px;
   }
-  .flow-step:hover{background:rgba(255,255,255,.9); transform:translateY(-3px);}
+  .flow-step:last-child{padding-bottom:4px;}
   .flow-step:not(:last-child)::after{
-    content:""; position:absolute; top:41px; left:calc(50% + 32px); right:calc(-50% + 32px);
-    height:2px; background:repeating-linear-gradient(90deg, var(--blue-line) 0 6px, transparent 6px 11px); z-index:0;
-  }
-  @media (max-width:900px){
-    .flow-step{flex-direction:row; text-align:left; align-items:flex-start; gap:14px; padding:10px 8px 26px; }
-    .flow-step:hover{transform:translateX(3px);}
-    .flow-step:last-child{padding-bottom:10px;}
-    .flow-step:not(:last-child)::after{
-      content:""; position:absolute; top:68px; bottom:4px; left:31px; right:auto;
-      width:2px; height:auto; background:repeating-linear-gradient(180deg, var(--blue-line) 0 6px, transparent 6px 11px);
-    }
+    content:""; position:absolute; top:58px; bottom:2px; left:24px; right:auto;
+    width:2px; height:auto; background:var(--blue-line);
   }
 
   .flow-icon{
-    width:56px; height:56px; border-radius:50%; background:linear-gradient(150deg, var(--blue-deep), var(--blue-mid)); color:#fff;
-    display:flex; align-items:center; justify-content:center; margin-bottom:12px;
-    position:relative; z-index:1; box-shadow:0 6px 14px -3px rgba(11,61,116,.45); flex:0 0 auto;
+    width:48px; height:48px; border-radius:50%; background:var(--blue-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:1; flex:0 0 auto;
   }
-  .flow-icon svg{width:25px; height:25px;}
-  @media (max-width:900px){ .flow-icon{margin-bottom:0;} }
+  .flow-icon svg{width:21px; height:21px;}
 
   .flow-step-num{
-    position:absolute; top:-5px; right:-5px; width:22px; height:22px; border-radius:50%;
-    background:#fff; border:2.5px solid var(--ok); color:var(--ok);
-    font-family:'Space Mono',monospace; font-weight:800; font-size:10.5px;
+    position:absolute; top:-4px; right:-4px; width:20px; height:20px; border-radius:50%;
+    background:#fff; border:2px solid var(--ok); color:var(--ok);
+    font-family:'Space Mono',monospace; font-weight:800; font-size:10px;
     display:flex; align-items:center; justify-content:center;
   }
   .flow-step-body{min-width:0;}
-  .flow-step-title{font-weight:800; font-size:14px; color:var(--blue-deep); margin:0 0 6px;}
+  .flow-step-title{font-weight:700; font-size:13.5px; color:var(--blue-deep); margin:0 0 5px;}
   .flow-step-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0;}
   .flow-step-badge{
-    display:inline-block; margin-top:9px; font-size:10.5px; font-weight:800; padding:4px 11px; border-radius:999px;
-    background:linear-gradient(90deg, var(--ok), #29B876); color:#fff; letter-spacing:.02em;
-    box-shadow:0 3px 8px -2px rgba(31,122,77,.45);
+    display:inline-block; margin-top:8px; font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px;
+    background:var(--blue-soft); color:var(--blue-deep); letter-spacing:.02em;
   }
 
   /* ---------- Popup Pembuka (Selamat Datang) ---------- */
@@ -749,12 +723,6 @@
   .entry-btn.whatsapp .entry-btn-icon{background:#25D366; color:#fff;}
   .entry-btn.whatsapp .entry-btn-title{color:#166534;}
   .entry-btn.whatsapp .entry-btn-sub{color:#4B7A63;}
-  .flow-section.flow-highlight{ animation:flowHighlightPulse 1.8s ease; }
-  @keyframes flowHighlightPulse{
-    0%{ box-shadow:0 0 0 0 rgba(15,95,166,.55); }
-    30%{ box-shadow:0 0 0 12px rgba(15,95,166,0); }
-    100%{ box-shadow:0 2px 4px rgba(11,61,116,.06), 0 14px 32px -16px rgba(11,61,116,.28); }
-  }
 
   /* ---------- Indikator status pengecekan NIK (real-time) ---------- */
   .nik-status{
@@ -888,71 +856,6 @@
     <h1>Formulir Pendaftaran AK-1</h1>
     <p>Lengkapi Seluruh Data dan Upload Dokumen Persyaratan Sesuai Petunjuk.</p>
     <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#EAF3FC;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
-  </div>
-
-  <!-- PANDUAN ALUR PENDAFTARAN -->
-  <div class="flow-section">
-    <div class="flow-head">
-      <span class="flow-kicker">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M11 5.882V19.24a1.76 1.76 0 0 1-3.417.592l-2.147-6.15M18 13a3 3 0 1 0 0-6M5.436 13.683A4.001 4.001 0 0 1 7 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7c-.775 0-1.518.13-2.209.373"/></svg>
-        Baca Dulu Sebelum Mengisi
-      </span>
-      <h2>📋 Alur Pendaftaran AK-1</h2>
-      <p>Ikuti <b>5 langkah</b> berikut dari mulai mengisi formulir daring ini sampai kartu AK-1 Anda terbit. Siapkan dokumen di bawah lebih dulu agar proses pengisian lebih cepat dan tidak perlu mengulang.</p>
-    </div>
-    <div class="flow-steps">
-      <div class="flow-step">
-        <div class="flow-icon">
-          <span class="flow-step-num">1</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
-        </div>
-        <div class="flow-step-body">
-          <p class="flow-step-title">Siapkan Dokumen</p>
-          <p class="flow-step-desc">Foto/scan KTP, Akta Lahir, Kartu Keluarga, ijazah <b>semua jenjang pendidikan</b> (dari SD sampai jenjang terakhir), sertifikat pelatihan/kursus <i>(jika ada)</i>, dan yang terakhir pas foto berlatar merah. Maks 3MB per berkas (foto besar dikompres otomatis).</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">
-          <span class="flow-step-num">2</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </div>
-        <div class="flow-step-body">
-          <p class="flow-step-title">Isi Formulir Online</p>
-          <p class="flow-step-desc">Lengkapi 4 bagian formulir di halaman ini. Hanya bisa dikirim pada hari kerja, Senin–Jumat pukul 08.00–16.00 WITA.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">
-          <span class="flow-step-num">3</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-        </div>
-        <div class="flow-step-body">
-          <p class="flow-step-title">Dapat Nomor Registrasi</p>
-          <p class="flow-step-desc">Setelah terkirim, nomor registrasi resmi & kode QR bukti pendaftaran langsung tampil dan bisa diunduh sebagai gambar.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">
-          <span class="flow-step-num">4</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
-        </div>
-        <div class="flow-step-body">
-          <p class="flow-step-title">Verifikasi ke Kantor</p>
-          <p class="flow-step-desc">Datang ke kantor Dinas membawa 2 lembar pas foto fisik berlatar merah & dokumen asli sesuai yang diunggah.</p>
-        </div>
-      </div>
-      <div class="flow-step">
-        <div class="flow-icon">
-          <span class="flow-step-num">5</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
-        </div>
-        <div class="flow-step-body">
-          <p class="flow-step-title">Kartu AK-1 Terbit</p>
-          <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor Dinas.</p>
-          <span class="flow-step-badge">Selesai ✓</span>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- MOBILE PROGRESS -->
@@ -1306,7 +1209,7 @@
             Kenapa pas foto harus berlatar merah?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="faq-a"><p>Pas foto berlatar merah adalah ketentuan standar untuk kartu AK-1 sesuai format yang berlaku di Dinas Koperasi, UKM dan Tenaga Kerja. Latar warna lain berpotensi ditolak saat verifikasi berkas fisik.</p></div>
+          <div class="faq-a"><p>Pas foto berlatar merah adalah ketentuan standar untuk kartu AK-1 sesuai format yang berlaku di Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja. Latar warna lain berpotensi ditolak saat verifikasi berkas fisik.</p></div>
         </div>
 
         <div class="faq-item">
@@ -1314,7 +1217,7 @@
             Berapa lama proses verifikasi setelah mengisi formulir ini?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="faq-a"><p>Setelah data terkirim, Anda akan mendapat nomor registrasi resmi. Verifikasi berkas fisik dan pencetakan kartu AK-1 dilakukan langsung di kantor Dinas pada hari kerja, dengan membawa dokumen asli yang sesuai dengan yang diunggah.</p></div>
+          <div class="faq-a"><p>Setelah data terkirim, Anda akan mendapat nomor registrasi resmi. Verifikasi berkas fisik dan pencetakan kartu AK-1 dilakukan langsung di kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja pada hari kerja, dengan membawa dokumen asli yang sesuai dengan yang diunggah.</p></div>
         </div>
 
         <div class="faq-item">
@@ -1392,7 +1295,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    &copy; <span id="footerYear"></span> <strong>Dinas Koperasi, UKM dan Tenaga Kerja Kabupaten Wakatobi</strong>. Seluruh hak cipta dilindungi.
+    &copy; <span id="footerYear"></span> <strong>Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kabupaten Wakatobi</strong>. Seluruh hak cipta dilindungi.
   </div>
 </footer>
 
@@ -1413,7 +1316,7 @@
       <div class="bukti-head">
         <div>
           <strong>Bukti Registrasi AK.1</strong>
-          <span id="buktiNamaTampil">Dinas Koperasi, UKM & Tenaga Kerja Wakatobi</span>
+          <span id="buktiNamaTampil">Dinas Koperasi, Usaha Kecil Menengah & Tenaga Kerja Wakatobi</span>
         </div>
       </div>
       <div id="buktiQr"></div>
@@ -1450,7 +1353,7 @@
 <div class="stamp-overlay" id="stampOverlay">
   <div class="stamp-graphic">
     <strong>BERKAS DITERIMA</strong>
-    <span>AK.1 — DINAS KOPERASI, UKM & TENAGA KERJA</span>
+    <span>AK.1 — DINAS KOPERASI, USAHA KECIL MENENGAH & TENAGA KERJA</span>
     <small id="stampDate"></small>
   </div>
 </div>
@@ -1490,7 +1393,7 @@
       </div>
       <p id="dupMessage" style="color:var(--ink); font-size:13.5px; line-height:1.6;"></p>
       <div class="dup-noreg" id="dupNoReg">-</div>
-      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin dinas.</p>
+      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin AK-1.</p>
       <a class="day-gate-wa" style="margin-top:10px;" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20soal%20status%20pendaftaran%20AK.1%20saya%20yang%20terdeteksi%20sudah%20terdaftar" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
         Hubungi Admin via WhatsApp
@@ -1499,10 +1402,82 @@
   </div>
 </div>
 
+<!-- MODAL: PANDUAN ALUR PENDAFTARAN -->
+<div class="modal-overlay" id="flowModal">
+  <div class="modal-box flow-modal-box">
+    <div class="modal-head">
+      <h3>📋 Alur Pendaftaran AK-1</h3>
+      <button type="button" class="modal-close" onclick="closeFlowModal()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="flow-modal-intro">Ikuti <b>5 langkah</b> berikut dari mulai mengisi formulir daring ini sampai kartu AK-1 Anda terbit. Siapkan dokumen di bawah lebih dulu agar proses pengisian lebih cepat dan tidak perlu mengulang.</p>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="flow-icon">
+            <span class="flow-step-num">1</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
+          </div>
+          <div class="flow-step-body">
+            <p class="flow-step-title">Siapkan Dokumen</p>
+            <p class="flow-step-desc">Foto/scan KTP, Akta Lahir, Kartu Keluarga, ijazah <b>semua jenjang pendidikan</b> (dari SD sampai jenjang terakhir), sertifikat pelatihan/kursus <i>(jika ada)</i>, dan yang terakhir pas foto berlatar merah. Maks 3MB per berkas (foto besar dikompres otomatis).</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon">
+            <span class="flow-step-num">2</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="flow-step-body">
+            <p class="flow-step-title">Isi Formulir Online</p>
+            <p class="flow-step-desc">Lengkapi 4 bagian formulir di halaman ini. Hanya bisa dikirim pada hari kerja, Senin–Jumat pukul 08.00–16.00 WITA.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon">
+            <span class="flow-step-num">3</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          </div>
+          <div class="flow-step-body">
+            <p class="flow-step-title">Dapat Nomor Registrasi</p>
+            <p class="flow-step-desc">Setelah terkirim, nomor registrasi resmi & kode QR bukti pendaftaran langsung tampil dan bisa diunduh sebagai gambar.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon">
+            <span class="flow-step-num">4</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+          </div>
+          <div class="flow-step-body">
+            <p class="flow-step-title">Verifikasi ke Kantor</p>
+            <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja membawa 2 lembar pas foto fisik berlatar merah & dokumen asli sesuai yang diunggah.</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-icon">
+            <span class="flow-step-num">5</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+          </div>
+          <div class="flow-step-body">
+            <p class="flow-step-title">Kartu AK-1 Terbit</p>
+            <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja.</p>
+            <span class="flow-step-badge">Selesai ✓</span>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn-confirm-review" style="width:100%; margin-top:6px;" onclick="closeFlowModal()">Mengerti, Lanjut Mengisi</button>
+    </div>
+  </div>
+</div>
+
 <!-- FLOATING BUTTON WHATSAPP ADMIN -->
 <a class="fab-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20AK.1" target="_blank" aria-label="Hubungi Admin via WhatsApp" title="Hubungi Admin via WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
 </a>
+
+<!-- FLOATING BUTTON: BUKA PANDUAN ALUR PENDAFTARAN (bertumpuk di atas WhatsApp) -->
+<button type="button" class="fab-panduan" onclick="bukaPanduanUlang()" aria-label="Lihat panduan alur pendaftaran" title="Lihat panduan alur pendaftaran">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M11 5.882V19.24a1.76 1.76 0 0 1-3.417.592l-2.147-6.15M18 13a3 3 0 1 0 0-6M5.436 13.683A4.001 4.001 0 0 1 7 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7c-.775 0-1.518.13-2.209.373"/></svg>
+</button>
 
 <script>
   window.addEventListener("DOMContentLoaded", async function() {
@@ -2410,14 +2385,32 @@
     if (!layananTerkunci) document.documentElement.style.overflow = '';
   }
 
+  /* =====================================================================
+     MODAL PANDUAN ALUR PENDAFTARAN
+     ===================================================================== */
+
+  /** Tombol mengambang "Panduan" & tombol "Lihat Panduan" pada popup pembuka. */
+  function openFlowModal() {
+    const modal = document.getElementById('flowModal');
+    if (!modal) return;
+    modal.classList.add('show');
+  }
+
+  /** Tombol "×" / "Mengerti, Lanjut Mengisi" pada modal panduan. */
+  function closeFlowModal() {
+    const modal = document.getElementById('flowModal');
+    if (modal) modal.classList.remove('show');
+  }
+
   /** Tombol "Lihat Panduan Alur Pendaftaran" pada popup pembuka. */
   function entryLihatPanduan() {
     hideEntryPopup();
-    const target = document.querySelector('.flow-section');
-    if (!target) return;
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    target.classList.add('flow-highlight');
-    setTimeout(() => target.classList.remove('flow-highlight'), 1800);
+    openFlowModal();
+  }
+
+  /** Tombol mengambang "Panduan" — bisa dipakai kapan pun saat mengisi formulir. */
+  function bukaPanduanUlang() {
+    openFlowModal();
   }
 
   /** Tombol "Mulai Mendaftar" pada popup pembuka. */
