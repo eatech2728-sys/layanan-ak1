@@ -1,0 +1,22 @@
+{
+  "name": "Formulir AK-1 - Dinas Koperasi UKM & Tenaga Kerja Wakatobi",
+  "short_name": "AK-1 Wakatobi",
+  "description": "Formulir pendaftaran kartu pencari kerja (AK-1) daring — Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kabupaten Wakatobi",
+  "start_url": "./index.html",
+  "id": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#F6FAFE",
+  "theme_color": "#0B3D74",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["government", "productivity", "business"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
