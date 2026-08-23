@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registrasi AK.1 — Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kab. Wakatobi</title>
+
+<!-- ================= PWA: manifest, ikon, meta tag ================= -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B3D74">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AK-1 Wakatobi">
+<!-- ==================================================================== -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -557,6 +570,27 @@
     .fab-panduan{right:14px; bottom:72px; width:48px; height:48px;}
     .fab-panduan svg{width:21px; height:21px;}
   }
+
+  /* ---------- Banner "Pasang Aplikasi" (PWA install prompt) ---------- */
+  .install-banner{
+    position:fixed; top:0; left:0; right:0; z-index:9994;
+    background:linear-gradient(90deg, var(--blue-deep), var(--blue));
+    color:#fff; padding:10px 14px; display:none; align-items:center; gap:12px;
+    transform:translateY(-100%); transition:transform .3s ease; box-shadow:0 4px 14px -4px rgba(11,61,116,.4);
+  }
+  .install-banner.show{display:flex; transform:translateY(0);}
+  .install-banner img{width:32px; height:32px; border-radius:8px; flex:0 0 auto; background:#fff; padding:3px;}
+  .install-banner-text{flex:1; min-width:0;}
+  .install-banner-text strong{display:block; font-size:12.5px; font-weight:800;}
+  .install-banner-text span{display:block; font-size:10.5px; opacity:.85; margin-top:1px;}
+  .install-btn{
+    background:#fff; color:var(--blue-deep); border:none; padding:7px 14px; border-radius:7px;
+    font-weight:800; font-size:11.5px; cursor:pointer; flex:0 0 auto; font-family:'Inter',sans-serif;
+  }
+  .install-btn-close{
+    background:none; border:none; color:rgba(255,255,255,.8); font-size:20px; cursor:pointer;
+    padding:0 2px; flex:0 0 auto; line-height:1;
+  }
   /* ---------- Gerbang Hari Kerja (blokir hari libur) ---------- */
   .day-gate{
     position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(11,61,116,.94));
@@ -755,6 +789,17 @@
 
 <!-- OFFLINE BANNER -->
 <div class="offline-banner" id="offlineBanner">⚠️ Koneksi internet terputus. Data yang sudah diisi tetap tersimpan otomatis di perangkat ini.</div>
+
+<!-- BANNER "PASANG APLIKASI" (PWA install prompt) -->
+<div class="install-banner" id="installBanner">
+  <img src="icons/icon-192.png" alt="">
+  <span class="install-banner-text">
+    <strong>Pasang Aplikasi AK-1 di HP Anda</strong>
+    <span id="installBannerSub">Akses lebih cepat tanpa buka browser lagi — gratis, tanpa perlu Play Store.</span>
+  </span>
+  <button type="button" class="install-btn" id="installBtn" onclick="pasangAplikasi()">Pasang</button>
+  <button type="button" class="install-btn-close" onclick="tutupInstallBanner()" aria-label="Tutup">&times;</button>
+</div>
 
 <!-- TOAST NOTIFICATIONS -->
 <div class="toast-stack" id="toastStack" aria-live="polite"></div>
@@ -1316,7 +1361,7 @@
       <div class="bukti-head">
         <div>
           <strong>Bukti Registrasi AK.1</strong>
-          <span id="buktiNamaTampil">Dinas Koperasi, Usaha Kecil Menengah & Tenaga Kerja Wakatobi</span>
+          <span id="buktiNamaTampil">Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kab. Wakatobi</span>
         </div>
       </div>
       <div id="buktiQr"></div>
@@ -1393,7 +1438,7 @@
       </div>
       <p id="dupMessage" style="color:var(--ink); font-size:13.5px; line-height:1.6;"></p>
       <div class="dup-noreg" id="dupNoReg">-</div>
-      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin AK-1.</p>
+      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja.</p>
       <a class="day-gate-wa" style="margin-top:10px;" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20soal%20status%20pendaftaran%20AK.1%20saya%20yang%20terdeteksi%20sudah%20terdaftar" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
         Hubungi Admin via WhatsApp
@@ -1480,6 +1525,128 @@
 </button>
 
 <script>
+  /* =====================================================================
+     PWA — REGISTRASI SERVICE WORKER & PROMPT "PASANG APLIKASI"
+     =====================================================================
+     - Service worker (sw.js) di-daftarkan supaya form ini bisa dipasang
+       ke Home Screen HP dan tetap bisa dibuka (versi tersimpan) walau
+       koneksi sedang lambat/putus sesaat. Data live (nomor registrasi,
+       status jam kerja, cek NIK, kirim data) TETAP selalu langsung ke
+       server — lihat catatan di sw.js, domain Apps Script sengaja
+       tidak pernah di-cache.
+     - Banner "Pasang Aplikasi" ditampilkan memakai event resmi browser
+       (beforeinstallprompt) di Android/Chrome/Edge. Safari iOS TIDAK
+       mendukung event ini sama sekali, jadi pengguna iPhone/iPad diberi
+       instruksi manual ("Tambahkan ke Layar Utama" lewat tombol Share).
+     - Kalau pengguna menutup banner (tombol ×), banner tidak akan
+       muncul lagi selama 14 hari di perangkat & browser yang sama
+       (disimpan di localStorage) — supaya tidak mengganggu berulang.
+     ===================================================================== */
+  const INSTALL_DISMISS_KEY = 'ak1_install_dismissed_at';
+  const INSTALL_DISMISS_HARI = 14;
+  let deferredInstallPrompt = null;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch((err) => {
+        console.warn('Gagal mendaftarkan service worker (PWA tetap bisa dipakai seperti web biasa):', err);
+      });
+    });
+  }
+
+  function bannerBolehTampilLagi() {
+    try {
+      const tersimpan = localStorage.getItem(INSTALL_DISMISS_KEY);
+      if (!tersimpan) return true;
+      const hariBerlalu = (Date.now() - Number(tersimpan)) / 86400000;
+      return hariBerlalu >= INSTALL_DISMISS_HARI;
+    } catch (err) {
+      return true;
+    }
+  }
+
+  function sedangDalamModeStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  function tampilkanInstallBanner() {
+    if (sedangDalamModeStandalone()) return; // sudah terpasang & sedang dibuka sbg app, tak perlu tawarkan lagi
+    if (!bannerBolehTampilLagi()) return;
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.classList.add('show');
+  }
+
+  function tutupInstallBanner() {
+    const banner = document.getElementById('installBanner');
+    if (banner) banner.classList.remove('show');
+    try { localStorage.setItem(INSTALL_DISMISS_KEY, String(Date.now())); } catch (err) { /* abaikan */ }
+  }
+
+  // Android/Chrome/Edge: browser menyiapkan event ini kalau form sudah
+  // memenuhi syarat PWA (manifest valid, service worker aktif, dilayani
+  // lewat HTTPS). Kita tahan dulu (preventDefault) supaya bisa dipicu
+  // manual lewat tombol "Pasang" di banner kita sendiri, bukan popup
+  // bawaan browser yang muncul tiba-tiba.
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    tampilkanInstallBanner();
+  });
+
+  async function pasangAplikasi() {
+    const banner = document.getElementById('installBanner');
+    if (!deferredInstallPrompt) {
+      // Kemungkinan besar iOS Safari (tidak mendukung prompt otomatis)
+      // atau browser yang belum memenuhi syarat — beri instruksi manual.
+      if (banner) banner.classList.remove('show');
+      showIosInstallHelp();
+      return;
+    }
+    deferredInstallPrompt.prompt();
+    try {
+      const pilihan = await deferredInstallPrompt.userChoice;
+      if (pilihan.outcome === 'accepted') {
+        toast('success', 'Berhasil dipasang!', 'Buka aplikasi AK-1 langsung dari layar utama HP Anda mulai sekarang.', 6000);
+      }
+    } catch (err) {
+      console.warn('Prompt pasang aplikasi dibatalkan/gagal:', err);
+    }
+    deferredInstallPrompt = null;
+    if (banner) banner.classList.remove('show');
+  }
+
+  function isPerangkatIOS() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPad mode desktop
+  }
+
+  function showIosInstallHelp() {
+    toast(
+      'info',
+      '📲 Tambahkan ke Layar Utama',
+      'Di Safari: ketuk ikon Share (kotak dengan panah ke atas) di bagian bawah layar, lalu pilih "Tambahkan ke Layar Utama".',
+      9000
+    );
+  }
+
+  // Safari iOS tidak pernah memicu beforeinstallprompt sama sekali,
+  // jadi tampilkan banner instruksi manual sendiri kalau terdeteksi
+  // perangkat iOS dan belum berjalan dalam mode standalone (sudah
+  // terpasang) serta belum pernah ditutup dalam 14 hari terakhir.
+  window.addEventListener('DOMContentLoaded', () => {
+    if (isPerangkatIOS() && !sedangDalamModeStandalone() && bannerBolehTampilLagi()) {
+      const sub = document.getElementById('installBannerSub');
+      if (sub) sub.textContent = 'Ketuk tombol Share di Safari lalu pilih "Tambahkan ke Layar Utama".';
+      const btn = document.getElementById('installBtn');
+      if (btn) btn.textContent = 'Caranya';
+      tampilkanInstallBanner();
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    tutupInstallBanner();
+  });
+
   window.addEventListener("DOMContentLoaded", async function() {
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
