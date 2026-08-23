@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.eatech2728_sys.twa",
+        "sha256_cert_fingerprints": ["84:50:0A:2C:BA:DF:BE:DF:4D:07:48:82:1C:CB:DA:FE:77:F0:DB:26:CA:87:5E:88:D3:FD:36:13:28:72:F4:F1"]
+      }
+    }]
