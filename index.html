@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Registrasi AK.1 — Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kab. Wakatobi</title>
+<title>Registrasi AK.1 — Dinas Koperasi, Usaha Menengah dan Tenaga Kerja Kab. Wakatobi</title>
 
 <!-- ================= PWA: manifest, ikon, meta tag ================= -->
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0B3D74">
+<meta name="theme-color" content="#0A2E52">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -19,32 +19,47 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
-    --blue-deep:#0B3D74;
-    --blue:#0F5FA6;
-    --blue-mid:#1673C4;
-    --blue-soft:#EAF3FC;
-    --blue-line:#CFE0F2;
+    --blue-deep:#0A2E52;
+    --blue:#0C7EBE;
+    --blue-mid:#139AC7;
+    --blue-soft:#E7F6FA;
+    --blue-line:#C9EAF0;
+    --cyan:#14C4C4;
+    --cyan-soft:#E1F9F7;
+    --coral:#FF6B54;
     --white:#FFFFFF;
-    --ink:#1D2530;
-    --ink-soft:#5B6672;
-    --line:#DCE6F0;
+    --ink:#101B2B;
+    --ink-soft:#56707A;
+    --line:#D9EAEE;
     --red:#C1272D;
-    --ok:#1F7A4D;
-    --radius:10px;
-    --shadow: 0 1px 2px rgba(11,61,116,.05), 0 8px 24px -12px rgba(11,61,116,.20);
+    --ok:#12A87D;
+    --radius:12px;
+    --shadow: 0 2px 6px rgba(10,46,82,.08), 0 14px 34px -16px rgba(10,46,82,.30);
+    --glow: 0 0 0 3px rgba(20,196,196,.20);
   }
   *{box-sizing:border-box;}
+  h1, h2, h3, h4,
+  .agency-line1, .agency-line2, .sec-title, .modal-head h3,
+  .entry-card h2, .day-gate-card h2, .notif-success-title,
+  .stamp-graphic strong, .flow-head-title, .review-group h4,
+  .dup-box .dup-noreg, .flow-kicker, .rail-title{
+    font-family:'Space Grotesk', 'Inter', sans-serif;
+    letter-spacing:-.01em;
+  }
   html{scroll-behavior:smooth;}
   body{
     margin:0;
     position:relative;
+    background-color:#F4FBFC;
     background-image:
-      linear-gradient(180deg, rgba(234,243,252,.78) 0%, rgba(246,250,254,.78) 260px, rgba(246,250,254,.78) 100%);
+      radial-gradient(900px 480px at 15% -8%, rgba(20,196,196,.16) 0%, rgba(20,196,196,0) 60%),
+      radial-gradient(700px 420px at 100% 0%, rgba(12,126,190,.14) 0%, rgba(12,126,190,0) 55%),
+      linear-gradient(180deg, rgba(231,246,250,.85) 0%, rgba(244,251,252,.9) 260px, rgba(244,251,252,.9) 100%);
     background-repeat:no-repeat;
     background-position:top center;
     background-size:100% auto;
@@ -80,7 +95,7 @@
   .letterhead-block{
     position:relative; max-wth:1180px; margin:22px auto 0; padding:26px 24px;
     background-image:
-      linear-gradient(135deg, rgba(11,61,116,.50) 0%, rgba(15,95,166,.42) 100%),
+      linear-gradient(135deg, rgba(10,46,82,.50) 0%, rgba(12,126,190,.42) 100%),
       url('sampul_dinkop.jpg');
     background-size:cover; background-position:center;
     border-radius:12px; box-shadow:var(--shadow); overflow:hidden;
@@ -102,7 +117,7 @@
     text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
   }
   .agency-line2{
-    font-weight:700; font-size:clamp(13px,2vw,16px); color:#EAF3FC;
+    font-weight:700; font-size:clamp(13px,2vw,16px); color:#E7F6FA;
     text-transform:uppercase; margin:0; letter-spacing:.01em;
     text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
   }
@@ -152,8 +167,8 @@
   .tab.done .stamp-badge .num{opacity:0;}
   .tab.done .stamp-badge svg{opacity:1; transform:translate(-50%,-50%) scale(1);}
   .tab.done .stamp-badge{
-    border-color:var(--blue); background:var(--blue); color:#fff;
-    box-shadow:0 2px 6px rgba(15,95,166,.35);
+    border-color:var(--ok); background:var(--ok); color:#fff;
+    box-shadow:0 2px 8px rgba(18,168,125,.4);
   }
   .tab-label{font-size:13.5px; font-weight:600; line-height:1.25;}
   .tab-sub{font-size:11px; color:var(--ink-soft); font-weight:400;}
@@ -163,7 +178,7 @@
   @media (max-width:860px){ .mobile-rail{display:flex; gap:8px; justify-content:space-between; border-bottom:1px solid var(--line);} }
   .mobile-rail .m-tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:var(--ink-soft);}
   .mobile-rail .dot{width:22px; height:22px; border-radius:50%; border:2px solid var(--line); background:#fff; display:flex; align-items:center; justify-content:center; transition:all .3s;}
-  .mobile-rail .m-tab.done .dot{background:var(--blue); border-color:var(--blue);}
+  .mobile-rail .m-tab.done .dot{background:var(--ok); border-color:var(--ok);}
   .mobile-rail .m-tab.done .dot::after{content:"✓"; color:#fff; font-size:11px; font-weight:700;}
   .mobile-rail span.mlabel{font-size:9.5px; text-align:center; font-weight:600; letter-spacing:.01em;}
 
@@ -171,13 +186,19 @@
   .form-section{
     background:#fff; border:1px solid var(--line); border-radius:var(--radius);
     padding:22px 24px 26px; box-shadow:var(--shadow); margin-bottom:22px;
-    position:relative; scroll-margin-top:20px;
+    position:relative; scroll-margin-top:20px; overflow:hidden;
+  }
+  .form-section::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--blue-deep), var(--cyan));
+    opacity:.85;
   }
   .sec-head{display:flex; align-items:center; gap:12px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--blue-line);}
   .sec-num{
-    flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:var(--blue-deep);
+    flex:0 0 auto; width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(150deg, var(--blue-deep), var(--blue));
     display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace;
-    font-weight:700; color:#fff; font-size:14px;
+    font-weight:700; color:#fff; font-size:14px; box-shadow:0 3px 8px -2px rgba(10,46,82,.5);
   }
   .sec-title{font-weight:700; font-size:18px; color:var(--blue-deep); margin:0;}
   .sec-hint{font-size:12px; color:var(--ink-soft); margin:2px 0 0;}
@@ -191,14 +212,14 @@
     display:block; font-weight:600; font-size:12.5px; color:var(--blue-deep); margin-bottom:6px;
     letter-spacing:.01em;
   }
-  label .req{color:var(--red); font-weight:700;}
+  label .req{color:var(--coral); font-weight:700;}
   input[type="text"], input[type="date"], input[type="email"]{
     width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:7px;
     background:#F9FBFD; font-family:'Inter',sans-serif; font-size:14px; color:var(--ink);
     outline:none; transition: border-color .15s, box-shadow .15s, background .15s;
   }
   input[type="text"]::placeholder, input[type="date"]::placeholder{color:#9CAAB8;}
-  input:focus{border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(15,95,166,.16);}
+  input:focus{border-color:var(--blue); background:#fff; box-shadow:var(--glow);}
   input:invalid:not(:placeholder-shown){border-color:#E2A2A2;}
 
   select{
@@ -206,7 +227,7 @@
     background:#F9FBFD; font-family:'Inter',sans-serif; font-size:14px; color:var(--ink);
     outline:none; transition: border-color .15s, box-shadow .15s, background .15s;
   }
-  select:focus{border-color:var(--blue); background:#fff; box-shadow:0 0 0 3px rgba(15,95,166,.16);}
+  select:focus{border-color:var(--blue); background:#fff; box-shadow:var(--glow);}
 
   /* file upload */
   .file-drop{
@@ -220,7 +241,7 @@
   .file-drop.filled{border-style:solid; border-color:var(--ok); background:#F1F9F4;}
   .file-drop.filled .file-drop-inner{color:var(--ok); font-weight:600;}
   .file-name{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .file-drop.compressing{border-color:var(--blue); background:#EAF3FC;}
+  .file-drop.compressing{border-color:var(--blue); background:#E7F6FA;}
   .file-compress-note{display:block; font-size:10.5px; color:var(--blue); margin-top:4px; font-weight:600;}
 
   .divider-row{border-bottom:1px solid var(--blue-line); padding-bottom:18px; margin-bottom:18px;}
@@ -254,14 +275,15 @@
   .submit-wrap{text-align:center; margin-top:6px;}
   .stamp-btn{
     appearance:none; border:none; cursor:pointer;
-    background:var(--blue-deep); color:#fff; font-family:'Inter',sans-serif;
+    background:linear-gradient(120deg, var(--blue-deep) 0%, var(--blue) 68%, var(--cyan) 130%);
+    color:#fff; font-family:'Inter',sans-serif;
     font-weight:700; letter-spacing:.02em; font-size:14.5px;
-    padding:15px 34px; border-radius:8px; box-shadow:0 6px 0 #082C55, var(--shadow);
-    transition: transform .08s ease, box-shadow .08s ease; display:inline-flex; align-items:center; gap:10px;
+    padding:15px 34px; border-radius:10px; box-shadow:0 6px 0 #071F38, 0 10px 26px -10px rgba(20,196,196,.55);
+    transition: transform .08s ease, box-shadow .18s ease, filter .18s ease; display:inline-flex; align-items:center; gap:10px;
   }
-  .stamp-btn:hover{filter:brightness(1.06);}
-  .stamp-btn:active{transform:translateY(4px); box-shadow:0 2px 0 #082C55;}
-  .stamp-btn:disabled{background:#A9B4BF; box-shadow:0 6px 0 #8A939C; cursor:not-allowed;}
+  .stamp-btn:hover{filter:brightness(1.08); box-shadow:0 6px 0 #071F38, 0 12px 32px -8px rgba(20,196,196,.7);}
+  .stamp-btn:active{transform:translateY(4px); box-shadow:0 2px 0 #071F38;}
+  .stamp-btn:disabled{background:#A9B4BF; box-shadow:0 6px 0 #8A939C; cursor:not-allowed; filter:none;}
   .stamp-btn svg{width:18px; height:18px;}
   .loading-text{color:var(--blue-deep); font-weight:600; font-size:13px; margin-top:14px;}
   .loading-text.hidden{display:none;}
@@ -273,7 +295,7 @@
     100%{opacity:1; transform:scale(1);}
   }
   .stamp-overlay{
-    position:fixed; inset:0; background:rgba(11,61,116,.35); z-index:100;
+    position:fixed; inset:0; background:rgba(10,46,82,.35); z-index:100;
     display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s;
   }
   .stamp-overlay.show{opacity:1; pointer-events:auto;}
@@ -297,20 +319,20 @@
     border-left:4px solid transparent;
   }
   aside.rail a.tab.active{
-    background-color:#EFF6FF;
-    border-left-color:#2563EB;
+    background-color:var(--cyan-soft);
+    border-left-color:var(--cyan);
   }
-  aside.rail a.tab.active .tab-label{ color:#1D4ED8; }
-  aside.rail a.tab.active .tab-sub{ color:#1E40AF; }
-  aside.rail a.tab.active .stamp-badge{ background-color:#2563EB; border-color:#2563EB; }
+  aside.rail a.tab.active .tab-label{ color:var(--blue-deep); }
+  aside.rail a.tab.active .tab-sub{ color:var(--blue); }
+  aside.rail a.tab.active .stamp-badge{ background-color:var(--cyan); border-color:var(--cyan); box-shadow:0 0 0 4px rgba(20,196,196,.18); }
 
   aside.rail a.tab.done{
-    background-color:#F0FDF4;
-    border-left-color:#16A34A;
+    background-color:#EAFBF4;
+    border-left-color:var(--ok);
   }
-  aside.rail a.tab.done .tab-label{ color:#15803D; }
-  aside.rail a.tab.done .tab-sub{ color:#166534; }
-  aside.rail a.tab.done .stamp-badge{ background-color:#16A34A; border-color:#16A34A; }
+  aside.rail a.tab.done .tab-label{ color:#0E7A5A; }
+  aside.rail a.tab.done .tab-sub{ color:#12946E; }
+  aside.rail a.tab.done .stamp-badge{ background-color:var(--ok); border-color:var(--ok); }
 
   /* ---------- Notifikasi sukses (pop-up kanan atas) ---------- */
   .permanent-notification-wrapper{
@@ -347,7 +369,7 @@
   .notif-success-head{ text-align:center; margin-bottom:14px; }
   .notif-success-icon{ font-size:28px; display:block; margin-bottom:4px; }
   .notif-success-title{ margin:0; font-size:15px; font-weight:800; color:var(--ok); }
-  .notif-success-sub{ margin:4px 0 0; font-size:12px; color:#5B6672; }
+  .notif-success-sub{ margin:4px 0 0; font-size:12px; color:#56707A; }
   .instruction-text{ font-size:13px; color:#333; line-height:1.5; margin:0 0 12px; }
   .social-links{ display:flex; flex-direction:column; gap:8px; }
   .btn-link{
@@ -361,7 +383,7 @@
   /* ---------- FOOTER ---------- */
   .site-footer{
     position:relative; z-index:1; margin-top:40px;
-    background:var(--blue-deep); color:#EAF3FC;
+    background:var(--blue-deep); color:#E7F6FA;
   }
   .site-footer .footer-inner{
     max-width:1180px; margin:0 auto; padding:36px 24px 22px;
@@ -372,10 +394,10 @@
     margin:0 0 12px; font-size:13px; font-weight:700; text-transform:uppercase;
     letter-spacing:.06em; color:#fff; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,.18);
   }
-  .footer-col p{margin:0 0 6px; font-size:13px; line-height:1.6; color:#CFE0F2;}
-  .footer-col a{color:#CFE0F2; text-decoration:none;}
+  .footer-col p{margin:0 0 6px; font-size:13px; line-height:1.6; color:#C9EAF0;}
+  .footer-col a{color:#C9EAF0; text-decoration:none;}
   .footer-col a:hover{color:#fff; text-decoration:underline;}
-  .footer-contact-item{display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; font-size:13px; color:#CFE0F2;}
+  .footer-contact-item{display:flex; gap:8px; align-items:flex-start; margin-bottom:8px; font-size:13px; color:#C9EAF0;}
   .footer-contact-item svg{flex:0 0 auto; width:16px; height:16px; margin-top:1px; color:#8FB8E0;}
   .footer-social{display:flex; flex-direction:column; gap:8px;}
   .footer-social a{
@@ -385,7 +407,7 @@
   }
   .footer-social a:hover{background:rgba(255,255,255,.14); text-decoration:none;}
   .footer-bottom{
-    border-top:4px solid #082C55; background:#082C55;
+    border-top:4px solid #071F38; background:#071F38;
     text-align:center; padding:12px 18px; font-size:11.5px; color:#9FBBDA; letter-spacing:.02em;
   }
   .footer-bottom strong{color:#fff;}
@@ -406,12 +428,13 @@
 
   /* ---------- Progress bar visual ---------- */
   .progress-track{
-    width:100%; max-width:420px; margin:0 auto; height:9px; border-radius:999px;
-    background:#E4EDF6; overflow:hidden; box-shadow:inset 0 1px 2px rgba(11,61,116,.12);
+    width:100%; max-width:420px; margin:0 auto; height:10px; border-radius:999px;
+    background:#E1F2F5; overflow:hidden; box-shadow:inset 0 1px 3px rgba(10,46,82,.16);
   }
   .progress-fill{
     height:100%; width:0%; border-radius:999px;
-    background:linear-gradient(90deg, var(--blue) 0%, #21A66B 100%);
+    background:linear-gradient(90deg, var(--blue-deep) 0%, var(--cyan) 65%, var(--ok) 100%);
+    box-shadow:0 0 10px rgba(20,196,196,.55);
     transition:width .45s cubic-bezier(.3,.8,.3,1);
   }
   .progress-pct{
@@ -438,7 +461,7 @@
   }
   .toast{
     pointer-events:auto; display:flex; align-items:flex-start; gap:10px;
-    background:#fff; border-radius:9px; padding:13px 14px; box-shadow:0 10px 28px -8px rgba(11,61,116,.35), 0 2px 6px rgba(0,0,0,.06);
+    background:#fff; border-radius:9px; padding:13px 14px; box-shadow:0 10px 28px -8px rgba(10,46,82,.35), 0 2px 6px rgba(0,0,0,.06);
     border-left:4px solid var(--blue); opacity:0; transform:translateY(-14px) scale(.98);
     transition:opacity .28s ease, transform .28s ease;
   }
@@ -533,14 +556,15 @@
   .faq-section{margin-bottom:22px;}
   .faq-item{
     background:#fff; border:1px solid var(--line); border-radius:9px; margin-bottom:8px;
-    overflow:hidden; box-shadow:var(--shadow);
+    overflow:hidden; box-shadow:var(--shadow); transition:border-color .2s;
   }
+  .faq-item:hover{border-color:var(--blue-line);}
   .faq-q{
     width:100%; text-align:left; background:none; border:none; cursor:pointer;
     padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;
     font-weight:700; font-size:13.5px; color:var(--blue-deep);
   }
-  .faq-q svg{flex:0 0 auto; width:16px; height:16px; transition:transform .25s;}
+  .faq-q svg{flex:0 0 auto; width:16px; height:16px; transition:transform .25s; color:var(--cyan);}
   .faq-item.open .faq-q svg{transform:rotate(180deg);}
   .faq-a{max-height:0; overflow:hidden; transition:max-height .3s ease;}
   .faq-a p{margin:0; padding:0 16px 15px; font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
@@ -561,7 +585,7 @@
   .fab-panduan{
     position:fixed; right:18px; bottom:84px; z-index:60;
     width:54px; height:54px; border-radius:50%; background:var(--blue-deep); color:#fff;
-    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(11,61,116,.5);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(10,46,82,.5);
     border:none; cursor:pointer; transition:transform .18s ease;
   }
   .fab-panduan:hover{transform:scale(1.07);}
@@ -576,7 +600,7 @@
     position:fixed; top:0; left:0; right:0; z-index:9994;
     background:linear-gradient(90deg, var(--blue-deep), var(--blue));
     color:#fff; padding:10px 14px; display:none; align-items:center; gap:12px;
-    transform:translateY(-100%); transition:transform .3s ease; box-shadow:0 4px 14px -4px rgba(11,61,116,.4);
+    transform:translateY(-100%); transition:transform .3s ease; box-shadow:0 4px 14px -4px rgba(10,46,82,.4);
   }
   .install-banner.show{display:flex; transform:translateY(0);}
   .install-banner img{width:32px; height:32px; border-radius:8px; flex:0 0 auto; background:#fff; padding:3px;}
@@ -593,7 +617,7 @@
   }
   /* ---------- Gerbang Hari Kerja (blokir hari libur) ---------- */
   .day-gate{
-    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(11,61,116,.94));
+    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(10,46,82,.94));
     z-index:99999; display:none; align-items:center; justify-content:center; padding:20px;
   }
   .day-gate.show{display:flex;}
@@ -683,9 +707,11 @@
   }
 
   .flow-icon{
-    width:48px; height:48px; border-radius:50%; background:var(--blue-deep); color:#fff;
+    width:48px; height:48px; border-radius:50%;
+    background:linear-gradient(150deg, var(--blue-deep), var(--blue));
+    color:#fff;
     display:flex; align-items:center; justify-content:center;
-    position:relative; z-index:1; flex:0 0 auto;
+    position:relative; z-index:1; flex:0 0 auto; box-shadow:0 3px 10px -2px rgba(10,46,82,.5);
   }
   .flow-icon svg{width:21px; height:21px;}
 
@@ -700,12 +726,12 @@
   .flow-step-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0;}
   .flow-step-badge{
     display:inline-block; margin-top:8px; font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px;
-    background:var(--blue-soft); color:var(--blue-deep); letter-spacing:.02em;
+    background:linear-gradient(90deg, var(--ok), var(--cyan)); color:#fff; letter-spacing:.02em;
   }
 
   /* ---------- Popup Pembuka (Selamat Datang) ---------- */
   .entry-overlay{
-    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.72), rgba(11,61,116,.72));
+    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.72), rgba(10,46,82,.72));
     z-index:9995; display:none; align-items:center; justify-content:center; padding:20px;
     backdrop-filter:blur(3px);
   }
@@ -740,7 +766,7 @@
   .entry-btn-sub{display:block; font-size:11.5px; margin-top:1px; font-weight:500;}
 
   .entry-btn.primary{
-    background:linear-gradient(90deg, var(--blue-deep), var(--blue)); box-shadow:0 6px 16px -4px rgba(15,95,166,.5);
+    background:linear-gradient(90deg, var(--blue-deep), var(--blue)); box-shadow:0 6px 16px -4px rgba(12,126,190,.5);
   }
   .entry-btn.primary .entry-btn-icon{background:rgba(255,255,255,.2); color:#fff;}
   .entry-btn.primary .entry-btn-title{color:#fff;}
@@ -900,7 +926,7 @@
     </div>
     <h1>Formulir Pendaftaran AK-1</h1>
     <p>Lengkapi Seluruh Data dan Upload Dokumen Persyaratan Sesuai Petunjuk.</p>
-    <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#EAF3FC;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
+    <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#E7F6FA;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
   </div>
 
   <!-- MOBILE PROGRESS -->
@@ -1254,7 +1280,7 @@
             Kenapa pas foto harus berlatar merah?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="faq-a"><p>Pas foto berlatar merah adalah ketentuan standar untuk kartu AK-1 sesuai format yang berlaku di Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja. Latar warna lain berpotensi ditolak saat verifikasi berkas fisik.</p></div>
+          <div class="faq-a"><p>Pas foto berlatar merah adalah ketentuan standar untuk kartu AK-1 sesuai format yang berlaku di Dinas Koperasi, Usaha Menengah dan Tenaga Kerja. Latar warna lain berpotensi ditolak saat verifikasi berkas fisik.</p></div>
         </div>
 
         <div class="faq-item">
@@ -1262,7 +1288,7 @@
             Berapa lama proses verifikasi setelah mengisi formulir ini?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="faq-a"><p>Setelah data terkirim, Anda akan mendapat nomor registrasi resmi. Verifikasi berkas fisik dan pencetakan kartu AK-1 dilakukan langsung di kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja pada hari kerja, dengan membawa dokumen asli yang sesuai dengan yang diunggah.</p></div>
+          <div class="faq-a"><p>Setelah data terkirim, Anda akan mendapat nomor registrasi resmi. Verifikasi berkas fisik dan pencetakan kartu AK-1 dilakukan langsung di kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja pada hari kerja, dengan membawa dokumen asli yang sesuai dengan yang diunggah.</p></div>
         </div>
 
         <div class="faq-item">
@@ -1361,7 +1387,7 @@
       <div class="bukti-head">
         <div>
           <strong>Bukti Registrasi AK.1</strong>
-          <span id="buktiNamaTampil">Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kab. Wakatobi</span>
+          <span id="buktiNamaTampil">Dinas Koperasi, Usaha Kecil Menengah & Tenaga Kerja Kabupaten Wakatobi</span>
         </div>
       </div>
       <div id="buktiQr"></div>
@@ -1398,7 +1424,7 @@
 <div class="stamp-overlay" id="stampOverlay">
   <div class="stamp-graphic">
     <strong>BERKAS DITERIMA</strong>
-    <span>AK.1 — DINAS KOPERASI, USAHA KECIL MENENGAH & TENAGA KERJA</span>
+    <span>AK.1 — DINAS KOPERASI, USAHA KECIL MENENGAH DAN TENAGA KERJA</span>
     <small id="stampDate"></small>
   </div>
 </div>
@@ -1438,7 +1464,7 @@
       </div>
       <p id="dupMessage" style="color:var(--ink); font-size:13.5px; line-height:1.6;"></p>
       <div class="dup-noreg" id="dupNoReg">-</div>
-      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja.</p>
+      <p style="font-size:12px; color:var(--ink-soft);">Jika ini bukan kesalahan atau Anda memang perlu mendaftar ulang, silakan hubungi admin Dinas Koperasi, Usaha Menengah dan Tenaga Kerja.</p>
       <a class="day-gate-wa" style="margin-top:10px;" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20soal%20status%20pendaftaran%20AK.1%20saya%20yang%20terdeteksi%20sudah%20terdaftar" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
         Hubungi Admin via WhatsApp
@@ -1494,7 +1520,7 @@
           </div>
           <div class="flow-step-body">
             <p class="flow-step-title">Verifikasi ke Kantor</p>
-            <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja membawa 2 lembar pas foto fisik berlatar merah & dokumen asli sesuai yang diunggah.</p>
+            <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja membawa 2 lembar pas foto fisik berlatar merah & dokumen asli sesuai yang diunggah.</p>
           </div>
         </div>
         <div class="flow-step">
@@ -1504,7 +1530,7 @@
           </div>
           <div class="flow-step-body">
             <p class="flow-step-title">Kartu AK-1 Terbit</p>
-            <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja.</p>
+            <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja.</p>
             <span class="flow-step-badge">Selesai ✓</span>
           </div>
         </div>
@@ -2981,7 +3007,7 @@
       text: `AK1-REG:${noReg}`,
       width: 120,
       height: 120,
-      colorDark: '#0B3D74',
+      colorDark: '#0A2E52',
       colorLight: '#ffffff'
     });
   }
