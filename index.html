@@ -1058,7 +1058,7 @@
        logika pindah-mode terpisah di sini — satu sumber kebenaran. -->
   <div class="mode-switch-banner" id="modeSwitchBanner">
     <span class="mode-switch-label">Mode saat ini: <strong id="modeSwitchLabel">Daftar Baru</strong></span>
-    <button type="button" class="mode-switch-btn" onclick="showEntryPopup()">
+    <button type="button" class="mode-switch-btn" onclick="()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9h8M8 13h5"/></svg>
       Buka Menu Layanan
     </button>
@@ -1914,7 +1914,7 @@
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
 </a>
 
-<button type="button" class="fab-menu" onclick="showEntryPopup()" aria-label="Buka Menu Layanan" title="Buka Menu Layanan">
+<button type="button" class="fab-menu" onclick="()" aria-label="Buka Menu Layanan" title="Buka Menu Layanan">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9h8M8 13h5"/></svg>
 </button>
 
@@ -2538,7 +2538,7 @@
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
       gate.classList.add('show');
-      document.documentElement.style.overflow = 'hidden';
+      updateScrollLock();
       gate.scrollIntoView({ behavior: 'smooth' });
       toast('error', 'Pendaftaran ditutup saat ini', 'Layanan hanya menerima pendaftaran pada hari & jam kerja (Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional).', 6000);
       return;
@@ -2687,7 +2687,7 @@
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
       gate.classList.add('show');
-      document.documentElement.style.overflow = 'hidden';
+      updateScrollLock();
       gate.scrollIntoView({ behavior: 'smooth' });
       toast('error', 'Pendaftaran ditutup saat ini', 'Layanan hanya menerima pengajuan pada hari & jam kerja (Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional).', 6000);
       return;
@@ -3107,14 +3107,14 @@
 
       if (!gateDitutupManual) {
         gate.classList.add('show');
-        document.documentElement.style.overflow = 'hidden';
+        updateScrollLock();
         if (baruSajaTertutup) {
           toast('error', 'Pendaftaran ditutup saat ini', 'Silakan kembali pada jam & hari layanan berikutnya.', 6000);
         }
       }
     } else {
       gate.classList.remove('show');
-      document.documentElement.style.overflow = '';
+      updateScrollLock();
       if (submitBtn) submitBtn.disabled = false;
       if (submitBtnP) submitBtnP.disabled = false;
       if (banner) banner.style.background = 'rgba(255,255,255,.14)';
@@ -3129,7 +3129,7 @@
     gateDitutupManual = true;
     const gate = document.getElementById('dayGate');
     gate.classList.remove('show');
-    document.documentElement.style.overflow = '';
+    updateScrollLock();
     toast(
       'info',
       'Anda bisa melihat-lihat persyaratan',
@@ -3144,20 +3144,31 @@
      tombol mengambang) HANYA memanggil showEntryPopup() — tidak ada
      logika menu duplikat di tempat lain.
      ===================================================================== */
+  /** Satu sumber kebenaran untuk kunci-scroll halaman: overflow hanya dikunci
+    jika day-gate ATAU entry-popup benar-benar sedang tampil di layar. */
+  
+  function updateScrollLock() {
+  const gate = document.getElementById('dayGate');
+  const entry = document.getElementById('entryOverlay');
+  const adaOverlayTampil =
+    (gate && gate.classList.contains('show')) ||
+    (entry && entry.classList.contains('show'));
+  document.documentElement.style.overflow = adaOverlayTampil ? 'hidden' : '';
+}
   function showEntryPopup() {
-    const overlay = document.getElementById('entryOverlay');
-    if (!overlay) return;
-    perbaruiLabelModeDiPopup();
-    overlay.classList.add('show');
-    document.documentElement.style.overflow = 'hidden';
-  }
+  const overlay = document.getElementById('entryOverlay');
+  if (!overlay) return;
+  perbaruiLabelModeDiPopup();
+  overlay.classList.add('show');
+  updateScrollLock();
+}
 
-  function hideEntryPopup() {
-    const overlay = document.getElementById('entryOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('show');
-    if (!layananTerkunci) document.documentElement.style.overflow = '';
-  }
+function hideEntryPopup() {
+  const overlay = document.getElementById('entryOverlay');
+  if (!overlay) return;
+  overlay.classList.remove('show');
+  updateScrollLock();
+}
 
   /** Tampilkan indikator "Sedang mengisi: ..." di dalam popup, kalau pengguna sudah pernah memilih salah satu formulir sebelumnya. */
   function perbaruiLabelModeDiPopup() {
