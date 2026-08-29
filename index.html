@@ -233,6 +233,7 @@
   .file-name{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .file-drop.compressing{border-color:var(--blue); background:#E7F6FA;}
   .file-compress-note{display:block; font-size:10.5px; color:var(--blue); margin-top:4px; font-weight:600;}
+  .file-drop.dragover{border-color:var(--cyan); background:var(--cyan-soft); box-shadow:var(--glow);}
 
   .divider-row{border-bottom:1px solid var(--blue-line); padding-bottom:18px; margin-bottom:18px;}
   .divider-row:last-child{border-bottom:none; padding-bottom:0; margin-bottom:0;}
@@ -284,7 +285,7 @@
   }
   .stamp-overlay{
     position:fixed; inset:0; background:rgba(10,46,82,.35); z-index:100;
-    display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .2s;
+    display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .4s;
   }
   .stamp-overlay.show{opacity:1; pointer-events:auto;}
   .stamp-graphic{
@@ -643,6 +644,8 @@
   }
   .btn-bukti:hover{background:var(--blue-soft);}
   .btn-bukti svg{width:14px; height:14px;}
+  .btn-bukti.whatsapp-share{background:#F0FDF4; border-color:#BBF0D0; color:#166534;}
+  .btn-bukti.whatsapp-share:hover{background:#E1F9EA;}
   #buktiCard{
     background:#fff; border-radius:10px; padding:18px; border:1px solid var(--line);
   }
@@ -906,6 +909,19 @@
   .skm-pending-note.show{display:block;}
   #skmModal .modal-box{max-width:640px;}
   #skmModal textarea:focus{border-color:var(--blue); background:#fff; box-shadow:var(--glow); outline:none;}
+
+  .draft-clear-btn{
+    background:none; border:none; color:var(--ink-soft); font-size:11.5px; font-weight:600;
+    text-decoration:underline; cursor:pointer; margin-top:10px; padding:4px;
+  }
+  .draft-clear-btn:hover{color:var(--red);}
+
+  .nik-cross-warn{
+    display:none; align-items:flex-start; gap:6px; font-size:11.5px; font-weight:600;
+    margin-top:6px; padding:7px 10px; border-radius:6px; background:#FFF4E5; color:#9A5B00;
+  }
+  .nik-cross-warn.show{display:flex;}
+  .nik-cross-warn svg{width:14px; height:14px; flex:0 0 auto; margin-top:1px;}
 </style>
 </head>
 <body>
@@ -932,7 +948,7 @@
 <div class="day-gate" id="dayGate" role="alertdialog" aria-modal="true" aria-labelledby="dayGateTitle">
   <div class="day-gate-card">
     <div class="day-gate-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9.5 15.5l1.8 1.8 3.2-3.6" stroke="none"/><path d="M8 15l2 2 4-4" /></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M9.5 15.5l1.8 1.8 3.2-3.6" stroke="none"/><path d="M8 15l2 2 4-4"/></svg>
     </div>
     <h2 id="dayGateTitle">Pendaftaran Sedang Ditutup</h2>
     <p>Layanan registrasi AK.1 daring hanya dibuka pada <strong>hari kerja (Senin–Jumat)</strong>, pukul <strong>08.00–16.00 WITA</strong>, di luar hari libur nasional/cuti bersama.</p>
@@ -955,13 +971,6 @@
   </div>
 </div>
 
-<!-- ================================================================
-     POPUP "SELAMAT DATANG" — SATU-SATUNYA PUSAT MENU LAYANAN.
-     Semua pilihan (Daftar Baru, Perpanjang, Panduan, Cek Status,
-     Hubungi Admin) ada di sini. Tombol "☰ Menu Layanan" mengambang
-     dan banner status mode DI LUAR popup ini hanya MEMBUKA KEMBALI
-     popup yang sama — tidak ada logika/menu duplikat di tempat lain.
-     ================================================================ -->
 <div class="entry-overlay" id="entryOverlay" role="dialog" aria-modal="true" aria-labelledby="entryTitle">
   <div class="entry-card">
     <div class="entry-emoji">👋</div>
@@ -1053,9 +1062,6 @@
     <p style="margin-top:8px; font-weight:500; font-size:12.5px; color:#E7F6FA;">📎 Foto dari kamera HP yang ukurannya besar akan <b>dikompres otomatis</b> oleh sistem saat dipilih — Anda tidak perlu mengecilkan file secara manual.</p>
   </div>
 
-  <!-- Banner ini HANYA menampilkan status mode saat ini + satu tombol
-       untuk MEMBUKA KEMBALI popup Menu Layanan di atas. Tidak ada
-       logika pindah-mode terpisah di sini — satu sumber kebenaran. -->
   <div class="mode-switch-banner" id="modeSwitchBanner">
     <span class="mode-switch-label">Mode saat ini: <strong id="modeSwitchLabel">Daftar Baru</strong></span>
     <button type="button" class="mode-switch-btn" onclick="showEntryPopup()">
@@ -1134,6 +1140,7 @@
                 <label>NIK (Nomor Induk Kependudukan) <span class="req">*</span></label>
                 <input type="text" id="nik" placeholder="16 Digit Angka NIK" required>
                 <div class="nik-status" id="nikStatus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/></svg><span id="nikStatusText"></span></div>
+                <div class="nik-cross-warn" id="nikCrossWarn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span id="nikCrossWarnText"></span></div>
             </div>
             <div class="field">
               <label>Upload KTP <span class="req">*</span> <span style="color:var(--ink-soft); font-weight:400; font-size:11px;">(Maks 3MB)</span></label>
@@ -1383,6 +1390,11 @@
             <input type="checkbox" id="konfirmasi_fisik" value="Sanggup Membawa" required style="width:auto; margin-right:8px;">
             <span>Saya bersedia menyediakan <b>2 lembar</b> pas foto berlatar belakang merah dan membawa berkas lengkap sesuai dengan yang diupload pada saat melakukan verifikasi sebelum cetak kartu AK-1. <span class="req">*</span></span>
           </div>
+
+          <div class="field checkbox-row" style="padding-top:4px;">
+            <input type="checkbox" id="konfirmasi_privasi" required style="width:auto; margin-right:8px;">
+            <span>Saya menyetujui data pribadi yang saya isi (NIK, data keluarga, pendidikan, dan foto) digunakan oleh Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kabupaten Wakatobi <b>khusus untuk keperluan penerbitan kartu AK-1</b>, sesuai dengan Undang-Undang Pelindungan Data Pribadi. <span class="req">*</span></span>
+          </div>
         </div>
       </div>
 
@@ -1440,7 +1452,15 @@
             Apakah data yang saya isi tersimpan jika saya keluar dari halaman?
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div class="faq-a"><p>Ya. Isian formulir disimpan otomatis di perangkat Anda selama proses pengisian, sehingga jika halaman tertutup tidak sengaja, data dapat dipulihkan saat Anda membuka kembali formulir ini di perangkat dan peramban yang sama.</p></div>
+          <div class="faq-a"><p>Ya. Isian formulir (kecuali berkas yang diunggah) disimpan otomatis di perangkat Anda selama proses pengisian, sehingga jika halaman tertutup tidak sengaja, data dapat dipulihkan saat Anda membuka kembali formulir ini di perangkat dan peramban yang sama. Berkas tetap perlu dipilih ulang.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-q" onclick="toggleFaq(this)">
+            Apakah data pribadi saya aman?
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-a"><p>Data yang Anda isi (termasuk NIK, data keluarga, pendidikan, dan foto) hanya digunakan untuk keperluan penerbitan/perpanjangan kartu AK-1 oleh Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kabupaten Wakatobi, dan tidak dibagikan ke pihak lain di luar keperluan tersebut.</p></div>
         </div>
       </div>
 
@@ -1452,6 +1472,7 @@
           Periksa & Kirim Data
         </button>
         <p id="loadingText" class="loading-text hidden">Sedang memproses & mengunggah berkas ke server, mohon tidak menutup halaman…</p>
+        <button type="button" class="draft-clear-btn" id="btnHapusDraftBaru" onclick="hapusDraftManual()">Hapus draf tersimpan & mulai dari awal</button>
       </div>
 
     </form>
@@ -1600,14 +1621,21 @@
           <input type="checkbox" id="p_konfirmasi_fisik" value="Sanggup Membawa" required style="width:auto; margin-right:8px;">
           <span>Saya bersedia menyediakan <b>2 lembar</b> pas foto berlatar belakang merah, membawa <b>kartu AK-1 lama (jika ada)</b>, dan berkas fisik sesuai yang diupload pada saat verifikasi sebelum cetak kartu AK-1. <span class="req">*</span></span>
         </div>
+        <div class="field checkbox-row" style="padding-top:4px;">
+          <input type="checkbox" id="p_konfirmasi_privasi" required style="width:auto; margin-right:8px;">
+          <span>Saya menyetujui data pribadi yang saya isi digunakan oleh Dinas Koperasi, Usaha Kecil Menengah dan Tenaga Kerja Kabupaten Wakatobi <b>khusus untuk keperluan perpanjangan kartu AK-1</b>, sesuai dengan Undang-Undang Pelindungan Data Pribadi. <span class="req">*</span></span>
+        </div>
       </div>
 
       <div class="submit-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFillPerpanjangan"></div></div>
+        <p class="progress-pct" id="progressPctPerpanjangan">0% lengkap · 0 dari 3 bagian</p>
         <button type="submit" id="submitBtnPerpanjangan" class="stamp-btn" style="margin-top:16px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 12a9 9 0 1 1 2.64 6.36M3 12v6m0-6h6"/></svg>
           Periksa & Kirim Pengajuan Perpanjangan
         </button>
         <p id="loadingTextPerpanjangan" class="loading-text hidden">Sedang memproses & mengunggah berkas ke server, mohon tidak menutup halaman…</p>
+        <button type="button" class="draft-clear-btn" id="btnHapusDraftPerpanjangan" onclick="hapusDraftPerpanjanganManual()">Hapus draf tersimpan & mulai dari awal</button>
       </div>
 
     </form>
@@ -1630,7 +1658,7 @@
         <span>0821-9746-2749 (WhatsApp Admin)</span>
       </div>
       <div class="footer-contact-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" stroke="none"/><path d="M22 6l-10 7L2 6" /><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" stroke="none"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
         <span>dinkopukmnaker@wakatobikab.go.id</span>
       </div>
       <div class="footer-contact-item">
@@ -1653,7 +1681,7 @@
   </div>
 </footer>
 
-<div class="permanent-notification-wrapper" id="permanentNotification">
+<div class="permanent-notification-wrapper" id="permanentNotification" role="dialog" aria-modal="true" aria-labelledby="notifSuccessTitle">
   <button type="button" class="close-x-btn" id="btnTutupNotifikasiX" onclick="tutupNotifikasi()" aria-label="Tutup notifikasi">&times;</button>
 
   <div class="info-box">
@@ -1679,6 +1707,10 @@
       <button type="button" class="btn-bukti" onclick="unduhBuktiSebagaiGambar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
         Unduh Bukti (Gambar)
+      </button>
+      <button type="button" class="btn-bukti whatsapp-share" onclick="bagikanBuktiWhatsapp()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
+        Bagikan via WhatsApp
       </button>
     </div>
 
@@ -1710,7 +1742,7 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="filePreviewModal">
+<div class="modal-overlay" id="filePreviewModal" role="dialog" aria-modal="true" aria-labelledby="filePreviewTitle">
   <div class="modal-box">
     <div class="modal-head">
       <h3 id="filePreviewTitle">Pratinjau Berkas</h3>
@@ -1720,30 +1752,30 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="reviewModal">
+<div class="modal-overlay" id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>Periksa Kembali Data Anda</h3>
+      <h3 id="reviewModalTitle">Periksa Kembali Data Anda</h3>
       <button type="button" class="modal-close" onclick="closeReviewModal()" aria-label="Tutup">&times;</button>
     </div>
     <div class="modal-body" id="reviewBody"></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="reviewModalPerpanjangan">
+<div class="modal-overlay" id="reviewModalPerpanjangan" role="dialog" aria-modal="true" aria-labelledby="reviewModalPerpanjanganTitle">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>Periksa Kembali Data Perpanjangan</h3>
+      <h3 id="reviewModalPerpanjanganTitle">Periksa Kembali Data Perpanjangan</h3>
       <button type="button" class="modal-close" onclick="closeReviewModalPerpanjangan()" aria-label="Tutup">&times;</button>
     </div>
     <div class="modal-body" id="reviewBodyPerpanjangan"></div>
   </div>
 </div>
 
-<div class="modal-overlay" id="dupModal">
+<div class="modal-overlay" id="dupModal" role="dialog" aria-modal="true" aria-labelledby="dupModalTitle">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>Info Pengajuan</h3>
+      <h3 id="dupModalTitle">Info Pengajuan</h3>
       <button type="button" class="modal-close" onclick="closeDupModal()" aria-label="Tutup">&times;</button>
     </div>
     <div class="modal-body dup-box">
@@ -1761,13 +1793,13 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="flowModal">
+<div class="modal-overlay" id="flowModal" role="dialog" aria-modal="true" aria-labelledby="flowModalTitle">
   <div class="modal-box flow-modal-box">
     <div class="modal-head">
-      <h3>📋 Panduan Alur Layanan AK-1</h3>
+      <h3 id="flowModalTitle">📋 Panduan Alur Layanan AK-1</h3>
       <button type="button" class="modal-close" onclick="closeFlowModal()" aria-label="Tutup">&times;</button>
     </div>
-        <div class="modal-body">
+    <div class="modal-body">
       <p class="flow-modal-intro">Pilih tab di bawah untuk melihat alur <b>Daftar Baru</b> atau <b>Perpanjangan</b>. Siapkan dokumen sesuai alur yang dipilih agar proses pengisian lebih cepat dan tidak perlu mengulang.</p>
 
       <div class="status-syarat-tabs" id="flowTabs">
@@ -1892,10 +1924,10 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="statusSyaratModal">
+<div class="modal-overlay" id="statusSyaratModal" role="dialog" aria-modal="true" aria-labelledby="statusSyaratModalTitle">
   <div class="modal-box" style="max-width:600px;">
     <div class="modal-head">
-      <h3>🔍 Cek Status &amp; Syarat AK-1</h3>
+      <h3 id="statusSyaratModalTitle">🔍 Cek Status &amp; Syarat AK-1</h3>
       <button type="button" class="modal-close" onclick="closeStatusSyaratModal()" aria-label="Tutup">&times;</button>
     </div>
     <div class="modal-body">
@@ -1942,17 +1974,10 @@
   </div>
 </div>
 
-<!-- ================================================================
-     MODAL: SURVEI KEPUASAN MASYARAKAT (SKM) — 9 unsur pelayanan
-     sesuai Permenpan RB No. 14 Tahun 2017. Modal ini SENGAJA tidak
-     punya tombol/ikon "tutup" — muncul otomatis begitu pengajuan
-     berhasil dikirim, dan WAJIB diisi sebelum notifikasi sukses bisa
-     ditutup (lihat updateNotifCloseControls() di <script>).
-     ================================================================ -->
-<div class="modal-overlay" id="skmModal">
+<div class="modal-overlay" id="skmModal" role="dialog" aria-modal="true" aria-labelledby="skmModalTitle">
   <div class="modal-box">
     <div class="modal-head">
-      <h3>📝 Survei Kepuasan Masyarakat (SKM)</h3>
+      <h3 id="skmModalTitle">📝 Survei Kepuasan Masyarakat (SKM)</h3>
     </div>
     <div class="modal-body">
       <p class="sec-hint" style="margin-bottom:16px; line-height:1.6;">
@@ -1971,10 +1996,6 @@
   </div>
 </div>
 
-<!-- Floating buttons — HANYA 2: WhatsApp (kontak cepat) & Menu Layanan
-     (satu-satunya pintu ke popup Menu Layanan). Panduan & Cek Status
-     TIDAK punya tombol mengambang sendiri lagi — semua diakses lewat
-     popup yang sama supaya tidak ada menu ganda. -->
 <a class="fab-wa" href="https://wa.me/6282197462749?text=Halo%20Admin%2C%20saya%20ingin%20bertanya%20mengenai%20pendaftaran%20AK.1" target="_blank" aria-label="Hubungi Admin via WhatsApp" title="Hubungi Admin via WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.85.5 3.58 1.36 5.07L2 22l5.08-1.32A9.93 9.93 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm5.2 14.14c-.24.68-1.4 1.3-1.94 1.35-.5.05-1.13.07-1.83-.12-.42-.11-.96-.3-1.66-.6-2.92-1.26-4.83-4.2-4.98-4.4-.15-.2-1.2-1.6-1.2-3.05 0-1.45.76-2.16 1.03-2.46.27-.3.6-.37.8-.37.2 0 .4 0 .57.01.18.01.43-.07.67.51.24.6.83 2.06.9 2.21.07.15.12.32.02.52-.1.2-.15.32-.3.5-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.3.76 1.25 1.63 2.02 1.12 1 2.06 1.31 2.36 1.46.3.15.47.12.65-.07.17-.2.74-.86.94-1.16.2-.3.4-.25.66-.15.27.1 1.7.8 1.99.95.3.15.5.22.57.35.07.13.07.75-.17 1.43z"/></svg>
 </a>
@@ -2089,6 +2110,10 @@
       nikInput.addEventListener('input', () => {
         nikInput.value = nikInput.value.replace(/[^0-9]/g, '').slice(0, 16);
         sembunyikanStatusNik();
+        if (nikInput.value.length === 16) {
+          cekNikRealtime(nikInput.value, 'baru');
+        }
+        cekSilangNikTanggalLahir();
       });
       nikInput.addEventListener('blur', () => cekNikRealtime(nikInput.value, 'baru'));
     }
@@ -2099,9 +2124,17 @@
       pNikInput.addEventListener('input', () => {
         pNikInput.value = pNikInput.value.replace(/[^0-9]/g, '').slice(0, 16);
         sembunyikanStatusNikPerpanjangan();
+        if (pNikInput.value.length === 16) {
+          cekNikRealtime(pNikInput.value, 'perpanjangan');
+        }
       });
       pNikInput.addEventListener('blur', () => cekNikRealtime(pNikInput.value, 'perpanjangan'));
     }
+    const tglLahirInput = document.getElementById('tanggal_lahir');
+    if (tglLahirInput) tglLahirInput.addEventListener('change', cekSilangNikTanggalLahir);
+    const jkInput = document.getElementById('jenis_kelamin');
+    if (jkInput) jkInput.addEventListener('change', cekSilangNikTanggalLahir);
+
     ['kontak', 'p_kontak'].forEach(id => {
       const kontakInput = document.getElementById(id);
       if (kontakInput) {
@@ -2115,17 +2148,54 @@
     if (!layananTerkunci) showEntryPopup();
     setInterval(checkWorkday, 30000);
     setupFileDropExtras();
+    setupFileDragAndDrop();
     restoreDraft();
+    restoreDraftPerpanjangan();
     setupAutosaveListeners();
+    setupAutosaveListenersPerpanjangan();
     setupOfflineListener();
+    setupModalA11y();
   });
 
   const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyXmh0laoRlJx1GkeyWUGp6HF4pQTqIggUzSQ6u-ye2WletvIsFLQFLukH_5VBBiR0C/exec";
+  const FETCH_TIMEOUT_MS = 30000;
+
+  /**
+   * fetchWithTimeout — pembungkus fetch() dengan batas waktu tunggu.
+   * Semua panggilan fetch ke Apps Script memakai ini supaya tombol
+   * "Sedang memproses..." tidak macet tanpa batas kalau koneksi hang.
+   *
+   * CATATAN KEAMANAN & VALIDASI SERVER (Code.gs):
+   * Validasi yang ada di file ini (hari/jam layanan, format NIK, ukuran
+   * berkas, cek duplikasi NIK) HANYA berjalan di browser pengguna dan
+   * BISA DILEWATI kalau seseorang memanggil endpoint Apps Script ini
+   * langsung. Pastikan Code.gs juga memvalidasi ulang hal yang sama:
+   *  - Tolak request di luar Senin-Jumat 08.00-16.00 WITA (cek waktu
+   *    server, bukan payload dari klien).
+   *  - Tolak NIK yang bukan 16 digit angka.
+   *  - Tolak/kompres ulang berkas berukuran di atas batas yang wajar.
+   *  - Cek ulang duplikasi NIK sebelum menyimpan baris baru.
+   */
+  async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      return response;
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        throw new Error('TIMEOUT');
+      }
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
 
   const MAKS_PELATIHAN = 3;
 
   window.addEventListener("DOMContentLoaded", function() {
-    fetch(WEB_APP_URL)
+    fetchWithTimeout(WEB_APP_URL)
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
@@ -2135,7 +2205,7 @@
         }
       })
       .catch(err => {
-        document.getElementById('no_reg').value = "Error koneksi";
+        document.getElementById('no_reg').value = err && err.message === 'TIMEOUT' ? "Waktu muat habis" : "Error koneksi";
         console.error(err);
       });
     updatePelatihanLimitNote();
@@ -2258,6 +2328,7 @@
       drop.classList.remove('filled', 'compressing');
       nameEl.textContent = nameEl.dataset.default;
       updateProgress();
+      updateProgressPerpanjangan();
       return;
     }
 
@@ -2271,11 +2342,13 @@
         drop.classList.remove('filled');
         nameEl.textContent = nameEl.dataset.default;
         updateProgress();
+        updateProgressPerpanjangan();
         return;
       }
       drop.classList.add('filled');
       nameEl.textContent = f.name;
       updateProgress();
+      updateProgressPerpanjangan();
       return;
     }
 
@@ -2283,6 +2356,7 @@
       drop.classList.add('filled');
       nameEl.textContent = f.name;
       updateProgress();
+      updateProgressPerpanjangan();
       return;
     }
 
@@ -2297,6 +2371,7 @@
         drop.classList.add('filled');
         nameEl.textContent = f.name;
         updateProgress();
+        updateProgressPerpanjangan();
         return;
       }
 
@@ -2308,6 +2383,7 @@
         nameEl.textContent = nameEl.dataset.default;
         note.textContent = '';
         updateProgress();
+        updateProgressPerpanjangan();
         return;
       }
 
@@ -2330,6 +2406,7 @@
       nameEl.textContent = nameEl.dataset.default;
     }
     updateProgress();
+    updateProgressPerpanjangan();
   }
 
   function triggerFotoPicker(mode, targetInputId = 'file_foto', targetDropId = 'drop_foto') {
@@ -2444,6 +2521,7 @@
     container.appendChild(row);
     isiPilihanTahunPada(row.querySelectorAll('select.year-select'));
     setupFileDropExtras();
+    setupFileDragAndDrop();
     updatePelatihanLimitNote();
     updateProgress();
   }
@@ -2519,8 +2597,40 @@
     if (pctText) pctText.textContent = `${pct}% lengkap · ${doneCount} dari ${sections.length} bagian`;
   }
 
+  const sectionsPerpanjangan = ['data', 'berkas', 'kontak'];
+  function sectionCompletePerpanjangan(name) {
+    const el = document.querySelector(`[data-section-p="${name}"]`);
+    if (!el) return false;
+    const required = el.querySelectorAll('input[required], select[required]');
+    for (const inp of required) {
+      if (inp.offsetParent === null) continue;
+      if (inp.type === 'checkbox' && !inp.checked) return false;
+      if (inp.type === 'file' && (!inp.files || inp.files.length === 0)) return false;
+      if (inp.type !== 'checkbox' && inp.type !== 'file' && !inp.value.trim()) return false;
+    }
+    return true;
+  }
+
+  function updateProgressPerpanjangan() {
+    let doneCount = 0;
+    sectionsPerpanjangan.forEach(name => {
+      const complete = sectionCompletePerpanjangan(name);
+      if (complete) doneCount++;
+      document.querySelectorAll(`.tab[data-target="sec-p-${name}"]`).forEach(t => {
+        t.classList.toggle('done', complete);
+      });
+    });
+    const pct = Math.round((doneCount / sectionsPerpanjangan.length) * 100);
+    const fill = document.getElementById('progressFillPerpanjangan');
+    const pctText = document.getElementById('progressPctPerpanjangan');
+    if (fill) fill.style.width = pct + '%';
+    if (pctText) pctText.textContent = `${pct}% lengkap · ${doneCount} dari ${sectionsPerpanjangan.length} bagian`;
+  }
+
   document.getElementById('registrationForm').addEventListener('input', updateProgress);
   document.getElementById('registrationForm').addEventListener('change', updateProgress);
+  document.getElementById('perpanjanganForm').addEventListener('input', updateProgressPerpanjangan);
+  document.getElementById('perpanjanganForm').addEventListener('change', updateProgressPerpanjangan);
 
   document.querySelectorAll('.tab, .m-tab').forEach(el => {
     el.addEventListener('click', (e) => {
@@ -2543,7 +2653,6 @@
   function tutupNotifikasi() {
     if (!skmSudahDiisi) {
       toast('error', 'Survei Kepuasan belum diisi', 'Mohon selesaikan Survei Kepuasan Masyarakat yang sedang tampil terlebih dahulu.', 5000);
-      // Jaga-jaga kalau modal survei sempat ketutup/tidak terlihat karena alasan tak terduga.
       const skm = document.getElementById('skmModal');
       if (skm && !skm.classList.contains('show')) skm.classList.add('show');
       return;
@@ -2551,12 +2660,6 @@
     document.getElementById('permanentNotification').classList.remove('show');
   }
 
-  /* =====================================================================
-     JENIS LAYANAN (Daftar Baru / Perpanjang) — tampilan formulir mana
-     yang ditampilkan. SATU-SATUNYA cara memilih/mengganti jenis ini
-     adalah lewat popup "Menu Layanan" (lihat #entryOverlay) — tidak
-     ada kontrol duplikat lain di halaman.
-     ===================================================================== */
   let currentMode = 'baru';
 
   function terapkanTampilanMode() {
@@ -2574,6 +2677,7 @@
       h1.textContent = 'Formulir Perpanjangan AK-1';
       sub.textContent = 'Lengkapi data & unggah berkas terbaru untuk memperpanjang kartu AK-1 Anda.';
       modeLabel.textContent = 'Perpanjang AK-1';
+      updateProgressPerpanjangan();
     } else {
       wrapPerpanjangan.style.display = 'none';
       wrapBaru.style.display = 'grid';
@@ -2581,6 +2685,7 @@
       h1.textContent = 'Formulir Pendaftaran AK-1';
       sub.textContent = 'Lengkapi Seluruh Data dan Upload Dokumen Persyaratan Sesuai Petunjuk.';
       modeLabel.textContent = 'Daftar Baru';
+      updateProgress();
     }
 
     perbaruiLabelModeDiPopup();
@@ -2684,6 +2789,7 @@
         kontak: document.getElementById('kontak').value,
         email: document.getElementById('email').value,
         konfirmasi_fisik: document.getElementById('konfirmasi_fisik').checked ? "Ya (Sanggup Membawa)" : "Tidak",
+        konfirmasi_privasi: document.getElementById('konfirmasi_privasi').checked ? "Ya (Setuju)" : "Tidak",
         file_ktp: fileKtp,
         file_akta: fileAkta,
         file_kk: fileKK,
@@ -2694,7 +2800,7 @@
         file_foto: fileFoto
       };
 
-      const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+      const response = await fetchWithTimeout(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
       const result = await response.json();
 
       if (result.status === "success" && !result.no_reg) {
@@ -2737,7 +2843,15 @@
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      toast('error', 'Masalah jaringan', 'Terjadi kendala koneksi atau server saat mengirim data berkas. Data isian Anda tetap tersimpan otomatis di perangkat ini — silakan coba lagi.', 7000);
+      const isTimeout = error && error.message === 'TIMEOUT';
+      toast(
+        'error',
+        isTimeout ? 'Waktu tunggu habis' : 'Masalah jaringan',
+        isTimeout
+          ? 'Server tidak merespons dalam waktu yang wajar. Data isian Anda tetap tersimpan otomatis di perangkat ini — silakan coba lagi.'
+          : 'Terjadi kendala koneksi atau server saat mengirim data berkas. Data isian Anda tetap tersimpan otomatis di perangkat ini — silakan coba lagi.',
+        7000
+      );
     } finally {
       submitBtn.disabled = false;
       loadingText.classList.add('hidden');
@@ -2797,12 +2911,13 @@
         kontak: document.getElementById('p_kontak').value,
         email: document.getElementById('p_email').value,
         konfirmasi_fisik: document.getElementById('p_konfirmasi_fisik').checked ? "Ya (Sanggup Membawa)" : "Tidak",
+        konfirmasi_privasi: document.getElementById('p_konfirmasi_privasi').checked ? "Ya (Setuju)" : "Tidak",
         file_ktp: fileKtp,
         file_kartu_lama: fileKartuLama,
         file_foto: fileFoto
       };
 
-      const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+      const response = await fetchWithTimeout(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
       const result = await response.json();
 
       if (result.status === "success" && !result.no_reg) {
@@ -2829,6 +2944,8 @@
         document.getElementById('perpanjanganForm').reset();
         document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
         document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
+        clearDraftPerpanjangan();
+        updateProgressPerpanjangan();
       } else if (result.status === "duplicate") {
         openDupModal(result.message, result.no_reg);
         toast('error', 'Belum bisa diproses', `Nomor registrasi terkait: ${result.no_reg}`, 6500);
@@ -2840,7 +2957,15 @@
       }
     } catch (error) {
       console.error("Error submitting perpanjangan form:", error);
-      toast('error', 'Masalah jaringan', 'Terjadi kendala koneksi atau server saat mengirim data berkas. Silakan coba lagi.', 7000);
+      const isTimeout = error && error.message === 'TIMEOUT';
+      toast(
+        'error',
+        isTimeout ? 'Waktu tunggu habis' : 'Masalah jaringan',
+        isTimeout
+          ? 'Server tidak merespons dalam waktu yang wajar. Silakan coba lagi.'
+          : 'Terjadi kendala koneksi atau server saat mengirim data berkas. Silakan coba lagi.',
+        7000
+      );
     } finally {
       submitBtn.disabled = false;
       loadingText.classList.add('hidden');
@@ -2857,30 +2982,15 @@
 
     const overlay = document.getElementById('stampOverlay');
     overlay.classList.add('show');
-    setTimeout(() => { overlay.classList.remove('show'); }, 2200);
+    setTimeout(() => { overlay.classList.remove('show'); }, 3200);
 
     document.getElementById('permanentNotification').classList.add('show');
     buatQrBukti(noRegFinal);
     toast('success', judul, `Nomor registrasi Anda: ${noRegFinal}`, 6000);
 
-    // ---- Survei Kepuasan Masyarakat WAJIB diisi sebelum notifikasi
-    // ini bisa ditutup. Dibuka otomatis di sini, tertaut ke No.
-    // Registrasi yang baru saja terbit. Lihat updateNotifCloseControls()
-    // & tutupNotifikasi() untuk penegakan "wajib"-nya.
     openSkmModal(noRegFinal, jenisPengajuanUntukSurvei || 'Baru');
   }
 
-  /* =====================================================================
-     SURVEI KEPUASAN MASYARAKAT (SKM) — 9 unsur pelayanan sesuai
-     Permenpan RB No. 14 Tahun 2017. Muncul otomatis setelah pengajuan
-     (Baru maupun Perpanjangan) berhasil dikirim, WAJIB diisi sebelum
-     notifikasi sukses bisa ditutup (lihat tutupNotifikasi() &
-     updateNotifCloseControls()). Jawaban dikirim ke Code.gs dengan
-     payload { tipe_submit:'survei_skm', ... } — DIPISAHKAN dari
-     payload pengajuan AK-1 (yang memakai field `jenis`), dan disimpan
-     backend ke SHEET TERPISAH ("Survei Kepuasan AK-1"), tertaut lewat
-     No. Registrasi.
-     ===================================================================== */
   const SKM_UNSUR = [
     { key: 'u1', label: 'Persyaratan', desc: 'Kesesuaian persyaratan pelayanan dengan jenis layanannya.' },
     { key: 'u2', label: 'Sistem, Mekanisme, dan Prosedur', desc: 'Kemudahan tahapan/alur pelayanan yang diberikan.' },
@@ -2944,7 +3054,6 @@
     skmJenisAktif = jenis;
     document.getElementById('skmNoRegTampil').textContent = noReg;
 
-    // Reset pilihan & saran dari pengisian sebelumnya (kalau ada).
     document.querySelectorAll('#skmUnsurList input[type=radio]').forEach(r => { r.checked = false; });
     document.querySelectorAll('#skmUnsurList .skm-scale-opt.checked').forEach(o => o.classList.remove('checked'));
     document.querySelectorAll('#skmUnsurList .skm-unsur-block.has-error').forEach(b => b.classList.remove('has-error'));
@@ -2955,7 +3064,6 @@
     document.getElementById('skmModal').classList.add('show');
   }
 
-  /** Kontrol "wajib": tombol tutup/Selesai pada notifikasi sukses dinonaktifkan visual selama survei belum diisi. */
   function updateNotifCloseControls() {
     const btnX = document.getElementById('btnTutupNotifikasiX');
     const btnOk = document.getElementById('btnTutupNotifikasiOk');
@@ -3014,7 +3122,7 @@
         saran: document.getElementById('skmSaran').value || ''
       };
 
-      const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
+      const response = await fetchWithTimeout(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
       const result = await response.json();
 
       if (result.status === 'success') {
@@ -3027,7 +3135,8 @@
       }
     } catch (err) {
       console.error('Error mengirim survei SKM:', err);
-      toast('error', 'Masalah jaringan', 'Terjadi kendala koneksi saat mengirim penilaian. Silakan coba lagi.', 7000);
+      const isTimeout = err && err.message === 'TIMEOUT';
+      toast('error', isTimeout ? 'Waktu tunggu habis' : 'Masalah jaringan', isTimeout ? 'Server tidak merespons. Silakan coba lagi.' : 'Terjadi kendala koneksi saat mengirim penilaian. Silakan coba lagi.', 7000);
     } finally {
       btn.disabled = false;
       loadingText.classList.add('hidden');
@@ -3100,7 +3209,7 @@
     if (cacheLiburNasional.tanggal === tanggalStr) return cacheLiburNasional.nama;
     let nama = null;
     try {
-      const res = await fetch(`${HOLIDAY_API}?year=${tahun}`);
+      const res = await fetchWithTimeout(`${HOLIDAY_API}?year=${tahun}`, {}, 10000);
       if (res.ok) {
         const data = await res.json();
         const match = Array.isArray(data) ? data.find(h => h.holiday_date === tanggalStr && h.is_national_holiday) : null;
@@ -3203,39 +3312,32 @@
     );
   }
 
-  /* =====================================================================
-     POPUP "MENU LAYANAN" — SATU-SATUNYA PUSAT MENU (lihat #entryOverlay
-     di HTML). Semua trigger lain di halaman (banner status mode,
-     tombol mengambang) HANYA memanggil showEntryPopup() — tidak ada
-     logika menu duplikat di tempat lain.
-     ===================================================================== */
   /** Satu sumber kebenaran untuk kunci-scroll halaman: overflow hanya dikunci
     jika day-gate ATAU entry-popup benar-benar sedang tampil di layar. */
-  
   function updateScrollLock() {
-  const gate = document.getElementById('dayGate');
-  const entry = document.getElementById('entryOverlay');
-  const adaOverlayTampil =
-    (gate && gate.classList.contains('show')) ||
-    (entry && entry.classList.contains('show'));
-  document.documentElement.style.overflow = adaOverlayTampil ? 'hidden' : '';
-}
+    const gate = document.getElementById('dayGate');
+    const entry = document.getElementById('entryOverlay');
+    const adaOverlayTampil =
+      (gate && gate.classList.contains('show')) ||
+      (entry && entry.classList.contains('show'));
+    document.documentElement.style.overflow = adaOverlayTampil ? 'hidden' : '';
+  }
+
   function showEntryPopup() {
-  const overlay = document.getElementById('entryOverlay');
-  if (!overlay) return;
-  perbaruiLabelModeDiPopup();
-  overlay.classList.add('show');
-  updateScrollLock();
-}
+    const overlay = document.getElementById('entryOverlay');
+    if (!overlay) return;
+    perbaruiLabelModeDiPopup();
+    overlay.classList.add('show');
+    updateScrollLock();
+  }
 
-function hideEntryPopup() {
-  const overlay = document.getElementById('entryOverlay');
-  if (!overlay) return;
-  overlay.classList.remove('show');
-  updateScrollLock();
-}
+  function hideEntryPopup() {
+    const overlay = document.getElementById('entryOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('show');
+    updateScrollLock();
+  }
 
-  /** Tampilkan indikator "Sedang mengisi: ..." di dalam popup, kalau pengguna sudah pernah memilih salah satu formulir sebelumnya. */
   function perbaruiLabelModeDiPopup() {
     const wrap = document.getElementById('entryCurrentMode');
     const text = document.getElementById('entryCurrentModeText');
@@ -3289,6 +3391,7 @@ function hideEntryPopup() {
     const modal = document.getElementById('flowModal');
     if (modal) modal.classList.remove('show');
   }
+
   function gantiTabFlow(btn) {
     const modal = document.getElementById('flowModal');
     modal.querySelectorAll('.status-syarat-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
@@ -3333,7 +3436,7 @@ function hideEntryPopup() {
     area.innerHTML = '<div class="status-result-empty">Sedang memeriksa status…</div>';
 
     try {
-      const res = await fetch(`${WEB_APP_URL}?cekStatus=${encodeURIComponent(query)}`);
+      const res = await fetchWithTimeout(`${WEB_APP_URL}?cekStatus=${encodeURIComponent(query)}`);
       const data = await res.json();
 
       if (data.status !== 'success' || !data.ditemukan || !Array.isArray(data.hasil) || data.hasil.length === 0) {
@@ -3344,7 +3447,8 @@ function hideEntryPopup() {
       area.innerHTML = data.hasil.map(item => buatKartuStatus(item)).join('');
     } catch (err) {
       console.error('Gagal mengecek status:', err);
-      area.innerHTML = '<div class="status-result-empty">Terjadi kendala koneksi saat memeriksa status. Silakan coba lagi beberapa saat.</div>';
+      const isTimeout = err && err.message === 'TIMEOUT';
+      area.innerHTML = `<div class="status-result-empty">${isTimeout ? 'Server tidak merespons dalam waktu yang wajar.' : 'Terjadi kendala koneksi saat memeriksa status.'} Silakan coba lagi beberapa saat.</div>`;
     } finally {
       btn.disabled = false;
       btn.textContent = 'Cek Status';
@@ -3500,6 +3604,45 @@ function hideEntryPopup() {
     });
   }
 
+  /**
+   * setupFileDragAndDrop — memberi kemampuan drag & drop file yang sesungguhnya
+   * pada semua kotak .file-drop, supaya sesuai dengan tampilannya (border putus-putus).
+   */
+  function setupFileDragAndDrop() {
+    document.querySelectorAll('.file-drop').forEach(drop => {
+      if (drop.dataset.dragReady) return;
+      drop.dataset.dragReady = '1';
+      const input = drop.querySelector('input[type=file]');
+      if (!input) return;
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        drop.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          drop.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'dragend'].forEach(evt => {
+        drop.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          drop.classList.remove('dragover');
+        });
+      });
+      drop.addEventListener('drop', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        drop.classList.remove('dragover');
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+          const dt = new DataTransfer();
+          dt.items.add(e.dataTransfer.files[0]);
+          input.files = dt.files;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      });
+    });
+  }
+
   function openFilePreview(input, judul) {
     const f = input.files && input.files[0];
     if (!f) return;
@@ -3578,7 +3721,7 @@ function hideEntryPopup() {
 
       if (adaIsi) {
         updateProgress();
-        toast('info', 'Draf sebelumnya dipulihkan', 'Data yang pernah Anda isi di perangkat ini telah dimuat kembali.', 6000);
+        toast('info', 'Draf sebelumnya dipulihkan', 'Data teks yang pernah Anda isi di perangkat ini telah dimuat kembali. Berkas (KTP, foto, dll) perlu dipilih ulang karena tidak ikut tersimpan.', 7000);
       }
     } catch (err) {
       console.warn('Gagal memulihkan draf:', err);
@@ -3587,6 +3730,97 @@ function hideEntryPopup() {
 
   function clearDraft() {
     try { localStorage.removeItem(DRAFT_KEY); } catch (err) { /* abaikan */ }
+  }
+
+  function hapusDraftManual() {
+    clearDraft();
+    document.getElementById('registrationForm').reset();
+    document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+    document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
+    resetSeksiPendidikanVisual();
+    document.querySelectorAll('#modeBaruWrap .file-drop').forEach(d => {
+      d.classList.remove('filled', 'compressing', 'is-pdf');
+      const n = d.querySelector('.file-name');
+      if (n) n.textContent = n.dataset.default;
+    });
+    updateProgress();
+    toast('success', 'Draf dihapus', 'Formulir Daftar Baru sudah dikosongkan kembali.', 4000);
+  }
+
+  const DRAFT_KEY_PERPANJANGAN = 'ak1_draft_perpanjangan_v1';
+  const DRAFT_FIELD_IDS_PERPANJANGAN = [
+    'p_nik','p_nama','p_no_reg_lama','p_alasan','p_domisili','p_tujuan_kerja','p_kontak','p_email'
+  ];
+  let draftSaveTimerPerpanjangan = null;
+
+  function setupAutosaveListenersPerpanjangan() {
+    const form = document.getElementById('perpanjanganForm');
+    form.addEventListener('input', () => {
+      clearTimeout(draftSaveTimerPerpanjangan);
+      draftSaveTimerPerpanjangan = setTimeout(saveDraftPerpanjangan, 700);
+    });
+    form.addEventListener('change', () => {
+      clearTimeout(draftSaveTimerPerpanjangan);
+      draftSaveTimerPerpanjangan = setTimeout(saveDraftPerpanjangan, 300);
+    });
+  }
+
+  function saveDraftPerpanjangan() {
+    try {
+      const data = {};
+      DRAFT_FIELD_IDS_PERPANJANGAN.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) data[id] = el.value;
+      });
+      localStorage.setItem(DRAFT_KEY_PERPANJANGAN, JSON.stringify({ savedAt: Date.now(), data }));
+      showDraftBadge();
+    } catch (err) {
+      console.warn('Gagal menyimpan draf perpanjangan otomatis:', err);
+    }
+  }
+
+  function restoreDraftPerpanjangan() {
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY_PERPANJANGAN);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.data) return;
+
+      let adaIsi = false;
+      Object.keys(parsed.data).forEach(id => {
+        const el = document.getElementById(id);
+        const val = parsed.data[id];
+        if (el && val) {
+          el.value = val;
+          adaIsi = true;
+        }
+      });
+
+      if (adaIsi) {
+        updateProgressPerpanjangan();
+        toast('info', 'Draf perpanjangan dipulihkan', 'Data teks yang pernah Anda isi telah dimuat kembali. Berkas perlu dipilih ulang karena tidak ikut tersimpan.', 7000);
+      }
+    } catch (err) {
+      console.warn('Gagal memulihkan draf perpanjangan:', err);
+    }
+  }
+
+  function clearDraftPerpanjangan() {
+    try { localStorage.removeItem(DRAFT_KEY_PERPANJANGAN); } catch (err) { /* abaikan */ }
+  }
+
+  function hapusDraftPerpanjanganManual() {
+    clearDraftPerpanjangan();
+    document.getElementById('perpanjanganForm').reset();
+    document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+    document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
+    document.querySelectorAll('#modePerpanjanganWrap .file-drop').forEach(d => {
+      d.classList.remove('filled', 'compressing', 'is-pdf');
+      const n = d.querySelector('.file-name');
+      if (n) n.textContent = n.dataset.default;
+    });
+    updateProgressPerpanjangan();
+    toast('success', 'Draf dihapus', 'Formulir Perpanjangan sudah dikosongkan kembali.', 4000);
   }
 
   function setupOfflineListener() {
@@ -3643,7 +3877,7 @@ function hideEntryPopup() {
 
     tampilkanStatusNik('checking', 'Memeriksa status NIK…', wrapId, textId);
     try {
-      const res = await fetch(`${WEB_APP_URL}?cekNik=${encodeURIComponent(bersih)}&jenis=${mode === 'perpanjangan' ? 'perpanjangan' : 'baru'}`);
+      const res = await fetchWithTimeout(`${WEB_APP_URL}?cekNik=${encodeURIComponent(bersih)}&jenis=${mode === 'perpanjangan' ? 'perpanjangan' : 'baru'}`);
       const data = await res.json();
       if (data.status === 'success' && data.terdaftar) {
         const info = { noReg: data.no_reg, nama: data.nama };
@@ -3664,6 +3898,53 @@ function hideEntryPopup() {
     } catch (err) {
       console.warn('Gagal memeriksa status NIK:', err);
       if (mode === 'perpanjangan') sembunyikanStatusNikPerpanjangan(); else sembunyikanStatusNik();
+    }
+  }
+
+  /**
+   * cekSilangNikTanggalLahir — validasi ringan (bukan blokir keras): digit
+   * ke-7 sampai ke-12 pada NIK Indonesia menyimpan tanggal lahir (DDMMYY),
+   * dengan tanggal +40 untuk perempuan. Kalau tidak konsisten dengan
+   * Tanggal Lahir & Jenis Kelamin yang diisi, tampilkan peringatan lembut
+   * saja (bisa saja NIK memang tidak standar / sengaja beda).
+   */
+  function cekSilangNikTanggalLahir() {
+    const nikInput = document.getElementById('nik');
+    const tglInput = document.getElementById('tanggal_lahir');
+    const jkInput = document.getElementById('jenis_kelamin');
+    const warnBox = document.getElementById('nikCrossWarn');
+    const warnText = document.getElementById('nikCrossWarnText');
+    if (!nikInput || !tglInput || !warnBox || !warnText) return;
+
+    const nik = nikInput.value.trim();
+    const tglLahir = tglInput.value;
+    if (nik.length !== 16 || !tglLahir) {
+      warnBox.classList.remove('show');
+      return;
+    }
+
+    const ddRaw = parseInt(nik.substring(6, 8), 10);
+    const mm = parseInt(nik.substring(8, 10), 10);
+    const yy = parseInt(nik.substring(10, 12), 10);
+    const adalahPerempuan = ddRaw > 40;
+    const dd = adalahPerempuan ? ddRaw - 40 : ddRaw;
+
+    if (dd < 1 || dd > 31 || mm < 1 || mm > 12) {
+      warnBox.classList.remove('show');
+      return;
+    }
+
+    const tgl = new Date(tglLahir + 'T00:00:00');
+    const tahunInput2Digit = tgl.getFullYear() % 100;
+    const cocokTanggal = tgl.getDate() === dd && (tgl.getMonth() + 1) === mm && tahunInput2Digit === yy;
+    const jkTerpilih = jkInput ? jkInput.value : '';
+    const cocokJk = !jkTerpilih || (adalahPerempuan ? jkTerpilih === 'Perempuan' : jkTerpilih === 'Laki-Laki');
+
+    if (!cocokTanggal || !cocokJk) {
+      warnText.textContent = 'Enam digit NIK (tanggal lahir) tampaknya tidak sesuai dengan Tanggal Lahir/Jenis Kelamin yang diisi. Silakan periksa kembali — jika NIK Anda memang sudah benar, isian ini bisa diabaikan.';
+      warnBox.classList.add('show');
+    } else {
+      warnBox.classList.remove('show');
     }
   }
 
@@ -3729,7 +4010,8 @@ function hideEntryPopup() {
       ['Kontak WhatsApp', nilaiAtauStrip('kontak')],
       ['Email', nilaiAtauStrip('email')],
       ['Pas Foto', namaBerkas('file_foto')],
-      ['Kesanggupan Bawa Fisik', document.getElementById('konfirmasi_fisik').checked ? 'Ya' : 'Belum dicentang']
+      ['Kesanggupan Bawa Fisik', document.getElementById('konfirmasi_fisik').checked ? 'Ya' : 'Belum dicentang'],
+      ['Persetujuan Data Pribadi', document.getElementById('konfirmasi_privasi').checked ? 'Ya' : 'Belum dicentang']
     ]);
 
     html += `
@@ -3772,7 +4054,8 @@ function hideEntryPopup() {
     html += buildReviewSection('III. Kontak', [
       ['Kontak WhatsApp', nilaiAtauStrip('p_kontak')],
       ['Email', nilaiAtauStrip('p_email')],
-      ['Kesanggupan Bawa Fisik', document.getElementById('p_konfirmasi_fisik').checked ? 'Ya' : 'Belum dicentang']
+      ['Kesanggupan Bawa Fisik', document.getElementById('p_konfirmasi_fisik').checked ? 'Ya' : 'Belum dicentang'],
+      ['Persetujuan Data Pribadi', document.getElementById('p_konfirmasi_privasi').checked ? 'Ya' : 'Belum dicentang']
     ]);
 
     html += `
@@ -3821,6 +4104,87 @@ function hideEntryPopup() {
     }).catch(err => {
       console.error(err);
       toast('error', 'Gagal membuat gambar', 'Silakan gunakan screenshot manual sebagai alternatif.');
+    });
+  }
+
+  /**
+   * bagikanBuktiWhatsapp — pakai Web Share API (navigator.share) kalau
+   * tersedia di perangkat (umumnya HP), supaya gambar bukti registrasi
+   * bisa langsung dibagikan ke WhatsApp tanpa harus unduh dulu lalu
+   * upload manual. Kalau tidak didukung (misalnya di desktop), otomatis
+   * jatuh kembali ke tautan wa.me yang sudah ada.
+   */
+  async function bagikanBuktiWhatsapp() {
+    const target = document.getElementById('permanentNotification');
+    const noReg = document.getElementById('finalNoReg').textContent;
+
+    if (typeof html2canvas === 'undefined' || !target) {
+      window.open(`https://wa.me/6282197462749?text=${encodeURIComponent('Halo Admin, saya ingin mengirimkan bukti registrasi AK.1 dengan No. Reg ' + noReg)}`, '_blank');
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(target, { backgroundColor: '#ffffff', scale: 2 });
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], `bukti-registrasi-ak1-${noReg}.png`, { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Bukti Registrasi AK-1',
+          text: `Bukti registrasi AK-1, No. Registrasi: ${noReg}`
+        });
+      } else {
+        window.open(`https://wa.me/6282197462749?text=${encodeURIComponent('Halo Admin, saya ingin mengirimkan bukti registrasi AK.1 dengan No. Reg ' + noReg)}`, '_blank');
+        toast('info', 'Berbagi langsung tidak didukung', 'Silakan unduh gambar bukti lalu kirim manual via WhatsApp yang baru saja dibuka.', 6000);
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') return;
+      console.error('Gagal membagikan bukti:', err);
+      window.open(`https://wa.me/6282197462749?text=${encodeURIComponent('Halo Admin, saya ingin mengirimkan bukti registrasi AK.1 dengan No. Reg ' + noReg)}`, '_blank');
+    }
+  }
+
+  /**
+   * setupModalA11y — menambahkan dukungan aksesibilitas dasar untuk
+   * semua .modal-overlay: tutup dengan tombol Escape (kecuali modal
+   * yang memang wajib diisi seperti SKM, dan day-gate yang memang
+   * gerbang wajib), dan focus-trap sederhana (Tab tidak keluar dari
+   * modal yang sedang aktif).
+   */
+  function setupModalA11y() {
+    const ESC_EXCLUDED_IDS = ['skmModal', 'dayGate'];
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' && e.key !== 'Tab') return;
+
+      const modalTerbuka = Array.from(document.querySelectorAll('.modal-overlay.show, .entry-overlay.show'))
+        .find(m => m.offsetParent !== null);
+      if (!modalTerbuka) return;
+
+      if (e.key === 'Escape') {
+        if (ESC_EXCLUDED_IDS.includes(modalTerbuka.id)) return;
+        const closeBtn = modalTerbuka.querySelector('.modal-close, [onclick*="hideEntryPopup"]');
+        if (closeBtn) closeBtn.click();
+        else modalTerbuka.classList.remove('show');
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusable = modalTerbuka.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
   }
 </script>
