@@ -1764,65 +1764,130 @@
 <div class="modal-overlay" id="flowModal">
   <div class="modal-box flow-modal-box">
     <div class="modal-head">
-      <h3>📋 Alur Pendaftaran AK-1</h3>
+      <h3>📋 Panduan Alur Layanan AK-1</h3>
       <button type="button" class="modal-close" onclick="closeFlowModal()" aria-label="Tutup">&times;</button>
     </div>
-    <div class="modal-body">
-      <p class="flow-modal-intro">Ikuti <b>5 langkah</b> berikut dari mulai mengisi formulir daring ini sampai kartu AK-1 Anda terbit. Siapkan dokumen di bawah lebih dulu agar proses pengisian lebih cepat dan tidak perlu mengulang.</p>
-      <div class="flow-steps">
-        <div class="flow-step">
-          <div class="flow-icon">
-            <span class="flow-step-num">1</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
+        <div class="modal-body">
+      <p class="flow-modal-intro">Pilih tab di bawah untuk melihat alur <b>Daftar Baru</b> atau <b>Perpanjangan</b>. Siapkan dokumen sesuai alur yang dipilih agar proses pengisian lebih cepat dan tidak perlu mengulang.</p>
+
+      <div class="status-syarat-tabs" id="flowTabs">
+        <button type="button" class="status-syarat-tab-btn active" data-pane="flowPaneBaru" onclick="gantiTabFlow(this)">✍️ Alur Daftar Baru</button>
+        <button type="button" class="status-syarat-tab-btn" data-pane="flowPanePerpanjangan" onclick="gantiTabFlow(this)">🔄 Alur Perpanjangan</button>
+      </div>
+
+      <div class="status-syarat-pane active" id="flowPaneBaru">
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">1</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Siapkan Dokumen</p>
+              <p class="flow-step-desc">Foto/scan KTP, Akta Lahir, Kartu Keluarga, ijazah <b>semua jenjang pendidikan</b> (dari SD sampai jenjang terakhir), sertifikat pelatihan/kursus <i>(jika ada)</i>, dan pas foto berlatar merah. Maks 3MB per berkas (foto besar dikompres otomatis).</p>
+            </div>
           </div>
-          <div class="flow-step-body">
-            <p class="flow-step-title">Siapkan Dokumen</p>
-            <p class="flow-step-desc">Foto/scan KTP, Akta Lahir, Kartu Keluarga, ijazah <b>semua jenjang pendidikan</b> (dari SD sampai jenjang terakhir), sertifikat pelatihan/kursus <i>(jika ada)</i>, dan yang terakhir pas foto berlatar merah. Maks 3MB per berkas (foto besar dikompres otomatis). <br><i>Untuk perpanjangan, cukup siapkan KTP terbaru, foto/scan kartu AK-1 lama (jika ada), dan pas foto terbaru.</i></p>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">2</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Isi Formulir Online</p>
+              <p class="flow-step-desc">Pilih "✍️ Daftar Baru AK-1" dari Menu Layanan, lalu lengkapi formulirnya. Hanya bisa dikirim pada hari kerja, Senin–Jumat pukul 08.00–16.00 WITA.</p>
+            </div>
           </div>
-        </div>
-        <div class="flow-step">
-          <div class="flow-icon">
-            <span class="flow-step-num">2</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">3</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Dapat Nomor Registrasi</p>
+              <p class="flow-step-desc">Setelah terkirim, nomor registrasi resmi & kode QR bukti pendaftaran langsung tampil dan bisa diunduh sebagai gambar.</p>
+            </div>
           </div>
-          <div class="flow-step-body">
-            <p class="flow-step-title">Isi Formulir Online</p>
-            <p class="flow-step-desc">Pilih jenis layanan lewat Menu Layanan (Daftar Baru atau Perpanjang), lalu lengkapi formulirnya. Hanya bisa dikirim pada hari kerja, Senin–Jumat pukul 08.00–16.00 WITA.</p>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">4</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Verifikasi ke Kantor</p>
+              <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja membawa <b>2 lembar pas foto fisik berlatar merah</b> & dokumen asli sesuai yang diunggah.</p>
+            </div>
           </div>
-        </div>
-        <div class="flow-step">
-          <div class="flow-icon">
-            <span class="flow-step-num">3</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
-          </div>
-          <div class="flow-step-body">
-            <p class="flow-step-title">Dapat Nomor Registrasi</p>
-            <p class="flow-step-desc">Setelah terkirim, nomor registrasi resmi & kode QR bukti pendaftaran langsung tampil dan bisa diunduh sebagai gambar.</p>
-          </div>
-        </div>
-        <div class="flow-step">
-          <div class="flow-icon">
-            <span class="flow-step-num">4</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
-          </div>
-          <div class="flow-step-body">
-            <p class="flow-step-title">Verifikasi ke Kantor</p>
-            <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja membawa 2 lembar pas foto fisik berlatar merah & dokumen asli sesuai yang diunggah (untuk perpanjangan: bawa kartu lama jika ada).</p>
-          </div>
-        </div>
-        <div class="flow-step">
-          <div class="flow-icon">
-            <span class="flow-step-num">5</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
-          </div>
-          <div class="flow-step-body">
-            <p class="flow-step-title">Kartu AK-1 Terbit</p>
-            <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja. Anda bisa memantau perkembangannya lewat menu "Cek Status &amp; Syarat" di Menu Layanan.</p>
-            <span class="flow-step-badge">Selesai ✓</span>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">5</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Kartu AK-1 Terbit</p>
+              <p class="flow-step-desc">Setelah verifikasi berkas selesai, kartu AK-1 Anda dicetak dan siap diambil di kantor. Anda bisa memantau perkembangannya lewat menu "Cek Status &amp; Syarat".</p>
+              <span class="flow-step-badge">Selesai ✓</span>
+            </div>
           </div>
         </div>
       </div>
-      <button type="button" class="btn-confirm-review" style="width:100%; margin-top:6px;" onclick="closeFlowModal()">Mengerti, Lanjut Mengisi</button>
+
+      <div class="status-syarat-pane" id="flowPanePerpanjangan">
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">1</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h6"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Siapkan Dokumen Terbaru</p>
+              <p class="flow-step-desc">KTP terbaru, foto/scan kartu AK-1 lama <i>(jika ada)</i>, No. Registrasi AK-1 lama <i>(jika masih ingat/tertera di kartu)</i>, dan <b>2 lembar pas foto terbaru berlatar merah</b>. Tidak perlu akta lahir, KK, ijazah, atau sertifikat pelatihan lagi.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">2</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Isi Formulir Online</p>
+              <p class="flow-step-desc">Pilih "🔄 Perpanjang AK-1" dari Menu Layanan, lalu isi alasan perpanjangan (habis masa berlaku / hilang / rusak / perubahan data). <b>Catatan:</b> kartu hanya bisa diperpanjang setelah berumur 2 tahun sejak terakhir diproses. Hanya bisa dikirim pada hari kerja, Senin–Jumat pukul 08.00–16.00 WITA.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">3</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Dapat Nomor Registrasi Baru</p>
+              <p class="flow-step-desc">Setelah pengajuan terkirim, nomor registrasi baru & kode QR bukti pengajuan perpanjangan langsung tampil dan bisa diunduh sebagai gambar.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">4</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Verifikasi ke Kantor</p>
+              <p class="flow-step-desc">Datang ke kantor Dinas Koperasi, Usaha Menengah dan Tenaga Kerja membawa <b>kartu AK-1 lama (jika ada)</b>, KTP asli, dan <b>2 lembar pas foto fisik terbaru berlatar merah</b>.</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-icon">
+              <span class="flow-step-num">5</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+            </div>
+            <div class="flow-step-body">
+              <p class="flow-step-title">Kartu AK-1 Baru Terbit</p>
+              <p class="flow-step-desc">Kartu AK-1 baru dicetak menggantikan yang lama, dengan masa berlaku 2 tahun berikutnya dihitung sejak tanggal ini. Anda bisa memantau perkembangannya lewat menu "Cek Status &amp; Syarat".</p>
+              <span class="flow-step-badge">Selesai ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn-confirm-review" style="width:100%; margin-top:16px;" onclick="closeFlowModal()">Mengerti, Lanjut Mengisi</button>
     </div>
   </div>
 </div>
@@ -3214,12 +3279,20 @@ function hideEntryPopup() {
   function openFlowModal() {
     const modal = document.getElementById('flowModal');
     if (!modal) return;
+    const targetPane = currentMode === 'perpanjangan' ? 'flowPanePerpanjangan' : 'flowPaneBaru';
+    const targetBtn = modal.querySelector(`.status-syarat-tab-btn[data-pane="${targetPane}"]`);
+    if (targetBtn) gantiTabFlow(targetBtn);
     modal.classList.add('show');
   }
 
   function closeFlowModal() {
     const modal = document.getElementById('flowModal');
     if (modal) modal.classList.remove('show');
+  }
+  function gantiTabFlow(btn) {
+    const modal = document.getElementById('flowModal');
+    modal.querySelectorAll('.status-syarat-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    modal.querySelectorAll('.status-syarat-pane').forEach(p => p.classList.toggle('active', p.id === btn.dataset.pane));
   }
 
   function openStatusSyaratModal(paneId) {
