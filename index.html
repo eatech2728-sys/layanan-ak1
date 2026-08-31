@@ -2144,8 +2144,16 @@
       }
     });
 
+    const paramUrlHalaman = new URLSearchParams(window.location.search);
+    const noRegDariQr = paramUrlHalaman.get('cekStatus');
+    if (noRegDariQr) aksesHanyaCekStatus = true;
+
     await checkWorkday();
-    if (!layananTerkunci) showEntryPopup();
+    if (noRegDariQr) {
+      bukaCekStatusDariQr_(noRegDariQr);
+    } else if (!layananTerkunci) {
+      showEntryPopup();
+    }
     setInterval(checkWorkday, 30000);
     setupFileDropExtras();
     setupFileDragAndDrop();
@@ -3225,6 +3233,12 @@
   let layananTerkunci = false;
   let gateDitutupManual = false;
   let statusTerkunciSebelumnya = null;
+  // BARU: true kalau halaman dibuka lewat tautan QR code "Cek Status"
+  // dari dokumen cetak AK-1 (?cekStatus=<no registrasi>). Perusahaan
+  // yang scan QR ini boleh melihat status pengajuan KAPAN SAJA, jadi
+  // gerbang jam/hari layanan (day-gate) SENGAJA tidak ditampilkan
+  // untuk kasus akses ini — mereka cuma mau mengecek, bukan mendaftar.
+  let aksesHanyaCekStatus = false;
 
   async function checkWorkday() {
     const banner = document.getElementById('workdayBanner');
@@ -3279,7 +3293,7 @@
       if (banner) banner.style.background = 'rgba(193,39,45,.28)';
       if (bannerText) bannerText.textContent = `🔒 Pendaftaran ditutup saat ini (${namaHari}, ${jamTampil} WITA) — layanan hanya buka Senin–Jumat, 08.00–16.00 WITA, di luar hari libur nasional.`;
 
-      if (!gateDitutupManual) {
+      if (!gateDitutupManual && !aksesHanyaCekStatus) {
         gate.classList.add('show');
         updateScrollLock();
         if (baruSajaTertutup) {
@@ -3396,6 +3410,21 @@
     const modal = document.getElementById('flowModal');
     modal.querySelectorAll('.status-syarat-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
     modal.querySelectorAll('.status-syarat-pane').forEach(p => p.classList.toggle('active', p.id === btn.dataset.pane));
+  }
+
+  /**
+   * BARU — dipanggil sekali saat halaman dibuka lewat tautan QR code
+   * "Cek Status" dari dokumen cetak AK-1 (?cekStatus=<no registrasi>).
+   * Langsung membuka modal "Cek Status & Syarat" pada tab yang tepat,
+   * mengisi kotak pencarian dengan Nomor Registrasi dari QR, dan
+   * menjalankan pencariannya secara otomatis — supaya pihak perusahaan
+   * yang scan tidak perlu klik apa pun lagi untuk melihat hasilnya.
+   */
+  function bukaCekStatusDariQr_(nilaiDariQr) {
+    openStatusSyaratModal('paneCekStatus');
+    const input = document.getElementById('statusCheckInput');
+    if (input) input.value = nilaiDariQr;
+    jalankanCekStatus();
   }
 
   function openStatusSyaratModal(paneId) {
