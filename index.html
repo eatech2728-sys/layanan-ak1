@@ -565,27 +565,29 @@
     .fab-menu{right:14px; bottom:72px; width:48px; height:48px;}
     .fab-menu svg{width:21px; height:21px;}
   }
+
   .fab-survei{
-  position:fixed; right:18px; bottom:148px; z-index:9993;
-  display:none; align-items:center; gap:8px;
-  background:linear-gradient(90deg,#F59E0B,#FF6B54); color:#fff;
-  padding:12px 16px; border-radius:999px; border:none; cursor:pointer;
-  box-shadow:0 8px 22px -4px rgba(245,158,11,.6);
-  font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px;
-  animation: fabSurveiPulse 1.8s ease-in-out infinite;
-}
-.fab-survei.show{display:flex;}
-.fab-survei svg{width:18px; height:18px; flex:0 0 auto;}
-@keyframes fabSurveiPulse{
-  0%,100%{ box-shadow:0 8px 22px -4px rgba(245,158,11,.6); transform:scale(1); }
-  50%{ box-shadow:0 10px 30px -2px rgba(245,158,11,.9); transform:scale(1.04); }
-}
-@media (max-width:860px){
-  .fab-survei{right:14px; bottom:126px; padding:10px 14px; font-size:11.5px;}
-}
-@media (prefers-reduced-motion: reduce){
-  .fab-survei{animation:none;}
-}
+    position:fixed; right:18px; bottom:148px; z-index:9993;
+    display:none; align-items:center; gap:8px;
+    background:linear-gradient(90deg,#F59E0B,#FF6B54); color:#fff;
+    padding:12px 16px; border-radius:999px; border:none; cursor:pointer;
+    box-shadow:0 8px 22px -4px rgba(245,158,11,.6);
+    font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px;
+    animation: fabSurveiPulse 1.8s ease-in-out infinite;
+  }
+  .fab-survei.show{display:flex;}
+  .fab-survei svg{width:18px; height:18px; flex:0 0 auto;}
+  @keyframes fabSurveiPulse{
+    0%,100%{ box-shadow:0 8px 22px -4px rgba(245,158,11,.6); transform:scale(1); }
+    50%{ box-shadow:0 10px 30px -2px rgba(245,158,11,.9); transform:scale(1.04); }
+  }
+  @media (max-width:860px){
+    .fab-survei{right:14px; bottom:126px; padding:10px 14px; font-size:11.5px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fab-survei{animation:none;}
+  }
+
   .install-banner{
     position:fixed; top:0; left:0; right:0; z-index:9994;
     background:linear-gradient(90deg, var(--blue-deep), var(--blue));
@@ -2023,11 +2025,12 @@
 <button type="button" class="fab-menu" onclick="showEntryPopup()" aria-label="Buka Menu Layanan" title="Buka Menu Layanan">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9h8M8 13h5"/></svg>
 </button>
+
 <button type="button" class="fab-survei" id="fabSurvei" onclick="bukaKembaliSurveiTertunda()" aria-label="Isi Survei Kepuasan (wajib)" title="Isi Survei Kepuasan (wajib)">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
   <span class="fab-survei-text">Isi Survei</span>
 </button>
-  
+
 <script>
   const INSTALL_DISMISS_KEY = 'ak1_install_dismissed_at';
   const INSTALL_DISMISS_HARI = 14;
@@ -3097,8 +3100,11 @@
   function bukaKembaliSurveiTertunda() {
     if (!surveiTertunda) return;
     const modal = document.getElementById('skmModal');
-    if (modal) modal.classList.add('show');
-    modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (modal) {
+      modal.classList.add('show');
+      modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    updateScrollLock();
     toast('info', 'Survei dibuka kembali', 'Mohon lengkapi seluruh 9 unsur penilaian untuk menyelesaikan proses registrasi Anda.', 4500);
   }
 
@@ -3208,19 +3214,8 @@
     const saran = document.getElementById('skmSaran');
     if (saran) saran.value = '';
 
-    updateNotifCloseControls();
     document.getElementById('skmModal').classList.add('show');
-  }
-
-  function updateNotifCloseControls() {
-    const btnX = document.getElementById('btnTutupNotifikasiX');
-    const btnOk = document.getElementById('btnTutupNotifikasiOk');
-    const note = document.getElementById('skmPendingNote');
-    const belumSelesai = !skmSudahDiisi;
-
-    if (btnX) { btnX.style.opacity = belumSelesai ? '0.35' : '1'; btnX.style.cursor = belumSelesai ? 'not-allowed' : 'pointer'; }
-    if (btnOk) { btnOk.style.opacity = belumSelesai ? '0.5' : '1'; btnOk.style.cursor = belumSelesai ? 'not-allowed' : 'pointer'; }
-    if (note) note.classList.toggle('show', belumSelesai);
+    updateScrollLock();
   }
 
   function validasiSkm() {
@@ -3278,6 +3273,7 @@
         document.getElementById('skmModal').classList.remove('show');
         toast('success', 'Terima kasih!', 'Penilaian Anda terhadap layanan AK-1 sudah kami terima.', 4500);
         tampilkanNotifikasiSuksesFinal();
+        updateScrollLock();
       } else {
         toast('error', 'Gagal mengirim survei', result.message || 'Silakan coba kirim kembali beberapa saat lagi.', 7000);
       }
@@ -3467,7 +3463,7 @@
   }
 
   /** Satu sumber kebenaran untuk kunci-scroll halaman: overflow hanya dikunci
-    jika day-gate ATAU entry-popup benar-benar sedang tampil di layar. */
+    jika day-gate, entry-popup, ATAU survei SKM benar-benar sedang tampil di layar. */
   function updateScrollLock() {
     const gate = document.getElementById('dayGate');
     const entry = document.getElementById('entryOverlay');
