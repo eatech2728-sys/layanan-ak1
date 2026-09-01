@@ -2712,6 +2712,13 @@
   function handleFormSubmitClick(event) {
     event.preventDefault();
 
+    // Paksa "commit" nilai input yang sedang fokus (misal keyboard HP
+    // yang masih dalam mode prediksi/autocomplete) sebelum divalidasi,
+    // supaya field yang sudah diisi tidak salah terdeteksi kosong.
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
+
     if (layananTerkunci) {
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
@@ -2869,6 +2876,12 @@
 
   function handlePerpanjanganSubmitClick(event) {
     event.preventDefault();
+
+    // Sama seperti form Daftar Baru: paksa commit nilai field yang
+    // sedang fokus sebelum divalidasi.
+    if (document.activeElement && typeof document.activeElement.blur === 'function') {
+      document.activeElement.blur();
+    }
 
     if (layananTerkunci) {
       gateDitutupManual = false;
@@ -3557,6 +3570,15 @@
     required.forEach(inp => {
       if (inp.offsetParent === null) return;
 
+      // Bersihkan spasi di depan/belakang secara otomatis untuk field
+      // teks biasa, supaya isian yang kelihatan terisi tapi diawali/
+      // diakhiri spasi (sering terjadi karena autocorrect di HP) tidak
+      // salah terdeteksi sebagai kosong, dan tidak ikut terkirim ke server.
+      if (inp.type !== 'checkbox' && inp.type !== 'file' && typeof inp.value === 'string') {
+        const trimmed = inp.value.trim();
+        if (trimmed !== inp.value) inp.value = trimmed;
+      }
+
       let valid = true;
       if (inp.type === 'checkbox') valid = inp.checked;
       else if (inp.type === 'file') valid = !!(inp.files && inp.files.length);
@@ -3574,6 +3596,10 @@
         else if (inp.type === 'checkbox') pesan = 'Persetujuan wajib dicentang.';
         showFieldError(inp, pesan);
         if (!fieldPertamaError) fieldPertamaError = inp;
+
+        // Bantu diagnosis: catat di console field mana persisnya yang
+        // gagal validasi, berguna kalau ada laporan error serupa lagi.
+        console.warn('Validasi gagal pada field:', inp.id || inp.name || inp, '— nilai saat ini:', JSON.stringify(inp.value));
       } else {
         clearFieldError(inp);
       }
