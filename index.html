@@ -565,7 +565,27 @@
     .fab-menu{right:14px; bottom:72px; width:48px; height:48px;}
     .fab-menu svg{width:21px; height:21px;}
   }
-
+  .fab-survei{
+  position:fixed; right:18px; bottom:148px; z-index:9993;
+  display:none; align-items:center; gap:8px;
+  background:linear-gradient(90deg,#F59E0B,#FF6B54); color:#fff;
+  padding:12px 16px; border-radius:999px; border:none; cursor:pointer;
+  box-shadow:0 8px 22px -4px rgba(245,158,11,.6);
+  font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px;
+  animation: fabSurveiPulse 1.8s ease-in-out infinite;
+}
+.fab-survei.show{display:flex;}
+.fab-survei svg{width:18px; height:18px; flex:0 0 auto;}
+@keyframes fabSurveiPulse{
+  0%,100%{ box-shadow:0 8px 22px -4px rgba(245,158,11,.6); transform:scale(1); }
+  50%{ box-shadow:0 10px 30px -2px rgba(245,158,11,.9); transform:scale(1.04); }
+}
+@media (max-width:860px){
+  .fab-survei{right:14px; bottom:126px; padding:10px 14px; font-size:11.5px;}
+}
+@media (prefers-reduced-motion: reduce){
+  .fab-survei{animation:none;}
+}
   .install-banner{
     position:fixed; top:0; left:0; right:0; z-index:9994;
     background:linear-gradient(90deg, var(--blue-deep), var(--blue));
@@ -2003,7 +2023,11 @@
 <button type="button" class="fab-menu" onclick="showEntryPopup()" aria-label="Buka Menu Layanan" title="Buka Menu Layanan">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 9h8M8 13h5"/></svg>
 </button>
-
+<button type="button" class="fab-survei" id="fabSurvei" onclick="bukaKembaliSurveiTertunda()" aria-label="Isi Survei Kepuasan (wajib)" title="Isi Survei Kepuasan (wajib)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+  <span class="fab-survei-text">Isi Survei</span>
+</button>
+  
 <script>
   const INSTALL_DISMISS_KEY = 'ak1_install_dismissed_at';
   const INSTALL_DISMISS_HARI = 14;
@@ -2149,7 +2173,10 @@
     if (noRegDariQr) aksesHanyaCekStatus = true;
 
     await checkWorkday();
-    if (noRegDariQr) {
+    const adaSurveiTertunda = pulihkanSurveiTertunda();
+    if (adaSurveiTertunda) {
+      // Survei tertunda diprioritaskan — jangan tampilkan popup menu lain dulu.
+    } else if (noRegDariQr) {
       bukaCekStatusDariQr_(noRegDariQr);
     } else if (!layananTerkunci) {
       showEntryPopup();
@@ -2659,12 +2686,6 @@
   document.querySelectorAll('.form-section').forEach(sec => observer.observe(sec));
 
   function tutupNotifikasi() {
-    if (!skmSudahDiisi) {
-      toast('error', 'Survei Kepuasan belum diisi', 'Mohon selesaikan Survei Kepuasan Masyarakat yang sedang tampil terlebih dahulu.', 5000);
-      const skm = document.getElementById('skmModal');
-      if (skm && !skm.classList.contains('show')) skm.classList.add('show');
-      return;
-    }
     document.getElementById('permanentNotification').classList.remove('show');
   }
 
@@ -2829,7 +2850,7 @@
           12000
         );
       } else if (result.status === "success") {
-        tampilkanSuksesUmum(result.no_reg, 'Data Berhasil Terkirim!', 'Registrasi AK.1 Anda telah kami terima.', 'BERKAS DITERIMA', 'Baru');
+        mulaiAlurSetelahSukses(result.no_reg, 'Data Berhasil Terkirim!', 'Registrasi AK.1 Anda telah kami terima.', 'BERKAS DITERIMA', 'Baru');
 
         resetSeksiPendidikanVisual();
 
@@ -2951,7 +2972,7 @@
           12000
         );
       } else if (result.status === "success") {
-        tampilkanSuksesUmum(result.no_reg, 'Pengajuan Perpanjangan Terkirim!', 'Permohonan perpanjangan AK-1 Anda telah kami terima.', 'PENGAJUAN DITERIMA', 'Perpanjangan');
+        mulaiAlurSetelahSukses(result.no_reg, 'Pengajuan Perpanjangan Terkirim!', 'Permohonan perpanjangan AK-1 Anda telah kami terima.', 'PENGAJUAN DITERIMA', 'Perpanjangan');
 
         document.querySelectorAll('#modePerpanjanganWrap .file-drop').forEach(d => {
           d.classList.remove('filled', 'compressing', 'is-pdf');
@@ -2996,7 +3017,57 @@
     }
   }
 
-  function tampilkanSuksesUmum(noRegFinal, judul, sub, stampTitle, jenisPengajuanUntukSurvei) {
+  const SKM_PENDING_KEY = 'ak1_skm_pending_v1';
+  let surveiTertunda = false;
+  let dataSuksesTertunda = null;
+
+  function tampilkanFabSurvei() {
+    const btn = document.getElementById('fabSurvei');
+    if (btn) btn.classList.add('show');
+  }
+  function sembunyikanFabSurvei() {
+    const btn = document.getElementById('fabSurvei');
+    if (btn) btn.classList.remove('show');
+  }
+
+  function simpanSurveiTertunda() {
+    try { localStorage.setItem(SKM_PENDING_KEY, JSON.stringify(dataSuksesTertunda)); } catch (err) { /* abaikan */ }
+  }
+  function hapusSurveiTertundaTersimpan() {
+    try { localStorage.removeItem(SKM_PENDING_KEY); } catch (err) { /* abaikan */ }
+  }
+
+  /**
+   * mulaiAlurSetelahSukses — dipanggil begitu data (Daftar Baru / Perpanjangan)
+   * BERHASIL tersimpan di server. Nomor registrasi & bukti/QR TIDAK langsung
+   * ditampilkan di sini; peserta wajib mengisi Survei Kepuasan Masyarakat
+   * terlebih dahulu. Notifikasi sukses baru muncul setelah survei terkirim
+   * (lihat tampilkanNotifikasiSuksesFinal).
+   */
+  function mulaiAlurSetelahSukses(noRegFinal, judul, sub, stampTitle, jenisPengajuanUntukSurvei) {
+    dataSuksesTertunda = { noRegFinal, judul, sub, stampTitle, jenis: jenisPengajuanUntukSurvei || 'Baru' };
+    surveiTertunda = true;
+    simpanSurveiTertunda();
+    tampilkanFabSurvei();
+
+    openSkmModal(noRegFinal, jenisPengajuanUntukSurvei || 'Baru');
+    toast(
+      'info',
+      'Satu langkah lagi',
+      'Data Anda sudah tersimpan. Mohon isi Survei Kepuasan Masyarakat berikut untuk menyelesaikan proses & menampilkan nomor registrasi Anda.',
+      7000
+    );
+  }
+
+  /**
+   * tampilkanNotifikasiSuksesFinal — baru dipanggil SETELAH survei berhasil
+   * dikirim. Di sinilah stempel, notifikasi bukti registrasi, dan QR code
+   * ditampilkan.
+   */
+  function tampilkanNotifikasiSuksesFinal() {
+    if (!dataSuksesTertunda) return;
+    const { noRegFinal, judul, sub, stampTitle } = dataSuksesTertunda;
+
     document.getElementById('stampDate').textContent = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
     document.getElementById('finalNoReg').textContent = noRegFinal;
     document.getElementById('notifSuccessTitle').textContent = judul;
@@ -3011,8 +3082,62 @@
     buatQrBukti(noRegFinal);
     toast('success', judul, `Nomor registrasi Anda: ${noRegFinal}`, 6000);
 
-    openSkmModal(noRegFinal, jenisPengajuanUntukSurvei || 'Baru');
+    surveiTertunda = false;
+    dataSuksesTertunda = null;
+    hapusSurveiTertundaTersimpan();
+    sembunyikanFabSurvei();
   }
+
+  /**
+   * bukaKembaliSurveiTertunda — dipanggil dari tombol pintasan mengambang.
+   * Berguna kalau modal survei sempat tidak terlihat (misal ukuran layar
+   * berubah / peserta sempat scroll jauh), atau setelah survei tertunda
+   * dipulihkan dari draf di perangkat yang sama.
+   */
+  function bukaKembaliSurveiTertunda() {
+    if (!surveiTertunda) return;
+    const modal = document.getElementById('skmModal');
+    if (modal) modal.classList.add('show');
+    modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('info', 'Survei dibuka kembali', 'Mohon lengkapi seluruh 9 unsur penilaian untuk menyelesaikan proses registrasi Anda.', 4500);
+  }
+
+  /**
+   * pulihkanSurveiTertunda — dijalankan saat halaman dibuka. Kalau di
+   * perangkat ini masih ada survei yang belum diselesaikan dari
+   * pengiriman sebelumnya (misal tab ditutup sebelum sempat mengisi),
+   * survei akan otomatis dimunculkan lagi sampai benar-benar diisi.
+   */
+  function pulihkanSurveiTertunda() {
+    try {
+      const raw = localStorage.getItem(SKM_PENDING_KEY);
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.noRegFinal) return false;
+
+      dataSuksesTertunda = parsed;
+      surveiTertunda = true;
+      tampilkanFabSurvei();
+      openSkmModal(parsed.noRegFinal, parsed.jenis || 'Baru');
+      toast(
+        'info',
+        'Survei sebelumnya belum selesai',
+        `Registrasi Anda (No. ${parsed.noRegFinal}) sudah tersimpan, namun Survei Kepuasan belum diselesaikan. Mohon lengkapi terlebih dahulu.`,
+        8000
+      );
+      return true;
+    } catch (err) {
+      console.warn('Gagal memulihkan survei tertunda:', err);
+      return false;
+    }
+  }
+
+  window.addEventListener('beforeunload', function (e) {
+    if (surveiTertunda) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
 
   const SKM_UNSUR = [
     { key: 'u1', label: 'Persyaratan', desc: 'Kesesuaian persyaratan pelayanan dengan jenis layanannya.' },
@@ -3151,8 +3276,8 @@
       if (result.status === 'success') {
         skmSudahDiisi = true;
         document.getElementById('skmModal').classList.remove('show');
-        updateNotifCloseControls();
-        toast('success', 'Terima kasih!', 'Penilaian Anda terhadap layanan AK-1 sudah kami terima.', 6000);
+        toast('success', 'Terima kasih!', 'Penilaian Anda terhadap layanan AK-1 sudah kami terima.', 4500);
+        tampilkanNotifikasiSuksesFinal();
       } else {
         toast('error', 'Gagal mengirim survei', result.message || 'Silakan coba kirim kembali beberapa saat lagi.', 7000);
       }
@@ -3346,9 +3471,11 @@
   function updateScrollLock() {
     const gate = document.getElementById('dayGate');
     const entry = document.getElementById('entryOverlay');
+    const skm = document.getElementById('skmModal');
     const adaOverlayTampil =
       (gate && gate.classList.contains('show')) ||
-      (entry && entry.classList.contains('show'));
+      (entry && entry.classList.contains('show')) ||
+      (skm && skm.classList.contains('show'));
     document.documentElement.style.overflow = adaOverlayTampil ? 'hidden' : '';
   }
 
