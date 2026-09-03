@@ -2733,7 +2733,7 @@
     terapkanTampilanMode();
   }
 
-  function handleFormSubmitClick(event) {
+function handleFormSubmitClick(event) {
     event.preventDefault();
 
     // Paksa "commit" nilai input yang sedang fokus (misal keyboard HP
@@ -2743,6 +2743,17 @@
       document.activeElement.blur();
     }
 
+    // Beri jeda singkat SETELAH blur() — di sebagian HP (terutama
+    // Android dengan keyboard Gboard/Samsung Keyboard), nilai yang
+    // sedang diketik butuh sepersekian detik untuk benar-benar
+    // "terkunci" ke dalam field setelah keyboard ditutup. Tanpa jeda
+    // ini, field yang TERLIHAT terisi di layar bisa saja masih kosong
+    // saat kode membaca nilainya, menyebabkan validasi salah gagal
+    // meski pengguna sudah mengisi dengan benar.
+    setTimeout(lanjutkanValidasiFormBaru_, 80);
+}
+
+function lanjutkanValidasiFormBaru_() {
     if (layananTerkunci) {
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
@@ -2764,7 +2775,7 @@
     }
 
     openReviewModal();
-  }
+}
 
   let sedangKirim = false;
 
@@ -2900,7 +2911,7 @@
     }
   }
 
-  function handlePerpanjanganSubmitClick(event) {
+function handlePerpanjanganSubmitClick(event) {
     event.preventDefault();
 
     // Sama seperti form Daftar Baru: paksa commit nilai field yang
@@ -2909,6 +2920,10 @@
       document.activeElement.blur();
     }
 
+    setTimeout(lanjutkanValidasiFormPerpanjangan_, 80);
+}
+
+function lanjutkanValidasiFormPerpanjangan_() {
     if (layananTerkunci) {
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
