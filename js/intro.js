@@ -40,6 +40,7 @@
   // sebagai simbol langkah awal menuju karier baru.
   var AudioCtx = window.AudioContext || window.webkitAudioContext;
   var ctx = null, master = null, audioStarted = false, muted = false;
+  try { muted = localStorage.getItem('ak1_suara') === 'off'; } catch (e) {}   // samakan dengan tombol suara utama
   var hint = document.getElementById('iaHint');
 
   function initAudio() {
@@ -119,8 +120,8 @@
 
   // Autoplay sering diblokir browser sampai pengguna menyentuh layar,
   // jadi: coba otomatis, dan kalau gagal, nyalakan saat sentuhan pertama.
-  cobaNyalakanAudio();
-  setTimeout(function () { if (!audioStarted && hint) hint.classList.add('show'); }, 400);
+  if (!muted) cobaNyalakanAudio();
+  setTimeout(function () { if (!audioStarted && !muted && hint) hint.classList.add('show'); }, 400);
   ['pointerdown', 'touchstart', 'keydown', 'click'].forEach(function (ev) {
     window.addEventListener(ev, function onFirst() {
       if (!audioStarted && !muted) cobaNyalakanAudio();
@@ -130,9 +131,15 @@
 
   // ---------- Tombol suara ----------
   var muteBtn = document.getElementById('iaMute');
+  if (muted) {                                  // tampilan awal bila suara sudah dimatikan sebelumnya
+    document.getElementById('iaMuteText').textContent = 'Senyap';
+    muteBtn.setAttribute('aria-label', 'Nyalakan suara');
+    document.getElementById('iaMuteIcon').style.opacity = '.5';
+  }
   muteBtn.addEventListener('click', function (e) {
     e.stopPropagation();
     muted = !muted;
+    try { localStorage.setItem('ak1_suara', muted ? 'off' : 'on'); } catch (e) {}
     if (master) master.gain.value = muted ? 0 : 0.9;
     document.getElementById('iaMuteText').textContent = muted ? 'Senyap' : 'Suara';
     muteBtn.setAttribute('aria-label', muted ? 'Nyalakan suara' : 'Matikan suara');
