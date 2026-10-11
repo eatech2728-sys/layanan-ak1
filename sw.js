@@ -26,7 +26,7 @@
  * =====================================================================
  */
 
-const CACHE_NAME = 'ak1-wakatobi-v2';
+const CACHE_NAME = 'ak1-wakatobi-v3';
 
 // Sesuaikan daftar ini dengan nama file HTML utama Anda yang
 // sebenarnya di server (path relatif terhadap lokasi sw.js ini).
@@ -52,6 +52,7 @@ const ASSETS_TO_CACHE = [
   './css/bukti-panduan.css',
   './css/entry.css',
   './css/status-survei.css',
+  './css/suara.css',
   './css/intro.css',
   // --- JavaScript (urutan sama dengan index.html) ---
   './js/intro.js',
@@ -76,7 +77,8 @@ const ASSETS_TO_CACHE = [
   './js/nik.js',
   './js/review.js',
   './js/bukti.js',
-  './js/a11y.js'
+  './js/a11y.js',
+  './js/suara.js'
 ];
 
 // Domain backend yang TIDAK BOLEH di-cache sama sekali — selalu network.
