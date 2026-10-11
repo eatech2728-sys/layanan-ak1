@@ -16,10 +16,17 @@
  * CACHE_NAME setiap kali Anda mengubah isi ASSETS_TO_CACHE atau file
  * HTML/CSS/JS utamanya, supaya pengguna yang sudah pernah install
  * otomatis dapat versi terbaru (bukan versi lama yang ke-cache).
+ *
+ * CATATAN STRUKTUR BARU: CSS ada di folder css/ dan JavaScript di
+ * folder js/. Kalau Anda menambah file baru di salah satunya, daftarkan
+ * juga di ASSETS_TO_CACHE di bawah. Jika SATU saja file di daftar ini
+ * tidak ditemukan di server (salah nama/belum diunggah), cache.addAll()
+ * gagal seluruhnya dan tidak ada yang ter-cache — pastikan semua file
+ * sudah terunggah.
  * =====================================================================
  */
 
-const CACHE_NAME = 'ak1-wakatobi-v1';
+const CACHE_NAME = 'ak1-wakatobi-v2';
 
 // Sesuaikan daftar ini dengan nama file HTML utama Anda yang
 // sebenarnya di server (path relatif terhadap lokasi sw.js ini).
@@ -31,7 +38,45 @@ const ASSETS_TO_CACHE = [
   './icons/icon-512.png',
   './icons/icon-maskable-192.png',
   './icons/icon-maskable-512.png',
-  './icons/apple-touch-icon.png'
+  './icons/apple-touch-icon.png',
+  // --- CSS (urutan sama dengan index.html) ---
+  './css/base.css',
+  './css/layout.css',
+  './css/form.css',
+  './css/sukses.css',
+  './css/footer.css',
+  './css/feedback.css',
+  './css/modal.css',
+  './css/fab.css',
+  './css/gate.css',
+  './css/bukti-panduan.css',
+  './css/entry.css',
+  './css/status-survei.css',
+  './css/intro.css',
+  // --- JavaScript (urutan sama dengan index.html) ---
+  './js/intro.js',
+  './js/pwa.js',
+  './js/init.js',
+  './js/api.js',
+  './js/foto.js',
+  './js/pendidikan.js',
+  './js/payload.js',
+  './js/progres.js',
+  './js/mode.js',
+  './js/kirim-form.js',
+  './js/survei.js',
+  './js/toast.js',
+  './js/jam-layanan.js',
+  './js/popup-menu.js',
+  './js/cek-status.js',
+  './js/validasi.js',
+  './js/berkas-ui.js',
+  './js/draft.js',
+  './js/ui-umum.js',
+  './js/nik.js',
+  './js/review.js',
+  './js/bukti.js',
+  './js/a11y.js'
 ];
 
 // Domain backend yang TIDAK BOLEH di-cache sama sekali — selalu network.
