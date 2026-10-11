@@ -1,0 +1,64 @@
+/* ==============================================================
+   Bukti pendaftaran & panduan alur
+   Kartu bukti (QR, unduh, bagikan WA) dan modal alur/panduan
+   ============================================================== */
+
+  .btn-bukti{
+    display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:7px;
+    font-size:12px; font-weight:700; cursor:pointer; border:1px solid var(--blue-line);
+    background:#F9FBFD; color:var(--blue-deep);
+  }
+  .btn-bukti:hover{background:var(--blue-soft);}
+  .btn-bukti svg{width:14px; height:14px;}
+  .btn-bukti.whatsapp-share{background:#F0FDF4; border-color:#BBF0D0; color:#166534;}
+  .btn-bukti.whatsapp-share:hover{background:#E1F9EA;}
+  #buktiCard{
+    background:#fff; border-radius:10px; padding:18px; border:1px solid var(--line);
+  }
+  #buktiCard .bukti-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  #buktiCard .bukti-head strong{font-size:13px; color:var(--blue-deep); display:block;}
+  #buktiCard .bukti-head span{font-size:10px; color:var(--ink-soft);}
+  #buktiQr{display:flex; justify-content:center; margin:12px 0;}
+
+  @media (prefers-reduced-motion: reduce){
+    .faq-a, .progress-fill, .toast, .modal-box, .day-gate-card{transition:none !important; animation:none !important;}
+  }
+
+  .flow-modal-box{max-width:600px;}
+  .flow-modal-intro{margin:0 0 18px; font-size:13px; color:var(--ink-soft); line-height:1.6;}
+  .flow-modal-intro b{color:var(--ink);}
+
+  .flow-steps{display:flex; flex-direction:column;}
+
+  .flow-step{
+    position:relative; display:flex; flex-direction:row; text-align:left; align-items:flex-start;
+    gap:14px; padding:8px 4px 24px;
+  }
+  .flow-step:last-child{padding-bottom:4px;}
+  .flow-step:not(:last-child)::after{
+    content:""; position:absolute; top:58px; bottom:2px; left:24px; right:auto;
+    width:2px; height:auto; background:var(--blue-line);
+  }
+
+  .flow-icon{
+    width:48px; height:48px; border-radius:50%;
+    background:linear-gradient(150deg, var(--blue-deep), var(--blue));
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    position:relative; z-index:1; flex:0 0 auto; box-shadow:0 3px 10px -2px rgba(10,46,82,.5);
+  }
+  .flow-icon svg{width:21px; height:21px;}
+
+  .flow-step-num{
+    position:absolute; top:-4px; right:-4px; width:20px; height:20px; border-radius:50%;
+    background:#fff; border:2px solid var(--ok); color:var(--ok);
+    font-family:'Space Mono',monospace; font-weight:800; font-size:10px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .flow-step-body{min-width:0;}
+  .flow-step-title{font-weight:700; font-size:13.5px; color:var(--blue-deep); margin:0 0 5px;}
+  .flow-step-desc{font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:0;}
+  .flow-step-badge{
+    display:inline-block; margin-top:8px; font-size:10px; font-weight:700; padding:3px 10px; border-radius:999px;
+    background:linear-gradient(90deg, var(--ok), var(--cyan)); color:#fff; letter-spacing:.02em;
+  }

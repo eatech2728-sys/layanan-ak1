@@ -1,0 +1,93 @@
+/* ==============================================================
+   Cap & notifikasi sukses
+   Animasi stempel, notifikasi pendaftaran berhasil, tombol sosial/WhatsApp
+   ============================================================== */
+
+  @keyframes popIn{
+    0%{opacity:0; transform:scale(.7);}
+    70%{opacity:1; transform:scale(1.05);}
+    100%{opacity:1; transform:scale(1);}
+  }
+  .stamp-overlay{
+    position:fixed; inset:0; background:rgba(10,46,82,.35); z-index:100;
+    display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .4s;
+  }
+  .stamp-overlay.show{opacity:1; pointer-events:auto;}
+  .stamp-graphic{
+    width:190px; height:190px; border-radius:50%; border:5px solid var(--blue-deep);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    color:var(--blue-deep); font-family:'Inter',sans-serif; text-align:center; background:#fff;
+    animation: popIn .5s cubic-bezier(.2,.9,.25,1.2) both;
+  }
+  .stamp-graphic strong{font-size:15px; letter-spacing:.03em; display:block; font-weight:800;}
+  .stamp-graphic span{font-size:10px; letter-spacing:.1em; margin-top:4px; color:var(--ink-soft); font-weight:600;}
+  .stamp-graphic small{font-size:9px; margin-top:6px; opacity:.75;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+
+  aside.rail a.tab {
+    padding:14px 16px;
+    border-left:4px solid transparent;
+  }
+  aside.rail a.tab.active{
+    background-color:var(--cyan-soft);
+    border-left-color:var(--cyan);
+  }
+  aside.rail a.tab.active .tab-label{ color:var(--blue-deep); }
+  aside.rail a.tab.active .tab-sub{ color:var(--blue); }
+  aside.rail a.tab.active .stamp-badge{ background-color:var(--cyan); border-color:var(--cyan); box-shadow:0 0 0 4px rgba(20,196,196,.18); }
+
+  aside.rail a.tab.done{
+    background-color:#EAFBF4;
+    border-left-color:var(--ok);
+  }
+  aside.rail a.tab.done .tab-label{ color:#0E7A5A; }
+  aside.rail a.tab.done .tab-sub{ color:#12946E; }
+  aside.rail a.tab.done .stamp-badge{ background-color:var(--ok); border-color:var(--ok); }
+
+  .permanent-notification-wrapper{
+    position:fixed; top:30px; right:30px; z-index:9999; width:320px;
+    display:none; flex-direction:column; align-items:center; gap:15px;
+    background:#fff; padding:25px 15px 15px; border-radius:8px;
+    box-shadow:0 10px 30px rgba(0,0,0,.2); box-sizing:border-box;
+  }
+  .permanent-notification-wrapper.show{ display:flex; }
+  .close-x-btn{
+    position:absolute; top:5px; right:10px; background:none; border:none;
+    font-size:24px; font-weight:700; color:#999; cursor:pointer; line-height:1; padding:0;
+    transition:color .2s;
+  }
+  .close-x-btn:hover{ color:#d32f2f; }
+  .btn-ok{
+    display:block; width:100%; padding:10px; margin-top:12px;
+    background-color:#0288d1; color:#fff; border:none; border-radius:4px;
+    font-weight:700; font-size:14px; cursor:pointer; text-align:center;
+    transition:background-color .2s;
+  }
+  .btn-ok:hover{ background-color:#01579b; }
+  .stamp-overlay .stamp-graphic{
+    border:4px double var(--red); color:var(--red); border-radius:8px; padding:12px 20px;
+    transform:rotate(-4deg);
+  }
+  .stamp-overlay .stamp-graphic strong{ font-size:22px; letter-spacing:2px; }
+  .stamp-overlay .stamp-graphic span{
+    font-size:10px; font-weight:700; border-top:2px solid var(--red); border-bottom:2px solid var(--red);
+    padding:2px 0;
+  }
+  .stamp-overlay .stamp-graphic small{ font-size:13px; font-weight:700; }
+  .info-box{ width:100%; box-sizing:border-box; }
+  .notif-success-head{ text-align:center; margin-bottom:14px; }
+  .notif-success-icon{ font-size:28px; display:block; margin-bottom:4px; }
+  .notif-success-title{ margin:0; font-size:15px; font-weight:800; color:var(--ok); }
+  .notif-success-sub{ margin:4px 0 0; font-size:12px; color:#56707A; }
+  .instruction-text{ font-size:13px; color:#333; line-height:1.5; margin:0 0 12px; }
+  .social-links{ display:flex; flex-direction:column; gap:8px; }
+  .btn-link{
+    display:block; text-align:center; padding:8px; font-size:12px; font-weight:700;
+    text-decoration:none; color:#fff; border-radius:4px;
+  }
+  .whatsapp{ background-color:#25D366; }
+  .instagram{ background-color:#E1306C; }
+  .facebook{ background-color:#1877F2; }

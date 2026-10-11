@@ -1,0 +1,62 @@
+/* ==============================================================
+   Modal & FAQ
+   Modal pratinjau/konfirmasi data (review) dan FAQ
+   ============================================================== */
+
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(11,25,43,.55); z-index:9990;
+    display:none; align-items:center; justify-content:center; padding:18px;
+    backdrop-filter:blur(2px);
+  }
+  .modal-overlay.show{display:flex;}
+  .modal-box{
+    background:#fff; border-radius:12px; max-width:560px; width:100%;
+    max-height:88vh; overflow-y:auto; box-shadow:0 20px 60px -12px rgba(0,0,0,.4);
+    animation:popIn .28s cubic-bezier(.2,.9,.25,1.1) both;
+  }
+  .modal-head{
+    position:sticky; top:0; background:#fff; display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px; border-bottom:1px solid var(--line); z-index:1;
+  }
+  .modal-head h3{margin:0; font-size:15.5px; color:var(--blue-deep); font-weight:800;}
+  .modal-close{background:none; border:none; font-size:22px; color:var(--ink-soft); cursor:pointer; line-height:1; padding:2px;}
+  .modal-close:hover{color:var(--red);}
+  .modal-body{padding:18px 20px 22px;}
+  .modal-body img{max-width:100%; border-radius:8px; display:block; margin:0 auto;}
+  .modal-body .pdf-note{
+    text-align:center; color:var(--ink-soft); font-size:13px; padding:30px 10px;
+    background:#F9FBFD; border-radius:8px; border:1px dashed var(--line);
+  }
+
+  .review-group{margin-bottom:16px;}
+  .review-group h4{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--blue-deep);
+    font-weight:800; margin:0 0 8px; padding-bottom:6px; border-bottom:1px solid var(--blue-line);
+  }
+  .review-row{display:flex; justify-content:space-between; gap:14px; font-size:13px; padding:5px 0; border-bottom:1px dashed #EEF2F7;}
+  .review-row:last-child{border-bottom:none;}
+  .review-row .rk{color:var(--ink-soft); flex:0 0 44%;}
+  .review-row .rv{color:var(--ink); font-weight:600; text-align:right; flex:1; word-break:break-word;}
+  .review-actions{display:flex; gap:10px; margin-top:18px;}
+  .review-actions button{flex:1; padding:12px; border-radius:8px; font-weight:700; font-size:13.5px; cursor:pointer; border:none;}
+  .btn-edit-review{background:#F1F5F9; color:var(--ink);}
+  .btn-edit-review:hover{background:#E4EAF0;}
+  .btn-confirm-review{background:var(--blue-deep); color:#fff;}
+  .btn-confirm-review:hover{filter:brightness(1.08);}
+
+  .faq-section{margin-bottom:22px;}
+  .faq-item{
+    background:#fff; border:1px solid var(--line); border-radius:9px; margin-bottom:8px;
+    overflow:hidden; box-shadow:var(--shadow); transition:border-color .2s;
+  }
+  .faq-item:hover{border-color:var(--blue-line);}
+  .faq-q{
+    width:100%; text-align:left; background:none; border:none; cursor:pointer;
+    padding:14px 16px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+    font-weight:700; font-size:13.5px; color:var(--blue-deep);
+  }
+  .faq-q svg{flex:0 0 auto; width:16px; height:16px; transition:transform .25s; color:var(--cyan);}
+  .faq-item.open .faq-q svg{transform:rotate(180deg);}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .faq-a p{margin:0; padding:0 16px 15px; font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+  .faq-item.open .faq-a{max-height:220px;}

@@ -1,0 +1,57 @@
+/* ==============================================================
+   Gerbang jam layanan
+   Day-gate (di luar jam/hari layanan) dan banner hari kerja
+   ============================================================== */
+
+  .day-gate{
+    position:fixed; inset:0; background:linear-gradient(160deg, rgba(8,44,85,.96), rgba(10,46,82,.94));
+    z-index:99999; display:none; align-items:center; justify-content:center; padding:20px;
+  }
+  .day-gate.show{display:flex;}
+  .day-gate-card{
+    background:#fff; border-radius:16px; max-width:440px; width:100%; padding:34px 28px 30px;
+    text-align:center; box-shadow:0 30px 80px -20px rgba(0,0,0,.5); animation:popIn .4s cubic-bezier(.2,.9,.25,1.1) both;
+  }
+  .day-gate-icon{
+    width:64px; height:64px; border-radius:50%; background:#FCE8E8; color:var(--red);
+    display:flex; align-items:center; justify-content:center; margin:0 auto 16px;
+  }
+  .day-gate-icon svg{width:32px; height:32px;}
+  .day-gate-card h2{margin:0 0 10px; color:var(--blue-deep); font-size:19px; font-weight:800;}
+  .day-gate-card p{margin:0 0 6px; color:var(--ink-soft); font-size:13.5px; line-height:1.6;}
+  .day-gate-date{
+    display:inline-block; margin:14px 0; padding:9px 18px; border-radius:999px;
+    background:var(--blue-soft); color:var(--blue-deep); font-weight:700; font-size:13px;
+    font-family:'Space Mono',monospace;
+  }
+  .day-gate-hours{
+    margin-top:18px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:12px; color:var(--ink-soft);
+  }
+  .day-gate-wa{
+    display:inline-flex; align-items:center; gap:8px; margin-top:16px; background:#25D366; color:#fff;
+    text-decoration:none; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px;
+  }
+  .day-gate-wa svg{width:16px; height:16px;}
+
+  .day-gate-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; justify-content:center;}
+  .day-gate-actions .day-gate-wa{margin-top:0;}
+  .day-gate-close-btn{
+    appearance:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    background:#F1F5F9; color:var(--ink); border:1.5px solid var(--line);
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13px; padding:11px 20px; border-radius:8px;
+    transition:background .15s, border-color .15s;
+  }
+  .day-gate-close-btn:hover{background:#E4EAF0; border-color:#C7D2DC;}
+  .day-gate-close-btn svg{width:15px; height:15px; flex:0 0 auto;}
+  .day-gate-close-note{font-size:11px; color:var(--ink-soft); margin-top:10px;}
+
+  .workday-banner{
+    max-width:640px; margin:0 auto 4px; padding:9px 16px; border-radius:8px;
+    background:rgba(255,255,255,.14); color:#fff; font-size:11.5px; font-weight:600;
+    text-align:center; display:flex; align-items:center; justify-content:center; gap:7px;
+    border:1px solid rgba(255,255,255,.25);
+  }
+  .workday-banner svg{width:14px; height:14px; flex:0 0 auto;}
+
+  .bukti-actions{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap; justify-content:center;}

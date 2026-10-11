@@ -1,0 +1,69 @@
+/* ==============================================================
+   Tombol melayang & pasang aplikasi
+   FAB WhatsApp/menu/survei dan banner pasang aplikasi (PWA)
+   ============================================================== */
+
+  .fab-wa{
+    position:fixed; right:18px; bottom:18px; z-index:60;
+    width:54px; height:54px; border-radius:50%; background:#25D366; color:#fff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(37,211,102,.55);
+    text-decoration:none; transition:transform .18s ease;
+  }
+  .fab-wa:hover{transform:scale(1.07);}
+  .fab-wa svg{width:26px; height:26px;}
+  @media (max-width:860px){ .fab-wa{right:14px; bottom:14px; width:48px; height:48px;} .fab-wa svg{width:23px; height:23px;} }
+
+  .fab-menu{
+    position:fixed; right:18px; bottom:84px; z-index:60;
+    width:54px; height:54px; border-radius:50%; background:var(--blue-deep); color:#fff;
+    display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px -4px rgba(10,46,82,.5);
+    border:none; cursor:pointer; transition:transform .18s ease;
+  }
+  .fab-menu:hover{transform:scale(1.07);}
+  .fab-menu svg{width:24px; height:24px;}
+  @media (max-width:860px){
+    .fab-menu{right:14px; bottom:72px; width:48px; height:48px;}
+    .fab-menu svg{width:21px; height:21px;}
+  }
+
+  .fab-survei{
+    position:fixed; right:18px; bottom:148px; z-index:9993;
+    display:none; align-items:center; gap:8px;
+    background:linear-gradient(90deg,#F59E0B,#FF6B54); color:#fff;
+    padding:12px 16px; border-radius:999px; border:none; cursor:pointer;
+    box-shadow:0 8px 22px -4px rgba(245,158,11,.6);
+    font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px;
+    animation: fabSurveiPulse 1.8s ease-in-out infinite;
+  }
+  .fab-survei.show{display:flex;}
+  .fab-survei svg{width:18px; height:18px; flex:0 0 auto;}
+  @keyframes fabSurveiPulse{
+    0%,100%{ box-shadow:0 8px 22px -4px rgba(245,158,11,.6); transform:scale(1); }
+    50%{ box-shadow:0 10px 30px -2px rgba(245,158,11,.9); transform:scale(1.04); }
+  }
+  @media (max-width:860px){
+    .fab-survei{right:14px; bottom:126px; padding:10px 14px; font-size:11.5px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .fab-survei{animation:none;}
+  }
+
+  .install-banner{
+    position:fixed; top:0; left:0; right:0; z-index:9994;
+    background:linear-gradient(90deg, var(--blue-deep), var(--blue));
+    color:#fff; padding:10px 14px; display:none; align-items:center; gap:12px;
+    transform:translateY(-100%); transition:transform .3s ease; box-shadow:0 4px 14px -4px rgba(10,46,82,.4);
+  }
+  .install-banner.show{display:flex; transform:translateY(0);}
+  .install-banner img{width:32px; height:32px; border-radius:8px; flex:0 0 auto; background:#fff; padding:3px;}
+  .install-banner-text{flex:1; min-width:0;}
+  .install-banner-text strong{display:block; font-size:12.5px; font-weight:800;}
+  .install-banner-text span{display:block; font-size:10.5px; opacity:.85; margin-top:1px;}
+  .install-btn{
+    background:#fff; color:var(--blue-deep); border:none; padding:7px 14px; border-radius:7px;
+    font-weight:800; font-size:11.5px; cursor:pointer; flex:0 0 auto; font-family:'Inter',sans-serif;
+  }
+  .install-btn-close{
+    background:none; border:none; color:rgba(255,255,255,.8); font-size:20px; cursor:pointer;
+    padding:0 2px; flex:0 0 auto; line-height:1;
+  }

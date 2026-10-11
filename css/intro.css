@@ -1,0 +1,104 @@
+/* ==============================================================
+   Animasi pembuka
+   Layar pembuka "Layanan AK1" (kartu AK-1, judul, ombak, kontrol suara)
+   ============================================================== */
+
+  .intro-ak1{
+    position:fixed; inset:0; z-index:100001; overflow:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    padding:24px; color:#fff;
+    background:
+      radial-gradient(700px 420px at 50% 38%, rgba(20,196,196,.28) 0%, rgba(20,196,196,0) 65%),
+      linear-gradient(170deg, #061B33 0%, #0A2E52 45%, #0C7EBE 130%);
+    transition:opacity .9s ease, transform .9s ease, visibility .9s;
+  }
+  .intro-ak1.leaving{opacity:0; transform:scale(1.04); visibility:hidden; pointer-events:none;}
+
+  /* partikel naik (seperti gelembung laut / harapan) */
+  .intro-ak1 .ia-dot{
+    position:absolute; bottom:-20px; border-radius:50%;
+    background:rgba(255,255,255,.55); box-shadow:0 0 12px rgba(20,196,196,.8);
+    animation:iaRise linear infinite; opacity:0;
+  }
+  @keyframes iaRise{
+    0%{transform:translateY(0) scale(.6); opacity:0;}
+    15%{opacity:.9;}
+    100%{transform:translateY(-110vh) scale(1.2); opacity:0;}
+  }
+
+  /* ombak Wakatobi di bawah */
+  .intro-ak1 .ia-waves{position:absolute; left:0; right:0; bottom:0; height:22vh; min-height:130px; pointer-events:none;}
+  .intro-ak1 .ia-wave{position:absolute; left:0; bottom:0; width:200%; height:100%;}
+  .intro-ak1 .ia-wave.w1{animation:iaWave 9s linear infinite; opacity:.55;}
+  .intro-ak1 .ia-wave.w2{animation:iaWave 6s linear infinite reverse; opacity:.8; bottom:-8px;}
+  @keyframes iaWave{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* kartu AK-1 yang tergambar */
+  .ia-card-wrap{
+    position:relative; z-index:2; width:min(210px,52vw); margin-bottom:22px;
+    animation:iaCardIn 1s cubic-bezier(.2,.9,.25,1.15) .2s both, iaFloat 4s ease-in-out 1.4s infinite;
+  }
+  .ia-card-wrap svg{width:100%; height:auto; overflow:visible; filter:drop-shadow(0 14px 28px rgba(0,0,0,.35));}
+  .ia-card-body{fill:rgba(255,255,255,.08); stroke:#fff; stroke-width:2.2; stroke-dasharray:520; stroke-dashoffset:520; animation:iaDraw 1.4s ease .3s forwards;}
+  .ia-card-fill{fill:#fff; opacity:0; animation:iaFade .8s ease 1.3s forwards;}
+  .ia-card-photo{fill:#E7F6FA; opacity:0; animation:iaFade .6s ease 1.5s forwards;}
+  .ia-card-line{stroke:#14C4C4; stroke-width:3; stroke-linecap:round; stroke-dasharray:60; stroke-dashoffset:60; animation:iaDraw .6s ease forwards;}
+  .ia-card-line.l1{animation-delay:1.7s;} .ia-card-line.l2{animation-delay:1.9s;} .ia-card-line.l3{animation-delay:2.1s;}
+  .ia-card-badge{fill:#FF6B54; opacity:0; transform-origin:176px 28px; animation:iaPop .6s cubic-bezier(.2,.9,.25,1.4) 2.3s forwards;}
+  .ia-card-check{fill:none; stroke:#fff; stroke-width:2.6; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:30; stroke-dashoffset:30; animation:iaDraw .5s ease 2.6s forwards;}
+  @keyframes iaDraw{ to{stroke-dashoffset:0;} }
+  @keyframes iaFade{ to{opacity:1;} }
+  @keyframes iaPop{ 0%{opacity:0; transform:scale(0);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes iaCardIn{ 0%{opacity:0; transform:translateY(40px) scale(.7) rotate(-6deg);} 100%{opacity:1; transform:none;} }
+  @keyframes iaFloat{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-9px);} }
+
+  /* judul */
+  .ia-kicker{
+    position:relative; z-index:2; font-family:'Space Mono',monospace; font-size:11.5px; letter-spacing:.28em;
+    text-transform:uppercase; color:#9FE8E8; margin:0 0 10px; opacity:0; animation:iaFadeUp .8s ease 1.9s forwards;
+  }
+  .ia-title{
+    position:relative; z-index:2; margin:0; font-family:'Space Grotesk','Inter',sans-serif; font-weight:800;
+    font-size:clamp(38px,9vw,72px); letter-spacing:.04em; line-height:1.05; text-transform:uppercase;
+    display:flex; flex-wrap:wrap; justify-content:center; gap:0 .28em;
+  }
+  .ia-word{display:inline-flex;}
+  .ia-letter{
+    display:inline-block; opacity:0; transform:translateY(40px) rotateX(-70deg); filter:blur(8px);
+    animation:iaLetter .7s cubic-bezier(.2,.9,.25,1.1) forwards;
+    background:linear-gradient(180deg,#fff 30%,#9FE8E8 100%); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  @keyframes iaLetter{ to{opacity:1; transform:none; filter:blur(0);} }
+  .ia-underline{
+    position:relative; z-index:2; height:4px; width:0; margin:14px auto 18px; border-radius:99px;
+    background:linear-gradient(90deg,#14C4C4,#FF6B54); box-shadow:0 0 16px rgba(20,196,196,.7);
+    animation:iaLine .9s ease 3.2s forwards;
+  }
+  @keyframes iaLine{ to{width:min(240px,55vw);} }
+  .ia-caption{
+    position:relative; z-index:2; margin:0; max-width:34ch; font-size:clamp(14px,3.6vw,19px); font-weight:500; line-height:1.55;
+    color:#E7F6FA; opacity:0; animation:iaFadeUp 1s ease 3.5s forwards;
+  }
+  .ia-caption b{color:#fff; font-weight:700;}
+  @keyframes iaFadeUp{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+  /* kontrol */
+  .ia-controls{position:absolute; top:16px; right:16px; z-index:5; display:flex; gap:8px;}
+  .ia-btn{
+    appearance:none; cursor:pointer; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.12);
+    color:#fff; font-family:'Inter',sans-serif; font-weight:700; font-size:12px; padding:8px 14px; border-radius:999px;
+    backdrop-filter:blur(4px); display:inline-flex; align-items:center; gap:6px; transition:background .15s;
+  }
+  .ia-btn:hover{background:rgba(255,255,255,.24);}
+  .ia-btn svg{width:15px; height:15px;}
+  .ia-hint{
+    position:absolute; left:0; right:0; bottom:calc(22vh + 18px); z-index:4; font-size:12px; font-weight:600;
+    color:#CFF4F4; opacity:0; transition:opacity .4s; pointer-events:none;
+  }
+  .ia-hint.show{opacity:1; animation:iaPulse 1.6s ease-in-out infinite;}
+  @keyframes iaPulse{ 0%,100%{opacity:.55;} 50%{opacity:1;} }
+  .ia-progress{position:absolute; left:0; bottom:0; height:4px; width:0; z-index:6; background:linear-gradient(90deg,#14C4C4,#12A87D); box-shadow:0 0 10px rgba(20,196,196,.8);}
+
+  @media (prefers-reduced-motion: reduce){
+    .intro-ak1 *{animation-duration:.01ms !important; animation-delay:0s !important;}
+  }

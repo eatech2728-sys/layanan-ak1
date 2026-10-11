@@ -1,0 +1,104 @@
+/* ==============================================================
+   Cek status & survei SKM
+   Modal cek status/syarat, kartu hasil status, survei kepuasan (SKM)
+   ============================================================== */
+
+  .status-syarat-tabs{display:flex; gap:6px; margin-bottom:16px; border-bottom:1px solid var(--blue-line); flex-wrap:wrap;}
+  .status-syarat-tab-btn{
+    appearance:none; border:none; background:none; cursor:pointer; padding:9px 12px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12.5px; color:var(--ink-soft);
+    border-bottom:3px solid transparent; margin-bottom:-1px; transition:color .15s, border-color .15s;
+  }
+  .status-syarat-tab-btn.active{color:var(--blue-deep); border-bottom-color:var(--cyan);}
+  .status-syarat-pane{display:none;}
+  .status-syarat-pane.active{display:block;}
+  .syarat-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .syarat-list li{
+    display:flex; align-items:flex-start; gap:10px; font-size:13px; color:var(--ink); line-height:1.5;
+    padding:10px 12px; background:#F9FBFD; border:1px solid var(--line); border-radius:8px;
+  }
+  .syarat-list li svg{flex:0 0 auto; width:16px; height:16px; color:var(--ok); margin-top:1px;}
+  .syarat-note{
+    margin-top:12px; font-size:12px; color:var(--ink-soft); background:var(--blue-soft);
+    border-radius:8px; padding:10px 12px; line-height:1.55;
+  }
+  .status-check-row{display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;}
+  .status-check-row input{flex:1; min-width:180px;}
+  .btn-cek-status{
+    flex:0 0 auto; background:var(--blue-deep); color:#fff; border:none; border-radius:7px;
+    padding:0 18px; font-weight:700; font-size:13px; cursor:pointer; font-family:'Inter',sans-serif;
+  }
+  .btn-cek-status:hover{filter:brightness(1.1);}
+  .btn-cek-status:disabled{background:#A9B4BF; cursor:not-allowed;}
+  .status-result-empty{
+    text-align:center; padding:26px 14px; color:var(--ink-soft); font-size:13px;
+    background:#F9FBFD; border:1px dashed var(--line); border-radius:9px;
+  }
+  .status-result-card{
+    border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:12px;
+    background:#fff; box-shadow:var(--shadow);
+  }
+  .status-result-card .src-head{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:8px;}
+  .status-result-card .src-jenis{
+    font-size:10.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    padding:3px 9px; border-radius:999px; background:var(--blue-soft); color:var(--blue-deep);
+  }
+  .status-result-card .src-jenis.perpanjangan{background:var(--cyan-soft); color:#0E7A6E;}
+  .status-result-card .src-noreg{font-family:'Space Mono',monospace; font-weight:700; font-size:12.5px; color:var(--blue-deep);}
+  .status-pill{
+    display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700;
+    padding:4px 10px; border-radius:999px; margin-top:4px;
+  }
+  .status-pill.menunggu{background:#FFF4E5; color:#9A5B00;}
+  .status-pill.terverifikasi{background:#E1F2FF; color:#0C5A8C;}
+  .status-pill.siap{background:#E1F9F7; color:#0E7A6E;}
+  .status-pill.selesai{background:#F0FDF4; color:var(--ok);}
+  .status-result-card .src-catatan{font-size:12px; color:var(--ink-soft); margin-top:8px; line-height:1.5; border-top:1px dashed var(--line); padding-top:8px;}
+
+  /* ---------- Survei Kepuasan Masyarakat (SKM) ---------- */
+  .skm-intro-noreg{
+    display:inline-block; font-family:'Space Mono',monospace; font-weight:700; color:var(--blue-deep);
+    background:var(--blue-soft); padding:2px 8px; border-radius:6px; font-size:12.5px;
+  }
+  .skm-unsur-block{
+    border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:12px; background:#F9FBFD;
+  }
+  .skm-unsur-block.has-error{border-color:var(--red); background:#FDF2F2;}
+  .skm-unsur-num{
+    display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+    background:var(--blue-deep); color:#fff; font-family:'Space Mono',monospace; font-weight:700; font-size:11px;
+    flex:0 0 auto; margin-right:8px;
+  }
+  .skm-unsur-title{font-weight:700; font-size:13.5px; color:var(--blue-deep); display:flex; align-items:center; margin-bottom:3px;}
+  .skm-unsur-desc{font-size:11.5px; color:var(--ink-soft); margin:0 0 10px 30px; line-height:1.5;}
+  .skm-scale{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-left:30px;}
+  @media (max-width:480px){ .skm-scale{grid-template-columns:repeat(2,1fr);} }
+  .skm-scale-opt{
+    display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 6px; border-radius:8px;
+    border:1.5px solid var(--line); background:#fff; cursor:pointer; transition:background .15s, border-color .15s;
+  }
+  .skm-scale-opt:hover{border-color:var(--blue-line); background:var(--blue-soft);}
+  .skm-scale-opt input{margin:0; accent-color:var(--blue-deep);}
+  .skm-scale-opt span{font-size:10.5px; font-weight:600; color:var(--ink-soft); text-align:center; line-height:1.25;}
+  .skm-scale-opt.checked{border-color:var(--blue-deep); background:var(--blue-soft);}
+  .skm-scale-opt.checked span{color:var(--blue-deep);}
+  .skm-pending-note{
+    text-align:center; font-size:11.5px; font-weight:700; color:var(--red); margin-top:10px;
+    background:#FCE8E8; border-radius:8px; padding:8px 10px; display:none;
+  }
+  .skm-pending-note.show{display:block;}
+  #skmModal .modal-box{max-width:640px;}
+  #skmModal textarea:focus{border-color:var(--blue); background:#fff; box-shadow:var(--glow); outline:none;}
+
+  .draft-clear-btn{
+    background:none; border:none; color:var(--ink-soft); font-size:11.5px; font-weight:600;
+    text-decoration:underline; cursor:pointer; margin-top:10px; padding:4px;
+  }
+  .draft-clear-btn:hover{color:var(--red);}
+
+  .nik-cross-warn{
+    display:none; align-items:flex-start; gap:6px; font-size:11.5px; font-weight:600;
+    margin-top:6px; padding:7px 10px; border-radius:6px; background:#FFF4E5; color:#9A5B00;
+  }
+  .nik-cross-warn.show{display:flex;}
+  .nik-cross-warn svg{width:14px; height:14px; flex:0 0 auto; margin-top:1px;}

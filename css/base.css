@@ -1,0 +1,110 @@
+/* ==============================================================
+   Dasar tampilan
+   Variabel warna (:root), font, topbar, kop surat, judul halaman
+   ============================================================== */
+
+  :root{
+    --blue-deep:#0A2E52;
+    --blue:#0C7EBE;
+    --blue-mid:#139AC7;
+    --blue-soft:#E7F6FA;
+    --blue-line:#C9EAF0;
+    --cyan:#14C4C4;
+    --cyan-soft:#E1F9F7;
+    --coral:#FF6B54;
+    --white:#FFFFFF;
+    --ink:#101B2B;
+    --ink-soft:#56707A;
+    --line:#D9EAEE;
+    --red:#C1272D;
+    --ok:#12A87D;
+    --radius:12px;
+    --shadow: 0 2px 6px rgba(10,46,82,.08), 0 14px 34px -16px rgba(10,46,82,.30);
+    --glow: 0 0 0 3px rgba(20,196,196,.20);
+  }
+  *{box-sizing:border-box;}
+  h1, h2, h3, h4,
+  .agency-line1, .agency-line2, .sec-title, .modal-head h3,
+  .entry-card h2, .day-gate-card h2, .notif-success-title,
+  .stamp-graphic strong, .flow-head-title, .review-group h4,
+  .dup-box .dup-noreg, .flow-kicker, .rail-title{
+    font-family:'Space Grotesk', 'Inter', sans-serif;
+    letter-spacing:-.01em;
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    position:relative;
+    background-color:#F4FBFC;
+    background-image:
+      radial-gradient(900px 480px at 15% -8%, rgba(20,196,196,.16) 0%, rgba(20,196,196,0) 60%),
+      radial-gradient(700px 420px at 100% 0%, rgba(12,126,190,.14) 0%, rgba(12,126,190,0) 55%),
+      linear-gradient(180deg, rgba(231,246,250,.85) 0%, rgba(244,251,252,.9) 260px, rgba(244,251,252,.9) 100%);
+    background-repeat:no-repeat;
+    background-position:top center;
+    background-size:100% auto;
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:url('../background1.png');
+    background-size:cover;
+    background-position:top center;
+    background-repeat:no-repeat;
+    filter:blur(6px);
+    transform:scale(1.05);
+    z-index:-1;
+  }
+
+  .wrap{max-wth:1180px; margin:0 auto; padding: 0 18px 80px; position:relative; z-index:1;}
+
+  .topbar{
+    background:var(--blue-deep);
+    color:#fff; font-size:11.5px; letter-spacing:.04em;
+    padding:7px 0; text-align:center;
+  }
+  .topbar strong{font-weight:700;}
+
+  .letterhead-block{
+    position:relative; max-wth:1180px; margin:22px auto 0; padding:26px 24px;
+    background-image:
+      linear-gradient(135deg, rgba(10,46,82,.50) 0%, rgba(12,126,190,.42) 100%),
+      url('../sampul_dinkop.jpg');
+    background-size:cover; background-position:center;
+    border-radius:12px; box-shadow:var(--shadow); overflow:hidden;
+    min-height:140px; display:flex; align-items:center;
+  }
+  .letterhead{
+    position:relative; z-index:1;
+    display:flex; align-items:center; gap:16px;
+    padding-bottom:0;
+  }
+  .letterhead .logo{
+    flex:0 0 auto; width:64px; height:64px; object-fit:contain;
+    background:#fff; border-radius:50%; padding:6px; box-shadow:0 2px 6px rgba(0,0,0,.15);
+  }
+  .letterhead .agency-text{flex:1; min-width:0;}
+  .agency-line1{
+    font-weight:800; font-size:clamp(15px,2.4vw,19px); color:#fff;
+    letter-spacing:.02em; text-transform:uppercase; margin:0 0 2px;
+    text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
+  }
+  .agency-line2{
+    font-weight:700; font-size:clamp(13px,2vw,16px); color:#E7F6FA;
+    text-transform:uppercase; margin:0; letter-spacing:.01em;
+    text-shadow:0 1px 4px rgba(0,0,0,.55), 0 1px 10px rgba(0,0,0,.35);
+  }
+  .letterhead-rule{border:none; height:1px; background:var(--blue-line); margin:0;}
+  .letterhead-rule.thick{height:4px; background:var(--blue-deep); margin-top:2px;}
+
+  .page-title{text-align:center; padding:26px 18px 6px;}
+  .page-title h1{
+    font-weight:800; font-size:clamp(22px,3.4vw,30px);
+    margin:0 0 8px; color:var(--white); letter-spacing:-.01em; line-height:1.15;
+  }
+  .page-title p{margin:0; color:var(--white); font-weight:600; font-size:14.5px; max-width:56ch; margin:0 auto;}

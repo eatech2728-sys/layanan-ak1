@@ -1,0 +1,51 @@
+/* ==============================================================
+   Tata letak & navigasi
+   Grid utama, sidebar tab (rail), tab bar HP (mobile-rail)
+   ============================================================== */
+
+  .layout{display:grid; grid-template-columns:220px 1fr; gap:28px; margin-top:26px;}
+  @media (max-width:860px){ .layout{grid-template-columns:1fr;} }
+
+  .rail{position:sticky; top:20px; align-self:start; display:flex; flex-direction:column; gap:4px;}
+  @media (max-width:860px){ .rail{display:none;} }
+  .rail-title{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--blue-deep); font-weight:700; margin:0 0 10px 2px;}
+  .tab{
+    display:flex; align-items:center; gap:10px; padding:10px 10px;
+    border-radius:8px; cursor:pointer; text-decoration:none; color:var(--ink);
+    border:1px solid transparent; transition:background .15s, border-color .15s;
+  }
+  .tab:hover{background:var(--blue-soft);}
+  .tab.active{border-color:var(--blue-line); background:#fff;}
+  .stamp-badge{
+    position:relative;
+    flex:0 0 auto; width:30px; height:30px; border-radius:50%;
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+    font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:var(--ink-soft);
+    transition: all .35s cubic-bezier(.2,.8,.2,1); background:#fff;
+  }
+  .stamp-badge svg{
+    position:absolute; top:50%; left:50%;
+    width:15px; height:15px; opacity:0;
+    transform:translate(-50%,-50%) scale(.4);
+    transition:opacity .35s, transform .35s;
+  }
+  .stamp-badge .num{
+    display:block; width:100%; text-align:center; line-height:1;
+    transition:opacity .25s;
+  }
+  .tab.done .stamp-badge .num{opacity:0;}
+  .tab.done .stamp-badge svg{opacity:1; transform:translate(-50%,-50%) scale(1);}
+  .tab.done .stamp-badge{
+    border-color:var(--ok); background:var(--ok); color:#fff;
+    box-shadow:0 2px 8px rgba(18,168,125,.4);
+  }
+  .tab-label{font-size:13.5px; font-weight:600; line-height:1.25;}
+  .tab-sub{font-size:11px; color:var(--ink-soft); font-weight:400;}
+
+  .mobile-rail{display:none; position:sticky; top:0; z-index:20; background:#F6FAFE; padding:10px 4px 14px; margin-bottom:4px;}
+  @media (max-width:860px){ .mobile-rail{display:flex; gap:8px; justify-content:space-between; border-bottom:1px solid var(--line);} }
+  .mobile-rail .m-tab{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; text-decoration:none; color:var(--ink-soft);}
+  .mobile-rail .dot{width:22px; height:22px; border-radius:50%; border:2px solid var(--line); background:#fff; display:flex; align-items:center; justify-content:center; transition:all .3s;}
+  .mobile-rail .m-tab.done .dot{background:var(--ok); border-color:var(--ok);}
+  .mobile-rail .m-tab.done .dot::after{content:"✓"; color:#fff; font-size:11px; font-weight:700;}
+  .mobile-rail span.mlabel{font-size:9.5px; text-align:center; font-weight:600; letter-spacing:.01em;}
