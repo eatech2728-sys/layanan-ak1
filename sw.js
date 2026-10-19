@@ -26,7 +26,7 @@
  * =====================================================================
  */
 
-const CACHE_NAME = 'ak1-wakatobi-v3';
+const CACHE_NAME = 'ak1-wakatobi-v4';
 
 // Sesuaikan daftar ini dengan nama file HTML utama Anda yang
 // sebenarnya di server (path relatif terhadap lokasi sw.js ini).
