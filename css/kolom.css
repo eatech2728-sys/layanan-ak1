@@ -53,4 +53,24 @@
   /* Pesan error lebih lembut */
   .field-error{font-size:12.5px;}
 
-  @media (prefers-reduced-motion: reduce){ .chip{transition:none;} }
+  /* ---------- Animasi mikro ---------- */
+  input.ok{
+    padding-right:44px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2312A87D' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:18px;
+    animation:tickMasuk .3s ease both;
+  }
+  @keyframes tickMasuk{from{background-size:0;} 60%{background-size:22px;} to{background-size:18px;}}
+
+  .field.goyang{animation:goyang .4s ease;}
+  @keyframes goyang{20%{transform:translateX(-5px);} 40%{transform:translateX(5px);} 60%{transform:translateX(-3px);} 80%{transform:translateX(3px);} 100%{transform:none;}}
+
+  .chip[aria-checked="true"]{animation:chipPop .3s ease;}
+  @keyframes chipPop{0%{transform:scale(.92);} 55%{transform:scale(1.06);} 100%{transform:scale(1);}}
+  .file-drop.filled{animation:kartuPop .35s ease;}
+  @keyframes kartuPop{0%{transform:scale(.97);} 60%{transform:scale(1.015);} 100%{transform:scale(1);}}
+
+  @media (prefers-reduced-motion: reduce){
+    .chip{transition:none;}
+    input.ok, .field.goyang, .chip[aria-checked="true"], .file-drop.filled{animation:none;}
+  }
