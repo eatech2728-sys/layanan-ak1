@@ -74,7 +74,7 @@
 
   function wizLanjut() {
     const sec = document.getElementById(WIZ_LANGKAH[wizIndeks].id);
-    if (!sec || !validasiSemuaField(sec)) return;
+    if (!sec || !validasiSemuaField(sec, { langkah: true })) return;
     if (WIZ_LANGKAH[wizIndeks].id === 'sec-diri' && typeof nikSedangTerdaftar !== 'undefined' && nikSedangTerdaftar) {
       openDupModal(
         `NIK ini terdeteksi sudah terdaftar tahun ini atas nama "${nikSedangTerdaftar.nama}". Data tidak dapat dikirim ulang untuk mencegah duplikasi.`,
