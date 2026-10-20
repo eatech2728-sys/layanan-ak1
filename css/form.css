@@ -106,3 +106,15 @@
   .loading-text{color:var(--blue-deep); font-weight:600; font-size:13px; margin-top:14px;}
   .loading-text.hidden{display:none;}
   .progress-note{font-size:12px; color:var(--ink-soft); margin-top:12px;}
+
+  /* Tombol batal/hapus jenjang pendidikan (SMP, SMA, Perguruan Tinggi) */
+  .edu-hapus-wrap{text-align:right; margin-top:14px;}
+  .btn-hapus-jenjang{
+    display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+    background:#fff; color:var(--red); border:1px solid var(--red); border-radius:6px;
+    padding:8px 14px; font-size:12px; font-weight:700; font-family:inherit;
+    transition:background .15s, color .15s;
+  }
+  .btn-hapus-jenjang:hover{background:var(--red); color:#fff;}
+  .btn-hapus-jenjang:focus-visible{outline:3px solid #F4B6B8; outline-offset:2px;}
+  .btn-hapus-jenjang svg{width:14px; height:14px;}
