@@ -83,6 +83,7 @@
     document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
     document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
     resetSeksiPendidikanVisual();
+    if (typeof wizReset === 'function') wizReset();
     document.querySelectorAll('#modeBaruWrap .file-drop').forEach(d => {
       d.classList.remove('filled', 'compressing', 'is-pdf');
       const n = d.querySelector('.file-name');
