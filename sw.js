@@ -26,7 +26,7 @@
  * =====================================================================
  */
 
-const CACHE_NAME = 'ak1-wakatobi-v7';
+const CACHE_NAME = 'ak1-wakatobi-v8';
 
 // Sesuaikan daftar ini dengan nama file HTML utama Anda yang
 // sebenarnya di server (path relatif terhadap lokasi sw.js ini).
@@ -45,6 +45,7 @@ const ASSETS_TO_CACHE = [
   './css/form.css',
   './css/wizard.css',
   './css/upload.css',
+  './css/kolom.css',
   './css/sukses.css',
   './css/footer.css',
   './css/feedback.css',
@@ -74,6 +75,7 @@ const ASSETS_TO_CACHE = [
   './js/cek-status.js',
   './js/validasi.js',
   './js/wizard.js',
+  './js/kolom.js',
   './js/berkas-ui.js',
   './js/draft.js',
   './js/ui-umum.js',
