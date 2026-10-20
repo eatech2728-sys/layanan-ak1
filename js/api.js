@@ -39,18 +39,42 @@
   }
 
 
+  // Info registrasi: tanggal terisi otomatis (WITA), nomor perkiraan hanya tampil bila berhasil dimuat.
+  let noRegDimuat_ = '';
+  function isiTanggalRegistrasi_() {
+    const el = document.getElementById('tgl_reg');
+    if (!el) return;
+    const tz = 'Asia/Makassar';
+    const sekarang = new Date();
+    el.value = sekarang.toLocaleDateString('en-CA', { timeZone: tz });
+    const tampil = document.getElementById('tgl_reg_tampil');
+    if (tampil) tampil.textContent = sekarang.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: tz });
+  }
+  function perbaruiInfoRegistrasi_() {
+    isiTanggalRegistrasi_();
+    const el = document.getElementById('no_reg');
+    if (el) el.value = noRegDimuat_;
+    const wrap = document.getElementById('regNoWrap');
+    const tampil = document.getElementById('no_reg_tampil');
+    if (wrap) wrap.hidden = !noRegDimuat_;
+    if (tampil) tampil.textContent = noRegDimuat_ || '-';
+  }
+  isiTanggalRegistrasi_();
+
   window.addEventListener("DOMContentLoaded", function() {
     fetchWithTimeout(WEB_APP_URL)
       .then(res => res.json())
       .then(data => {
         if (data.status === "success") {
-          document.getElementById('no_reg').value = data.next_reg;
+          noRegDimuat_ = String(data.next_reg || '');
         } else {
-          document.getElementById('no_reg').value = "Gagal memuat nomor";
+          noRegDimuat_ = '';
         }
+        perbaruiInfoRegistrasi_();
       })
       .catch(err => {
-        document.getElementById('no_reg').value = err && err.message === 'TIMEOUT' ? "Waktu muat habis" : "Error koneksi";
+        noRegDimuat_ = '';   // gagal memuat: kolom disembunyikan, tidak menampilkan pesan error ke pengguna
+        perbaruiInfoRegistrasi_();
         console.error(err);
       });
     updatePelatihanLimitNote();
