@@ -92,7 +92,7 @@
     let jumlahError = 0;
 
     required.forEach(inp => {
-      if (inp.offsetParent === null) return;
+      if (!terlihat_(inp)) return;
 
       // Bersihkan spasi di depan/belakang secara otomatis untuk field
       // teks biasa, supaya isian yang kelihatan terisi tapi diawali/
@@ -132,6 +132,7 @@
     });
 
     if (fieldPertamaError) {
+      if (typeof wizBukaSeksiDari_ === 'function') wizBukaSeksiDari_(fieldPertamaError);
       const sec = fieldPertamaError.closest('.form-section');
       if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
       setTimeout(() => fieldPertamaError.focus({ preventScroll: true }), 350);
