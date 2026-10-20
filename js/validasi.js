@@ -58,6 +58,8 @@
     const fieldEl = inputEl.closest('.field') || inputEl.parentElement;
     if (!fieldEl) return;
     fieldEl.classList.add('has-error');
+    inputEl.classList.remove('ok');
+    fieldEl.classList.remove('goyang'); void fieldEl.offsetWidth; fieldEl.classList.add('goyang');   // getar singkat
     const err = getOrBuatFieldError(fieldEl);
     err.querySelector('span').textContent = pesan;
     err.classList.add('show');
