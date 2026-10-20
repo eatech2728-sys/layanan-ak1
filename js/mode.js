@@ -31,6 +31,7 @@
       updateProgress();
     }
 
+    document.body.classList.toggle('mode-perpanjangan', currentMode === 'perpanjangan');
     perbaruiLabelModeDiPopup();
   }
 
