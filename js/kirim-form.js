@@ -153,6 +153,7 @@ function lanjutkanValidasiFormBaru_() {
         document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
         document.querySelectorAll('.field-error.show').forEach(f => f.classList.remove('show'));
         clearDraft();
+        if (typeof wizReset === 'function') wizReset();
         updateProgress();
       } else if (result.status === "duplicate") {
         openDupModal(result.message, result.no_reg);
