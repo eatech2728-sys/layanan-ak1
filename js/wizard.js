@@ -104,6 +104,7 @@
 
   function wizReset() {
     wizTertinggi = 0;
+    if (typeof perbaruiInfoRegistrasi_ === 'function') perbaruiInfoRegistrasi_();   // form.reset() mengosongkan kolom otomatis
     wizKe(0);
   }
 
