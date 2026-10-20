@@ -27,3 +27,14 @@
   .mobile-rail .m-tab.active .mlabel{color:var(--blue-deep);}
 
   @media (prefers-reduced-motion: reduce){ .wiz .wiz-masuk{animation:none;} }
+
+  /* Langkah 1 — ringkasan registrasi */
+  .reg-info{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;}
+  .reg-info-item{display:flex; flex-direction:column; gap:3px; padding:14px 16px; border-radius:14px; background:linear-gradient(180deg,#F9FCFF,#EEF6FC); border:1px solid var(--blue-line);}
+  .reg-info-item[hidden]{display:none;}
+  .reg-info-label{font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft);}
+  .reg-info-item strong{font-size:17px; color:var(--blue-deep); line-height:1.3;}
+  .reg-info-note{font-size:11.5px; color:var(--ink-soft);}
+
+  /* Ruang di bawah agar tombol Lanjut tidak tertutup tombol melayang (WhatsApp/ringkasan) */
+  @media (max-width:860px){ .wiz{padding-bottom:72px;} }
