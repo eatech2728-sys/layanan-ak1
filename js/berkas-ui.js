@@ -22,6 +22,28 @@
       const nameEl = inner.querySelector('.file-name');
       if (nameEl) nameEl.parentElement.classList.add('file-drop-textwrap');
 
+      // Tampilan kartu unggah: ikon kamera + teks ajakan + keterangan format.
+      const svgLama = inner.querySelector(':scope > svg');
+      if (svgLama) {
+        const ikon = document.createElement('span');
+        ikon.className = 'file-ikon';
+        ikon.setAttribute('aria-hidden', 'true');
+        ikon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>';
+        svgLama.replaceWith(ikon);
+      }
+      if (nameEl) {
+        const teks = document.createElement('div');
+        teks.className = 'file-teks';
+        nameEl.before(teks);
+        teks.appendChild(nameEl);
+        const sub = document.createElement('small');
+        sub.className = 'file-sub';
+        sub.textContent = 'JPG, PNG, atau PDF · maks 3MB';
+        teks.appendChild(sub);
+        nameEl.dataset.default = 'Ketuk untuk foto / pilih file';
+        if (!(input.files && input.files.length)) nameEl.textContent = nameEl.dataset.default;
+      }
+
       const viewBtn = document.createElement('button');
       viewBtn.type = 'button';
       viewBtn.className = 'btn-lihat-file';
