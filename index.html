@@ -400,7 +400,7 @@
 
         <div class="edu-subsection">
           <h3 class="edu-subtitle">A. Pendidikan Formal</h3>
-          <p class="sec-hint" style="margin-bottom:14px;">Klik tombol di bawah untuk menambah jenjang pendidikan yang lebih tinggi secara berurutan.</p>
+          <p class="sec-hint" style="margin-bottom:14px;">Klik tombol di bawah untuk menambah jenjang pendidikan yang lebih tinggi secara berurutan. Salah menambah jenjang? Tekan tombol <b>Batalkan Jenjang</b> merah di jenjang paling bawah, tanpa perlu mengisi ulang data lain.</p>
 
           <div class="divider-row" id="row-sd">
             <div class="grid3">
@@ -436,6 +436,12 @@
               <label>Jurusan SMP <span style="color:var(--ink-soft); font-weight:400;">(opsional, biasanya dikosongkan untuk SMP)</span></label>
               <input type="text" id="smp_jurusan" placeholder="Isi jika ada (mis. sekolah berbasis kejuruan)">
             </div>
+            <div class="edu-hapus-wrap">
+              <button type="button" class="btn-hapus-jenjang" data-level="2" onclick="hapusJenjangTerakhir()" aria-label="Batalkan jenjang SMP" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                Batalkan Jenjang SMP
+              </button>
+            </div>
           </div>
 
           <div class="divider-row" id="row-sma" style="display:none;">
@@ -454,6 +460,12 @@
               <label>Jurusan SMA <span class="req">*</span></label>
               <input type="text" id="sma_jurusan" placeholder="Contoh: IPA, IPS, atau jurusan SMK">
             </div>
+            <div class="edu-hapus-wrap">
+              <button type="button" class="btn-hapus-jenjang" data-level="3" onclick="hapusJenjangTerakhir()" aria-label="Batalkan jenjang SMA" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                Batalkan Jenjang SMA
+              </button>
+            </div>
           </div>
 
           <div id="row-pt" style="display:none;">
@@ -471,6 +483,12 @@
             <div class="field" style="margin-top:14px;">
               <label>Jurusan/Program Studi <span class="req">*</span></label>
               <input type="text" id="pt_jurusan" placeholder="Contoh: Manajemen, Teknik Informatika, dsb.">
+            </div>
+            <div class="edu-hapus-wrap">
+              <button type="button" class="btn-hapus-jenjang" data-level="4" onclick="hapusJenjangTerakhir()" aria-label="Batalkan jenjang Perguruan Tinggi" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                Batalkan Jenjang Perguruan Tinggi
+              </button>
             </div>
           </div>
 
