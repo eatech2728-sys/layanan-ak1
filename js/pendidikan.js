@@ -39,6 +39,25 @@
     4: { baris: 'row-pt',  nama: 'Perguruan Tinggi', isian: ['pt_nama', 'pt_jurusan', 'pt_lulus'],    berkas: 'file_ijazah_pt' }
   };
 
+  /**
+   * bukaJenjangDariIsian_ — dipanggil setelah draf dipulihkan. Draf mengisi kembali
+   * kolom SMP/SMA/Perguruan Tinggi, tetapi barisnya tetap tersembunyi kalau tidak
+   * dibuka. Di sini semua jenjang sampai jenjang tertinggi yang punya isian dibuka
+   * kembali (lewat tambahJenjangPendidikan), supaya data yang akan terkirim selalu
+   * terlihat di layar & kolom wajibnya ikut aktif.
+   */
+  function bukaJenjangDariIsian_() {
+    let tertinggi = 1;
+    Object.keys(DATA_JENJANG).forEach(level => {
+      const terisi = DATA_JENJANG[level].isian.some(id => {
+        const el = document.getElementById(id);
+        return el && el.value && el.value.trim();
+      });
+      if (terisi) tertinggi = Math.max(tertinggi, Number(level));
+    });
+    while (levelPendidikanSaatIni < tertinggi) tambahJenjangPendidikan();
+  }
+
   /** Tombol "Batalkan Jenjang ..." hanya tampil pada jenjang PALING BAWAH yang sedang terbuka. */
   function perbaruiTombolHapusJenjang_() {
     document.querySelectorAll('.btn-hapus-jenjang').forEach(btn => {
