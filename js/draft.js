@@ -64,6 +64,7 @@
       });
 
       if (adaIsi) {
+        bukaJenjangDariIsian_();   // buka kembali baris SMP/SMA/PT yang ada isinya
         updateProgress();
         toast('info', 'Draf sebelumnya dipulihkan', 'Data teks yang pernah Anda isi di perangkat ini telah dimuat kembali. Berkas (KTP, foto, dll) perlu dipilih ulang karena tidak ikut tersimpan.', 7000);
       }
