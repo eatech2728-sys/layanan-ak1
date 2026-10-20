@@ -28,7 +28,60 @@
       document.getElementById('btnTambahPendidikan').style.display = 'none';
     }
 
+    perbaruiTombolHapusJenjang_();
     updateProgress();
+  }
+
+  // Data tiap jenjang yang bisa dibatalkan (level 2 = SMP, 3 = SMA, 4 = Perguruan Tinggi)
+  const DATA_JENJANG = {
+    2: { baris: 'row-smp', nama: 'SMP',              isian: ['smp_nama', 'smp_jurusan', 'smp_lulus'], berkas: 'file_ijazah_smp' },
+    3: { baris: 'row-sma', nama: 'SMA',              isian: ['sma_nama', 'sma_jurusan', 'sma_lulus'], berkas: 'file_ijazah_sma' },
+    4: { baris: 'row-pt',  nama: 'Perguruan Tinggi', isian: ['pt_nama', 'pt_jurusan', 'pt_lulus'],    berkas: 'file_ijazah_pt' }
+  };
+
+  /** Tombol "Batalkan Jenjang ..." hanya tampil pada jenjang PALING BAWAH yang sedang terbuka. */
+  function perbaruiTombolHapusJenjang_() {
+    document.querySelectorAll('.btn-hapus-jenjang').forEach(btn => {
+      btn.style.display = (Number(btn.dataset.level) === levelPendidikanSaatIni) ? 'inline-flex' : 'none';
+    });
+  }
+
+  /**
+   * hapusJenjangTerakhir — membatalkan jenjang pendidikan yang terakhir ditambahkan
+   * (mis. salah menambah SMA/Perguruan Tinggi). Isian & berkas jenjang itu dikosongkan,
+   * kolomnya tidak lagi wajib, dan data jenjang lain TIDAK tersentuh.
+   */
+  function hapusJenjangTerakhir() {
+    const j = DATA_JENJANG[levelPendidikanSaatIni];
+    if (!j) return;
+
+    const fileEl = document.getElementById(j.berkas);
+    const adaIsi = j.isian.some(id => { const el = document.getElementById(id); return el && el.value.trim(); }) ||
+                   !!(fileEl && fileEl.files && fileEl.files.length);
+    if (adaIsi && !confirm('Batalkan jenjang ' + j.nama + '? Data yang sudah Anda isi pada jenjang ini akan dikosongkan.')) return;
+
+    j.isian.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.required = false;
+      el.value = '';
+      clearFieldError(el);
+      el.dispatchEvent(new Event(el.tagName === 'SELECT' ? 'change' : 'input', { bubbles: true }));   // memicu simpan draf otomatis
+    });
+
+    if (fileEl) {
+      fileEl.value = '';
+      fileEl.dispatchEvent(new Event('change', { bubbles: true }));   // handleFile: bersihkan tampilan, kompresan, & pratinjau
+    }
+
+    document.getElementById(j.baris).style.display = 'none';
+    levelPendidikanSaatIni--;
+    document.getElementById('btnTambahPendidikan').style.display = 'inline-flex';
+
+    perbaruiTombolHapusJenjang_();
+    updateProgress();
+    if (typeof saveDraft === 'function') saveDraft();
+    toast('info', 'Jenjang ' + j.nama + ' dibatalkan', 'Anda bisa menambahkannya lagi kapan saja lewat tombol "Tambah Pendidikan Berikutnya".', 3500);
   }
 
   let pelatihanCount = 0;
@@ -113,6 +166,7 @@
     document.getElementById('row-sma').style.display = 'none';
     document.getElementById('row-pt').style.display = 'none';
     document.getElementById('btnTambahPendidikan').style.display = 'inline-flex';
+    perbaruiTombolHapusJenjang_();
 
     const fields = ['smp_nama', 'smp_lulus', 'smp_jurusan', 'file_ijazah_smp', 'sma_nama', 'sma_lulus', 'sma_jurusan', 'file_ijazah_sma', 'pt_nama', 'pt_lulus', 'pt_jurusan', 'file_ijazah_pt'];
     fields.forEach(id => {
