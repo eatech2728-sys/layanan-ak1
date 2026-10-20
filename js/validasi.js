@@ -86,7 +86,34 @@
     if (pesan) showFieldError(e.target, pesan);
   });
 
-  function validasiSemuaField(form) {
+  /** Nama kolom untuk pesan error, diambil dari label (tanpa tanda * dan keterangan dalam kurung). */
+  function namaKolom_(inp) {
+    const f = inp.closest('.field');
+    const lb = f && f.querySelector('label');
+    if (!lb) return '';
+    return lb.textContent.replace(/\*/g, '').replace(/\(.*?\)/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  /** Pesan error ramah untuk satu kolom; '' bila kolom valid. */
+  function pesanKolom_(inp) {
+    const kosong = inp.type === 'checkbox' ? !inp.checked
+                 : inp.type === 'file' ? !(inp.files && inp.files.length)
+                 : !inp.value.trim();
+    if (kosong) {
+      if (inp.type === 'file') return 'Berkas belum diunggah. Ketuk kartu di atas untuk memilih foto/file.';
+      if (inp.type === 'checkbox') return 'Persetujuan perlu dicentang.';
+      if (inp.id === 'tanggal_lahir') return 'Pilih tanggal, bulan, dan tahun lahir.';
+      if (inp.tagName === 'SELECT') return 'Silakan pilih salah satu.';
+      const nm = namaKolom_(inp);
+      return nm ? `Mohon isi ${nm}.` : 'Kolom ini belum diisi.';
+    }
+    if ((inp.id === 'nik' || inp.id === 'p_nik') && inp.value.trim().length !== 16) return 'NIK harus tepat 16 digit angka.';
+    if (inp.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value.trim())) return 'Format email belum benar, contoh: nama@email.com.';
+    if (inp.id === 'tanggal_lahir') return pesanUmurTidakValid(inp.value);
+    return '';
+  }
+
+  function validasiSemuaField(form, opsi) {
     const required = Array.from(form.querySelectorAll('input[required], select[required]'));
     let fieldPertamaError = null;
     let jumlahError = 0;
@@ -103,23 +130,9 @@
         if (trimmed !== inp.value) inp.value = trimmed;
       }
 
-      let valid = true;
-      if (inp.type === 'checkbox') valid = inp.checked;
-      else if (inp.type === 'file') valid = !!(inp.files && inp.files.length);
-      else valid = !!inp.value.trim();
-
-      if ((inp.id === 'nik' || inp.id === 'p_nik') && valid && inp.value.trim().length !== 16) valid = false;
-      if (inp.type === 'email' && valid && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value.trim())) valid = false;
-      if (inp.id === 'tanggal_lahir' && valid && pesanUmurTidakValid(inp.value)) valid = false;   // batas usia minimal
-
-      if (!valid) {
+      const pesan = pesanKolom_(inp);
+      if (pesan) {
         jumlahError++;
-        let pesan = 'Wajib diisi.';
-        if (inp.type === 'file') pesan = 'Berkas wajib diunggah.';
-        else if (inp.id === 'nik' || inp.id === 'p_nik') pesan = 'NIK harus tepat 16 digit angka.';
-        else if (inp.id === 'tanggal_lahir' && inp.value.trim()) pesan = pesanUmurTidakValid(inp.value);
-        else if (inp.type === 'email') pesan = 'Format email tidak valid.';
-        else if (inp.type === 'checkbox') pesan = 'Persetujuan wajib dicentang.';
         showFieldError(inp, pesan);
         if (!fieldPertamaError) fieldPertamaError = inp;
 
@@ -133,10 +146,11 @@
 
     if (fieldPertamaError) {
       if (typeof wizBukaSeksiDari_ === 'function') wizBukaSeksiDari_(fieldPertamaError);
-      const sec = fieldPertamaError.closest('.form-section');
-      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => fieldPertamaError.focus({ preventScroll: true }), 350);
-      toast('error', 'Formulir belum lengkap', `${jumlahError} bagian perlu diperiksa kembali sebelum dikirim.`);
+      const tujuan = fieldPertamaError.closest('.field') || fieldPertamaError;
+      tujuan.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => { try { fieldPertamaError.focus({ preventScroll: true }); } catch (e) {} }, 350);
+      if (opsi && opsi.langkah) toast('error', 'Langkah ini belum lengkap', `${jumlahError} isian perlu dilengkapi sebelum lanjut.`);
+      else toast('error', 'Formulir belum lengkap', `${jumlahError} isian perlu dilengkapi atau diperbaiki sebelum dikirim.`);
       return false;
     }
     return true;
