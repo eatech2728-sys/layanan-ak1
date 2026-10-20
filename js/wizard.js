@@ -23,6 +23,7 @@
     });
     const faq = wizForm.querySelector('.faq-section');
     const kirim = wizForm.querySelector('.submit-wrap');
+    const kirim_ = document.getElementById('submitBtn');
     if (faq) faq.dataset.wiz = akhir;
     if (kirim) kirim.dataset.wiz = akhir;
 
@@ -33,17 +34,29 @@
       nav.innerHTML =
         '<button type="button" class="wiz-btn kembali"' + (i === 0 ? ' style="visibility:hidden" tabindex="-1" aria-hidden="true"' : '') + '>‹ Kembali</button>' +
         '<span class="wiz-info">Langkah ' + (i + 1) + ' dari ' + WIZ_LANGKAH.length + '</span>' +
-        (i < akhir ? '<button type="button" class="wiz-btn lanjut">Lanjut ›</button>' : '<span class="wiz-spacer"></span>');
+        (i < akhir ? '<button type="button" class="wiz-btn lanjut">Lanjut ›</button>' : '<button type="button" class="wiz-btn lanjut kirim">Periksa &amp; Kirim ›</button>');
       const kembali = nav.querySelector('.kembali');
-      const lanjut = nav.querySelector('.lanjut');
+      const lanjut = nav.querySelector('.lanjut:not(.kirim)');
+      const kirimNav = nav.querySelector('.kirim');
       if (kembali) kembali.addEventListener('click', () => wizKe(i - 1));
       if (lanjut) lanjut.addEventListener('click', wizLanjut);
+      if (kirimNav) {
+        kirimNav.addEventListener('click', () => { if (kirim_) kirim_.click(); });
+        if (kirim_) {
+          const sinkron = () => { kirimNav.disabled = kirim_.disabled; };
+          new MutationObserver(sinkron).observe(kirim_, { attributes: true, attributeFilter: ['disabled'] });
+          sinkron();
+        }
+      }
+      nav.style.setProperty('--wiz-pct', ((i + 1) / WIZ_LANGKAH.length * 100) + '%');
+      // Bar navigasi melekat di bawah layar: untuk langkah terakhir diletakkan paling akhir di form
+      // supaya tetap menempel sepanjang langkah itu.
       if (i < akhir) document.getElementById(l.id).after(nav);
-      else if (kirim) kirim.before(nav);
       else wizForm.appendChild(nav);
       wizNav.push(nav);
     });
     wizForm.classList.add('wiz');
+    document.body.classList.add('wiz-bar');
     wizKe(0, { gulir: false });
   }
 
