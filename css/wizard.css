@@ -7,9 +7,28 @@
   .wiz .wiz-masuk{animation:wizMasuk .35s ease both;}
   @keyframes wizMasuk{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;}}
 
-  .wiz-nav{display:flex; align-items:center; justify-content:space-between; gap:10px; margin:-6px 0 22px;}
+  .wiz-nav{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    position:sticky; bottom:0; z-index:25; margin:-6px -4px 14px; padding:12px 14px;
+    background:rgba(255,255,255,.93); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    border:1px solid var(--line); border-radius:16px; box-shadow:0 -4px 22px rgba(10,46,82,.12);
+  }
+  .wiz-nav::before{
+    content:""; position:absolute; left:14px; top:-1px; height:3px; width:calc(var(--wiz-pct,25%) - 28px);
+    background:linear-gradient(90deg,var(--cyan),var(--blue)); border-radius:3px; transition:width .4s ease;
+  }
+  .wiz-btn[disabled]{opacity:.55; cursor:not-allowed;}
+  /* Tombol melayang (WhatsApp, menu, survei) naik supaya tidak menutupi bar */
+  body.wiz-bar:not(.mode-perpanjangan) .fab-wa{bottom:calc(18px + 76px);}
+  body.wiz-bar:not(.mode-perpanjangan) .fab-menu{bottom:calc(84px + 76px);}
+  body.wiz-bar:not(.mode-perpanjangan) .fab-survei{bottom:calc(148px + 76px);}
+  @media (max-width:860px){
+    body.wiz-bar:not(.mode-perpanjangan) .fab-wa{bottom:calc(14px + 76px);}
+    body.wiz-bar:not(.mode-perpanjangan) .fab-menu{bottom:calc(72px + 76px);}
+    body.wiz-bar:not(.mode-perpanjangan) .fab-survei{bottom:calc(126px + 76px);}
+    .wiz-nav{margin-left:-6px; margin-right:-6px;}
+  }
   .wiz-info{flex:1; text-align:center; font-size:12px; font-weight:600; color:var(--ink-soft);}
-  .wiz-spacer{min-width:96px;}
   .wiz-btn{
     font:inherit; font-weight:700; font-size:14.5px; padding:13px 22px; border-radius:12px;
     border:1.5px solid var(--line); background:#fff; color:var(--blue-deep); cursor:pointer;
@@ -20,7 +39,7 @@
   .wiz-btn:focus-visible{outline:3px solid rgba(20,196,196,.45); outline-offset:2px;}
   .wiz-btn.lanjut{background:linear-gradient(135deg,var(--blue-deep),var(--blue)); color:#fff; border-color:transparent;}
   .wiz-btn.lanjut:hover{filter:brightness(1.08);}
-  @media (max-width:480px){ .wiz-btn{padding:13px 16px; font-size:14px;} .wiz-spacer{min-width:84px;} }
+  @media (max-width:480px){ .wiz-btn{padding:13px 16px; font-size:14px;}  }
 
   .mobile-rail .m-tab{cursor:pointer;}
   .mobile-rail .m-tab.active .dot{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(20,196,196,.2);}
@@ -35,6 +54,3 @@
   .reg-info-label{font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--ink-soft);}
   .reg-info-item strong{font-size:17px; color:var(--blue-deep); line-height:1.3;}
   .reg-info-note{font-size:11.5px; color:var(--ink-soft);}
-
-  /* Ruang di bawah agar tombol Lanjut tidak tertutup tombol melayang (WhatsApp/ringkasan) */
-  @media (max-width:860px){ .wiz{padding-bottom:72px;} }
