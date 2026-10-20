@@ -134,7 +134,7 @@
       const el = e.target;
       if (el.matches && el.matches('input, select') && el.value) kolomPernahIsi_.add(el);
     });
-    form.addEventListener('reset', () => { kolomPernahIsi_ = new WeakSet(); });
+    form.addEventListener('reset', () => { kolomPernahIsi_ = new WeakSet(); form.querySelectorAll('.ok').forEach(x => x.classList.remove('ok')); });
     form.addEventListener('focusout', (e) => {
       const el = e.target;
       if (el.offsetParent === null) return;   // kolom ikut tersembunyi (ganti langkah/reset): jangan beri error
@@ -142,6 +142,14 @@
       if (!kolomPernahIsi_.has(el)) return;
       const pesan = pesanKolom_(el);
       if (pesan) showFieldError(el, pesan);
+    });
+    // Tanda centang hijau pada kolom teks yang sudah terisi benar
+    form.addEventListener('input', (e) => { if (e.target.classList) e.target.classList.remove('ok'); });
+    form.addEventListener('focusout', (e) => {
+      const el = e.target;
+      if (!el.matches || !el.matches('input[type="text"][required], input[type="email"][required], input[type="tel"][required]')) return;
+      if (el.offsetParent === null || el.classList.contains('kolom-asli') || !el.value.trim()) return;
+      el.classList.toggle('ok', !pesanKolom_(el));
     });
   }
   aturPemeriksaanRamah_(document.getElementById('registrationForm'));
