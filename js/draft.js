@@ -55,6 +55,7 @@
 
       let adaIsi = false;
       Object.keys(parsed.data).forEach(id => {
+        if (id === 'tgl_reg') return;   // tanggal registrasi selalu hari ini, tidak dipulihkan dari draf
         const el = document.getElementById(id);
         const val = parsed.data[id];
         if (el && val) {
