@@ -40,7 +40,6 @@
   }
   input[type="text"]::placeholder, input[type="date"]::placeholder{color:#9CAAB8;}
   input:focus{border-color:var(--blue); background:#fff; box-shadow:var(--glow);}
-  input:invalid:not(:placeholder-shown){border-color:#E2A2A2;}
 
   select{
     width:100%; padding:11px 12px; border:1.5px solid var(--line); border-radius:7px;
