@@ -103,7 +103,7 @@
     if (!note) {
       note = document.createElement('span');
       note.className = 'file-compress-note';
-      drop.querySelector('.file-drop-inner').appendChild(note);
+      (drop.querySelector('.file-teks') || drop.querySelector('.file-drop-inner')).appendChild(note);
     }
     return note;
   }
