@@ -46,6 +46,7 @@ const ASSETS_TO_CACHE = [
   './css/wizard.css',
   './css/upload.css',
   './css/kolom.css',
+  './css/gelap.css',
   './css/sukses.css',
   './css/footer.css',
   './css/feedback.css',
