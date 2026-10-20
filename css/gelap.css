@@ -1,0 +1,201 @@
+/* ==============================================================
+   Mode gelap otomatis — mengikuti pengaturan HP/komputer (prefers-color-scheme)
+   Bagian "otomatis" dibuat dengan membalik warna terang di tiap file css;
+   bagian "penyesuaian" di bawahnya merapikan hal-hal khusus.
+   Dimuat paling akhir. Intro/animasi pembuka sudah gelap, tidak diubah.
+   ============================================================== */
+@media (prefers-color-scheme: dark) {
+
+  :root{
+    color-scheme:dark;
+    --ink:#E3EDF5; --ink-soft:#9FB6C6; --line:#2B4558; --blue-line:#27475D;
+    --blue-soft:#12323F; --cyan-soft:#0E3B3C; --red:#FF7B80; --ok:#34D3A0;
+    --shadow:0 2px 6px rgba(0,0,0,.4), 0 14px 34px -16px rgba(0,0,0,.6);
+  }
+
+  /* --- dari base.css --- */
+  body{background-color:#183337}
+  .letterhead .logo{background:#19252E}
+
+  /* --- dari layout.css --- */
+  .rail-title{color:#CFE8F7}
+  .tab.active{background:#19252E}
+  .stamp-badge{background:#19252E}
+  .mobile-rail{background:#172635}
+  .mobile-rail .dot{background:#19252E}
+
+  /* --- dari form.css --- */
+  .form-section{background:#19252E}
+  .sec-title{color:#CFE8F7}
+  label{color:#CFE8F7}
+  input[type="text"], input[type="date"], input[type="email"]{background:#172635}
+  input:focus{background:#19252E}
+  select{background:#172635}
+  select:focus{background:#19252E}
+  .file-drop{background:#172635}
+  .file-drop.filled{background:#183925}
+  .file-drop.compressing{background:#1A353C}
+  .edu-subtitle{color:#CFE8F7}
+  .photo-source-btn{background:#172635; color:#CFE8F7}
+  .loading-text{color:#CFE8F7}
+  .btn-hapus-jenjang{background:#19252E}
+
+  /* --- dari entry.css --- */
+  .entry-card{background:#19252E}
+  .entry-card h2{color:#CFE8F7}
+  .entry-btn.primary .entry-btn-icon{background:rgba(20,36,50,.2)}
+  .entry-btn.secondary .entry-btn-icon{background:#19252E; color:#CFE8F7}
+  .entry-btn.secondary .entry-btn-title{color:#CFE8F7}
+  .entry-btn.secondary:hover{background:#1B2C3F}
+  .entry-btn.renew .entry-btn-icon{background:rgba(20,36,50,.22)}
+  .entry-btn.whatsapp{background:#183822; border-color:#255638}
+  .entry-btn.whatsapp .entry-btn-title{color:#ADEBC5}
+  .entry-secondary-row .entry-pill{background:#182939; color:#CFE8F7}
+  .entry-current-mode strong{color:#CFE8F7}
+  .mode-switch-banner{background:#19252E}
+  .mode-switch-banner .mode-switch-label strong{color:#CFE8F7}
+  .mode-switch-btn{background:#172635; color:#CFE8F7}
+  .nik-status.checking{background:#182939}
+  .nik-status.warn{background:#3B2D19; color:#EBD2AD}
+  .nik-status.ok{background:#183822}
+  .dup-icon{background:#3B2D19; color:#EBD2AD}
+  .dup-box .dup-noreg{color:#CFE8F7}
+
+  /* --- dari modal.css --- */
+  .modal-box{background:#19252E}
+  .modal-head{background:#19252E}
+  .modal-head h3{color:#CFE8F7}
+  .modal-body .pdf-note{background:#172635}
+  .review-group h4{color:#CFE8F7}
+  .review-row{border-bottom:1px dashed #1E2D40}
+  .btn-edit-review{background:#182939}
+  .btn-edit-review:hover{background:#212E3B}
+  .faq-item{background:#19252E}
+  .faq-q{color:#CFE8F7}
+
+  /* --- dari gate.css --- */
+  .day-gate-card{background:#19252E}
+  .day-gate-icon{background:#3B1919}
+  .day-gate-card h2{color:#CFE8F7}
+  .day-gate-date{color:#CFE8F7}
+  .day-gate-close-btn{background:#182939}
+  .day-gate-close-btn:hover{background:#212E3B; border-color:#31404E}
+  .workday-banner{background:rgba(20,36,50,.14)}
+
+  /* --- dari fab.css --- */
+  .install-banner img{background:#19252E}
+  .install-btn{background:#19252E; color:#CFE8F7}
+
+  /* --- dari feedback.css --- */
+  .field.has-error input, .field.has-error select{background:#371818 !important}
+  .progress-track{background:#1B3A40}
+  .progress-pct{color:#CFE8F7}
+  .draft-badge{background:#19252E}
+  .toast{background:#19252E}
+  .file-thumb{background:#19252E}
+  .file-thumb-pdf{background:#3B1919}
+
+  /* --- dari footer.css --- */
+  .footer-social a{background:rgba(20,36,50,.06)}
+  .footer-social a:hover{background:rgba(20,36,50,.14)}
+
+  /* --- dari sukses.css --- */
+  .stamp-graphic{color:#CFE8F7; background:#19252E}
+  aside.rail a.tab.active .tab-label{color:#CFE8F7}
+  aside.rail a.tab.done{background-color:#193B2D}
+  aside.rail a.tab.done .tab-label{color:#ADEBD8}
+  aside.rail a.tab.done .tab-sub{color:#ADEBD9}
+  .permanent-notification-wrapper{background:#19252E}
+  .instruction-text{color:#CCCCCC}
+
+  /* --- dari bukti-panduan.css --- */
+  .btn-bukti{background:#172635; color:#CFE8F7}
+  .btn-bukti.whatsapp-share{background:#183822; border-color:#255638; color:#ADEBC5}
+  .btn-bukti.whatsapp-share:hover{background:#1B3F28}
+  #buktiCard{background:#19252E}
+  #buktiCard .bukti-head strong{color:#CFE8F7}
+  .flow-step-num{background:#19252E}
+  .flow-step-title{color:#CFE8F7}
+
+  /* --- dari status-survei.css --- */
+  .status-syarat-tab-btn.active{color:#CFE8F7}
+  .syarat-list li{background:#172635}
+  .status-result-empty{background:#172635}
+  .status-result-card{background:#19252E}
+  .status-result-card .src-jenis{color:#CFE8F7}
+  .status-result-card .src-jenis.perpanjangan{color:#ADEBE4}
+  .status-result-card .src-noreg{color:#CFE8F7}
+  .status-pill.menunggu{background:#3B2D19; color:#EBD2AD}
+  .status-pill.terverifikasi{background:#1A2E3C; color:#ADD3EB}
+  .status-pill.siap{background:#1B3F3C; color:#ADEBE4}
+  .status-pill.selesai{background:#183822}
+  .skm-intro-noreg{color:#CFE8F7}
+  .skm-unsur-block{background:#172635}
+  .skm-unsur-block.has-error{background:#371818}
+  .skm-unsur-title{color:#CFE8F7}
+  .skm-scale-opt{background:#19252E}
+  .skm-scale-opt.checked span{color:#CFE8F7}
+  .skm-pending-note{background:#3B1919}
+  #skmModal textarea:focus{background:#19252E}
+  .nik-cross-warn{background:#3B2D19; color:#EBD2AD}
+
+  /* --- dari wizard.css --- */
+  .wiz-nav{background:rgba(20,36,50,.93)}
+  .wiz-btn{background:#19252E; color:#CFE8F7}
+  .mobile-rail .m-tab.active .mlabel{color:#CFE8F7}
+  .reg-info-item{background:linear-gradient(180deg,#162534,#182B39)}
+  .reg-info-item strong{color:#CFE8F7}
+
+  /* --- dari upload.css --- */
+  .file-drop{border:2px dashed #264259; background:linear-gradient(180deg,#162534,#182B39)}
+  .file-drop:hover{background:#19333B}
+  .file-ikon{background:#19252E}
+  .file-drop .file-name{color:#CFE8F7}
+  .file-drop.filled{background:linear-gradient(180deg,#183725,#1A3D29)}
+  .file-drop.filled .file-name{color:#ADEBD8}
+  .file-drop.compressing{background:#1A353C}
+  .field.has-error .file-drop{background:#351717}
+
+  /* --- dari kolom.css --- */
+  input[type="text"], input[type="date"], input[type="email"], input[type="tel"], select{background-color:#172635; border:1.5px solid #21394E}
+  input:focus, select:focus{background-color:#19252E}
+  .chip{border:1.5px solid #21394E; background:#172635}
+  .chip:hover{background:#19333B}
+  .field.has-error .chip{background:#351717}
+
+  /* ---------- Penyesuaian khusus ---------- */
+  body{background-color:#091119;
+    background-image:radial-gradient(900px 480px at 15% -8%, rgba(20,196,196,.10) 0%, rgba(20,196,196,0) 60%),
+                     radial-gradient(700px 420px at 100% 0%, rgba(12,126,190,.12) 0%, rgba(12,126,190,0) 55%);}
+  input[type="text"], input[type="date"], input[type="email"], input[type="tel"], select, textarea{
+    background-color:#0C1822; border-color:#2B4558; color:var(--ink);}
+  input::placeholder, textarea::placeholder{color:#6F8798;}
+  input:focus, select:focus, textarea:focus{background-color:#0F1E2B; border-color:var(--cyan);}
+  input[readonly]{background-color:#0C1822;}
+  .field.has-error input, .field.has-error select{background-color:#2A1519 !important; background-image:none;}
+  .field.has-error select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FB6C6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FB6C6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");}
+  select option{background:#0F1E2B; color:var(--ink);}
+  .field-error{color:#FF9EA2;}
+  .chip{background:#0C1822; border-color:#2B4558; color:var(--ink);}
+  .chip:hover{background:#12303A; border-color:var(--cyan);}
+  .chip[aria-checked="true"]{background:linear-gradient(135deg,#0C7EBE,#139AC7); color:#fff; border-color:transparent;}
+  .file-drop{background:linear-gradient(180deg,#0E1B27,#0B1620); border-color:#2F5068;}
+  .file-drop:hover{background:#10222E; border-color:var(--cyan);}
+  .file-drop.filled{background:linear-gradient(180deg,#0F2A22,#0C221C); border-color:var(--ok);}
+  .file-ikon{background:#16293A; color:#7CC8F0; box-shadow:none;}
+  .file-drop .file-name{color:#E3EDF5;}
+  .file-drop.filled .file-name{color:#6EE7B7;}
+  .field.has-error .file-drop{background:#2A1519; border-color:var(--red);}
+  .reg-info-item{background:#0E1B27; border-color:#27475D;}
+  .reg-info-item strong{color:#E3EDF5;}
+  .wiz-nav{background:rgba(12,24,34,.92); border-color:#27475D; box-shadow:0 -4px 22px rgba(0,0,0,.5);}
+  .wiz-btn.kembali{background:#0E1B27; border-color:#2B4558; color:#CFE8F7;}
+  .wiz-btn.lanjut{background:linear-gradient(135deg,#0C7EBE,#139AC7); color:#fff;}
+  .mobile-rail{background:#0A141D;}
+  .mobile-rail .m-tab.active .mlabel{color:#E3EDF5;}
+  p[style*="color:var(--blue-deep)"]{color:#CFE8F7 !important;}
+  .form-section, .entry-card, .modal-card, .day-gate-card{border-color:#223A4C;}
+  .form-section::before{opacity:.9;}
+  img.logo, .letterhead .logo{filter:none;}
+}
