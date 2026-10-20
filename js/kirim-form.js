@@ -24,6 +24,7 @@ function handleFormSubmitClick(event) {
 }
 
 function lanjutkanValidasiFormBaru_() {
+    if (typeof perbaruiInfoRegistrasi_ === 'function') perbaruiInfoRegistrasi_();   // pastikan tanggal = hari ini
     if (layananTerkunci) {
       gateDitutupManual = false;
       const gate = document.getElementById('dayGate');
