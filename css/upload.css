@@ -1,0 +1,41 @@
+/* ==============================================================
+   Kartu unggah berkas (menggantikan kotak putus-putus kecil)
+   Dimuat setelah feedback.css supaya menimpa gayanya.
+   ============================================================== */
+
+  .file-drop{
+    gap:12px; padding:14px 16px; min-height:72px;
+    border:2px dashed #B7D3EA; border-radius:14px;
+    background:linear-gradient(180deg,#F9FCFF,#EEF6FC);
+    transition:border-color .2s, background .2s, box-shadow .2s, transform .15s;
+  }
+  .file-drop:hover{border-color:var(--cyan); background:#EAF7FB;}
+  .file-drop:active{transform:scale(.99);}
+  .file-drop-inner{flex:1; min-width:0; gap:12px; font-size:13px;}
+
+  .file-ikon{
+    flex:0 0 auto; width:46px; height:46px; border-radius:50%; background:#fff; color:var(--blue);
+    display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(10,60,120,.14);
+  }
+  .file-ikon svg{width:22px; height:22px;}
+
+  .file-teks{flex:1; min-width:0; display:flex; flex-direction:column; gap:2px;}
+  .file-drop .file-name{font-size:14px; font-weight:700; color:var(--blue-deep);}
+  .file-sub{font-size:11.5px; color:var(--ink-soft);}
+
+  .file-drop.filled{border-style:solid; border-color:var(--ok); background:linear-gradient(180deg,#F4FBF7,#E8F6EE);}
+  .file-drop.filled .file-ikon, .file-drop.filled .file-sub{display:none;}
+  .file-drop.filled .file-name{color:#0E7A5A;}
+  .file-drop.filled .file-teks::after{content:"✓ Terunggah · ketuk untuk mengganti"; font-size:11.5px; font-weight:600; color:var(--ok);}
+  .file-drop .file-thumb, .file-drop .file-thumb-pdf{width:48px; height:48px; border-radius:10px;}
+  .file-drop .file-thumb-pdf{font-size:11px;}
+  .file-drop .btn-lihat-file{font-size:12px; padding:8px 14px; border-radius:10px; min-height:36px;}
+
+  .file-drop.compressing{border-color:var(--blue); background:#E7F6FA;}
+  .file-drop.compressing .file-ikon{animation:fileDenyut 1s ease-in-out infinite;}
+  @keyframes fileDenyut{50%{transform:scale(.9); opacity:.7;}}
+
+  .field.has-error .file-drop{border-color:var(--red); background:#FFF5F5;}
+  .field.has-error .file-ikon{color:var(--red);}
+
+  @media (prefers-reduced-motion: reduce){ .file-drop.compressing .file-ikon{animation:none;} .file-drop:active{transform:none;} }
