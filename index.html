@@ -29,6 +29,7 @@
 <link rel="stylesheet" href="css/sukses.css">
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/feedback.css">
+<link rel="stylesheet" href="css/upload.css">
 <link rel="stylesheet" href="css/modal.css">
 <link rel="stylesheet" href="css/fab.css">
 <link rel="stylesheet" href="css/gate.css">
@@ -269,17 +270,21 @@
               <p class="sec-hint">Nomor registrasi akan terisi otomatis oleh sistem.</p>
           </div>
       </div>
-      <div class="grid2">
-          <div class="field">
-              <label>Nomor Registrasi <span style="color:var(--ink-soft); font-weight:400;">(perkiraan)</span></label>
-              <input type="text" id="no_reg" value="Memuat nomor otomatis..." readonly style="background-color:#E5E7EB; color:#4B5563; cursor:not-allowed;">
-              <p class="sec-hint" style="margin-top:6px;">Nomor registrasi resmi baru ditentukan setelah data berhasil dikirim, dan akan ditampilkan pada notifikasi sukses.</p>
+      <div class="reg-info">
+          <div class="reg-info-item">
+              <span class="reg-info-label">Tanggal Registrasi</span>
+              <strong id="tgl_reg_tampil">-</strong>
+              <span class="reg-info-note">Terisi otomatis hari ini</span>
           </div>
-          <div class="field">
-              <label>Hari dan Tanggal Registrasi <span class="req">*</span></label>
-              <input type="date" id="tgl_reg" required>
+          <div class="reg-info-item" id="regNoWrap" hidden>
+              <span class="reg-info-label">Perkiraan Nomor Registrasi</span>
+              <strong id="no_reg_tampil">-</strong>
+              <span class="reg-info-note">Nomor resmi ditentukan setelah data terkirim</span>
           </div>
       </div>
+      <input type="date" id="tgl_reg" hidden>
+      <input type="text" id="no_reg" value="" hidden readonly>
+      <p class="sec-hint" style="margin-top:14px;">Tidak ada yang perlu diisi di langkah ini. Tekan <b>Lanjut</b> untuk mulai mengisi data diri.</p>
   </div>
 
   <div class="form-section" id="sec-diri" data-section="diri">
