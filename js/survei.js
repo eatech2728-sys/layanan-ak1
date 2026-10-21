@@ -31,6 +31,11 @@
    * (lihat tampilkanNotifikasiSuksesFinal).
    */
   function mulaiAlurSetelahSukses(noRegFinal, judul, sub, stampTitle, jenisPengajuanUntukSurvei) {
+    // Alur baru: survei sudah diisi SEBELUM data dikirim -> kirim penilaian otomatis, lalu tampilkan hasil.
+    if (skmPraKirim && skmPraKirim.jenis === (jenisPengajuanUntukSurvei || 'Baru')) {
+      selesaikanDenganSurveiPra_(noRegFinal, judul, sub, stampTitle);
+      return;
+    }
     dataSuksesTertunda = { noRegFinal, judul, sub, stampTitle, jenis: jenisPengajuanUntukSurvei || 'Baru' };
     surveiTertunda = true;
     simpanSurveiTertunda();
@@ -146,6 +151,93 @@
     { nilai: 4, label: 'Sangat Baik' }
   ];
 
+  // ---------- Alur "survei dulu, baru kirim" ----------
+  // Peserta mengisi survei SEBELUM pendaftaran dikirim. Jawaban ditahan di memori; setelah
+  // pendaftaran berhasil & nomor registrasi didapat, penilaian dikirim otomatis bersama nomornya.
+  let skmMode = 'pasca';          // 'pra' = sebelum kirim, 'pasca' = setelah data tersimpan (pemulihan lama)
+  let skmPraKirim = null;         // { jenis, jawaban, saran }
+  let skmLanjutFn = null;         // fungsi kirim pendaftaran yang dijalankan setelah survei diisi
+  const SKM_ANTRIAN_KEY = 'ak1_skm_antrian_v1';
+
+  const SKM_INTRO_PASCA = document.getElementById('skmIntro') ? document.getElementById('skmIntro').innerHTML : '';
+
+  function aturTampilanSkm_(mode) {
+    skmMode = mode;
+    const intro = document.getElementById('skmIntro');
+    const btn = document.getElementById('btnKirimSkm');
+    const batal = document.getElementById('btnBatalSkm');
+    if (mode === 'pra') {
+      if (intro) intro.innerHTML = '<b>Satu langkah sebelum pendaftaran dikirim:</b> mohon isi survei singkat ini terlebih dahulu. ' +
+        'Pendaftaran Anda <b>baru dikirim setelah survei selesai</b>, dan nomor registrasi ditampilkan sesudahnya. ' +
+        'Survei mengikuti 9 unsur pelayanan publik (Permenpan RB No. 14 Tahun 2017) untuk membantu kami meningkatkan layanan.';
+      if (btn) btn.textContent = 'Kirim Survei & Daftarkan';
+      if (batal) batal.style.display = '';
+    } else {
+      if (intro) intro.innerHTML = SKM_INTRO_PASCA;
+      if (btn) btn.textContent = 'Kirim Penilaian';
+      if (batal) batal.style.display = 'none';
+    }
+  }
+
+  /** Dipanggil saat peserta menekan "Ya, Kirim Sekarang": minta survei dulu, baru jalankan pengiriman. */
+  function mintaSurveiLaluKirim_(jenis, lanjutFn) {
+    if (skmPraKirim && skmPraKirim.jenis === jenis) { lanjutFn(); return; }   // sudah pernah diisi (mis. kirim ulang setelah gagal)
+    skmLanjutFn = lanjutFn;
+    openSkmModal('', jenis, 'pra');
+    toast('info', 'Isi survei dulu', 'Pendaftaran dikirim otomatis setelah survei singkat ini selesai diisi.', 5000);
+  }
+
+  function batalkanSurveiPra() {
+    skmLanjutFn = null;
+    document.getElementById('skmModal').classList.remove('show');
+    updateScrollLock();
+    toast('info', 'Pendaftaran belum dikirim', 'Anda bisa memeriksa formulir kembali, lalu menekan "Periksa & Kirim Data" saat siap.', 4500);
+  }
+
+  async function kirimPayloadSurvei_(payload, percobaan) {
+    for (let i = 0; i < percobaan; i++) {
+      try {
+        const res = await fetchWithTimeout(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const hasil = await res.json();
+        if (hasil && hasil.status === 'success') return true;
+      } catch (err) { /* coba lagi */ }
+      if (i < percobaan - 1) await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+    }
+    return false;
+  }
+  function baca_antrian_() { try { return JSON.parse(localStorage.getItem(SKM_ANTRIAN_KEY) || '[]'); } catch (e) { return []; } }
+  function tulis_antrian_(arr) { try { localStorage.setItem(SKM_ANTRIAN_KEY, JSON.stringify(arr)); } catch (e) { /* abaikan */ } }
+
+  /** Penilaian yang belum terkirim (jaringan putus) dicoba lagi diam-diam saat halaman dibuka / online. */
+  let antrianSedangJalan_ = false;
+  async function prosesAntrianSurvei_() {
+    if (antrianSedangJalan_) return;
+    antrianSedangJalan_ = true;
+    try {
+      for (const item of baca_antrian_()) {
+        const ok = await kirimPayloadSurvei_(item.payload, 1);
+        let sisa = baca_antrian_().filter(x => x.payload.no_reg !== item.payload.no_reg);
+        if (!ok && (item.gagal || 0) < 5) sisa.push({ payload: item.payload, gagal: (item.gagal || 0) + 1 });
+        tulis_antrian_(sisa);
+      }
+    } finally { antrianSedangJalan_ = false; }
+  }
+  window.addEventListener('load', () => setTimeout(prosesAntrianSurvei_, 3000));
+  window.addEventListener('online', prosesAntrianSurvei_);
+
+  async function selesaikanDenganSurveiPra_(noRegFinal, judul, sub, stampTitle) {
+    const pra = skmPraKirim;
+    skmPraKirim = null;
+    dataSuksesTertunda = { noRegFinal, judul, sub, stampTitle, jenis: pra.jenis };
+    const payload = { tipe_submit: 'survei_skm', no_reg: noRegFinal, jenis_pengajuan: pra.jenis, jawaban: pra.jawaban, saran: pra.saran };
+    // Simpan ke antrian dulu: kalau tab ditutup di tengah jalan, penilaian tetap terkirim di kunjungan berikutnya.
+    tulis_antrian_(baca_antrian_().concat([{ payload, gagal: 0 }]));
+    const ok = await kirimPayloadSurvei_(payload, 3);
+    if (ok) tulis_antrian_(baca_antrian_().filter(x => x.payload.no_reg !== noRegFinal));
+    tampilkanNotifikasiSuksesFinal();
+    if (ok) toast('success', 'Terima kasih!', 'Penilaian Anda terhadap layanan AK-1 sudah kami terima.', 4500);
+  }
+
   let skmSudahDiisi = false;
   let skmNoRegAktif = '';
   let skmJenisAktif = 'Baru';
@@ -184,12 +276,14 @@
     });
   }
 
-  function openSkmModal(noReg, jenis) {
+  function openSkmModal(noReg, jenis, mode) {
     renderSkmUnsurList();
+    aturTampilanSkm_(mode || 'pasca');
     skmSudahDiisi = false;
     skmNoRegAktif = noReg;
     skmJenisAktif = jenis;
-    document.getElementById('skmNoRegTampil').textContent = noReg;
+    const elNoReg = document.getElementById('skmNoRegTampil');
+    if (elNoReg) elNoReg.textContent = noReg;   // tidak ada pada mode 'pra' (nomor belum ada)
 
     document.querySelectorAll('#skmUnsurList input[type=radio]').forEach(r => { r.checked = false; });
     document.querySelectorAll('#skmUnsurList .skm-scale-opt.checked').forEach(o => o.classList.remove('checked'));
@@ -227,6 +321,21 @@
 
   async function kirimSurveiSkm() {
     if (!validasiSkm()) return;
+
+    if (skmMode === 'pra') {
+      // Tahan jawaban, tutup survei, lalu kirim pendaftaran. Penilaian dikirim otomatis setelah nomor registrasi ada.
+      const jawabanPra = {};
+      SKM_UNSUR.forEach(u => {
+        const t = document.querySelector(`#skmUnsurList input[name="skm_${u.key}"]:checked`);
+        jawabanPra[u.key] = t ? Number(t.value) : null;
+      });
+      skmPraKirim = { jenis: skmJenisAktif, jawaban: jawabanPra, saran: document.getElementById('skmSaran').value || '' };
+      document.getElementById('skmModal').classList.remove('show');
+      updateScrollLock();
+      const fn = skmLanjutFn; skmLanjutFn = null;
+      if (fn) fn();
+      return;
+    }
 
     const btn = document.getElementById('btnKirimSkm');
     const loadingText = document.getElementById('skmLoadingText');
