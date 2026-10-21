@@ -75,7 +75,7 @@
   }
   function konfirmasiKirim() {
     closeReviewModal();
-    prosesKirimForm();
+    mintaSurveiLaluKirim_('Baru', prosesKirimForm);   // survei WAJIB diisi dulu, baru data dikirim
   }
 
   function openReviewModalPerpanjangan() {
@@ -119,5 +119,5 @@
   }
   function konfirmasiKirimPerpanjangan() {
     closeReviewModalPerpanjangan();
-    prosesKirimFormPerpanjangan();
+    mintaSurveiLaluKirim_('Perpanjangan', prosesKirimFormPerpanjangan);   // survei WAJIB diisi dulu
   }
